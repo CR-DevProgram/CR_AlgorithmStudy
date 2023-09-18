@@ -33,7 +33,7 @@
     <ClCompile Include="Ryu_Baekjoon_Stack.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Ryu_Programmers_DP.cpp">
+    <ClCompile Include="Ryu_Programmers.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
