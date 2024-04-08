@@ -127,7 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Ryu_Baekjoon_1StringPerfixSum.cpp" />
+    <ClCompile Include="Ryu_Baekjoon_1StringPrefixSum.cpp" />
     <ClCompile Include="Ryu_Baekjoon_2DFSBFS.cpp" />
     <ClCompile Include="Ryu_Baekjoon_3ExhaustiveSearchBackTracking.cpp" />
     <ClCompile Include="Ryu_Programmers.cpp" />
