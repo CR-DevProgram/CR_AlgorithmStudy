@@ -90,51 +90,107 @@ using namespace std;
 // 100 + A + B가 아홉 난쟁이의 합일 것. 그 중 A와 B를 찾아낸다는 것은 100 == 전체 - (A + B)
 
 // 2개 뽑이라 pair 사용
-pair<int, int> ret;
-vector<int> vec;
+//pair<int, int> ret;
+//vector<int> vec;
+//int arr[9];
+//int Sum;
+//
+//void Solve()
+//{
+//	// 9C2이니까 중첩for문은 2번만
+//	for (int i = 0; i < 9; ++i)
+//	{
+//		for (int j = 0; j < i; ++j)
+//		{
+//			// 로직
+//			if (100 == Sum - (arr[i] + arr[j]))
+//			{
+//				ret = { i, j };
+//				return;
+//			}
+//		}
+//	}
+//}
+//
+//int main()
+//{
+//	for (int i = 0; i < 9; ++i)
+//	{
+//		// 입력 받기
+//		cin >> arr[i];
+//		// 전체 합 구하기
+//		Sum += arr[i];
+//	}
+//	
+//	Solve();
+//
+//	for (int i = 0; i < 9; ++i)
+//	{
+//		// 가짜 난쟁이 둘 중 하나에 해당 할 경우 건너 뛴다 == continue
+//		if (ret.first == i || ret.second == i) continue;
+//		// 진짜 난쟁이 일곱만 벡터에 넣어줌
+//		vec.push_back(arr[i]);
+//	}
+//
+//	// 오름차순 출력을 위한 정렬
+//	sort(vec.begin(), vec.end());
+//	for (int i : vec) cout << i << "\n";
+//
+//	return 0;
+//}
+
+// 또 다른 풀이법(재귀순열)
 int arr[9];
-int Sum;
+int n = 9, r = 7;
 
 void Solve()
 {
-	// 9C2이니까 중첩for문은 2번만
-	for (int i = 0; i < 9; ++i)
+	// 합산 0으로 초기화 작업
+	int Sum = 0;;
+
+	// 합산 작업
+	for (int i = 0; i < r; ++i) Sum += arr[i];
+	// 합산이 100일 경우
+	if (100 == Sum)
 	{
-		for (int j = 0; j < i; ++j)
-		{
-			// 로직
-			if (100 == Sum - (arr[i] + arr[j]))
-			{
-				ret = { i, j };
-				return;
-			}
-		}
+		// 오름차순
+		sort(arr, arr + 7);
+		for (int i = 0; i < r; ++i) cout << arr[i] << "\n";
+		// main 함수 자체가 종료
+		// retunr을 하게 되면 해당 함수만 종료
+		exit(0);
 	}
+}
+
+void MakePermutation(int n, int r, int depth)
+{
+	// 7개 뽑기
+	if (r == depth)
+	{
+		Solve();
+
+		return;
+	}
+
+	for (int i = depth; i < n; ++i)
+	{
+		swap(arr[i], arr[depth]);
+		MakePermutation(n, r, depth + 1);
+		swap(arr[i], arr[depth]);
+	}
+
+	return;
 }
 
 int main()
 {
+	// 입력 받기
 	for (int i = 0; i < 9; ++i)
 	{
-		// 입력 받기
 		cin >> arr[i];
-		// 전체 합 구하기
-		Sum += arr[i];
-	}
-	
-	Solve();
-
-	for (int i = 0; i < 9; ++i)
-	{
-		// 가짜 난쟁이 둘 중 하나에 해당 할 경우 건너 뛴다 == continue
-		if (ret.first == i || ret.second == i) continue;
-		// 진짜 난쟁이 일곱만 벡터에 넣어줌
-		vec.push_back(arr[i]);
 	}
 
-	// 오름차순 출력을 위한 정렬
-	sort(vec.begin(), vec.end());
-	for (int i : vec) cout << i << "\n";
+	MakePermutation(n, r, 0);
 
 	return 0;
 }
