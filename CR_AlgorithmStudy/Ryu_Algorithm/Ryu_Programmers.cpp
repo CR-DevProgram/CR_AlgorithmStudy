@@ -32,12 +32,12 @@ int solution(vector<int> nums)
     return answer;
 }
 
-int main(void)
-{
-    // 해시_L1 폰켓몬
-    solution({ 3, 1, 2, 3 });           // 2
-    solution({ 3, 3, 3, 2, 2, 4 });     // 3
-    solution({ 3, 3, 3, 2, 2, 2 });     // 2
-
-    return 0;
-}
+//int main(void)
+//{
+//    // 해시_L1 폰켓몬
+//    solution({ 3, 1, 2, 3 });           // 2
+//    solution({ 3, 3, 3, 2, 2, 4 });     // 3
+//    solution({ 3, 3, 3, 2, 2, 2 });     // 2
+//
+//    return 0;
+//}

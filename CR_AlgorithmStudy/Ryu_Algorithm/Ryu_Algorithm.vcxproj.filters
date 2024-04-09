@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Ryu_Programmers.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Ryu_Baekjoon_1StringPrefixSum.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -25,6 +22,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Ryu_Baekjoon_3ExhaustiveSearchBackTracking.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Ryu_Programmers.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
