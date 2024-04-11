@@ -198,25 +198,54 @@ using namespace std;
 // 2_알파벳 개수
 // https://www.acmicpc.net/problem/10808
 // 입력으로 들어오는 문자열에서 각 알파벳 단어가 몇 개인지 a~z까지 표현하는 것으로 개별 카운팅
-int AlphabetArr[26];
+//int AlphabetArr[26];
+//
+//int main()
+//{
+//	string m_str = "";
+//	cin >> m_str;
+//
+//	for (int i = 0; i < m_str.size(); ++i)
+//	{
+//		// 아스키코드 생각하여 인덱스 별로 동일 알파벳 수 누적
+//		++AlphabetArr[m_str[i] - 97];
+//	}
+//
+//	for (int i = 0; i < 26; ++i)
+//	{
+//		cout << AlphabetArr[i] << " ";
+//	}
+//
+//	cout << "\n";
+//
+//	return 0;
+//}
+
+// 또 다른 풀이법(Counting Star - map, array)
+// map은 key-value => char(key)-int(value)
+// map은 보통 string을 기반으로 했을 때 사용
+// array는 인티저형 배열 인덱스로 접근하여 증감연산자로 카운팅
+// array는 보통 int를 기반으로 했을 때 사용. 단, 10만 100만 1000만의 큰 수가 들어올 경우에는 map을 추천
+// 다만 해당 문제는 문자를 카운팅하는 것. 따라서 배열로 쓰는 것이 좋을지도..?
+// 아스키코드 - A(65), a(97) / 아스키코드는 문자가 숫자로 맵핑되어 있는 것
+// cnt['a'] == cnt[97]
+
+// * 전역변수로 사용하게 되면 0으로 초기화 작업이 됨 => 컴파일에서 최적화를 시키기 때문
+// * 지역변수로 쓰게될 경우 항상 쓰레기 값이 들어가기 때문에 코딩 테스트를 한다 했을 때 전역변수 사용이 좋음 
+int cnt[26];
+string str;
 
 int main()
 {
-	string m_str = "";
-	cin >> m_str;
+	cin >> str;
 
-	for (int i = 0; i < m_str.size(); ++i)
+	for (char a : str)
 	{
-		// 아스키코드 생각하여 인덱스 별로 동일 알파벳 수 누적
-		++AlphabetArr[m_str[i] - 97];
+		// 좌표이동을 이용한 배열로 a(97)만큼을 땡길거니까 들어오는 알파벳 - a
+		++cnt[a - 'a'];
 	}
 
-	for (int i = 0; i < 26; ++i)
-	{
-		cout << AlphabetArr[i] << " ";
-	}
-
-	cout << "\n";
+	for (int i : cnt) cout << i << " ";
 
 	return 0;
 }
