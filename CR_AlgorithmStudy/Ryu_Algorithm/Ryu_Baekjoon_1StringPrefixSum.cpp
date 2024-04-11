@@ -140,57 +140,83 @@ using namespace std;
 //}
 
 // 또 다른 풀이법(재귀순열)
-int arr[9];
-int n = 9, r = 7;
+//int arr[9];
+//int n = 9, r = 7;
+//
+//void Solve()
+//{
+//	// 합산 0으로 초기화 작업
+//	int Sum = 0;;
+//
+//	// 합산 작업
+//	for (int i = 0; i < r; ++i) Sum += arr[i];
+//	// 합산이 100일 경우
+//	if (100 == Sum)
+//	{
+//		// 오름차순
+//		sort(arr, arr + 7);
+//		for (int i = 0; i < r; ++i) cout << arr[i] << "\n";
+//		// main 함수 자체가 종료
+//		// retunr을 하게 되면 해당 함수만 종료
+//		exit(0);
+//	}
+//}
+//
+//void MakePermutation(int n, int r, int depth)
+//{
+//	// 7개 뽑기
+//	if (r == depth)
+//	{
+//		Solve();
+//
+//		return;
+//	}
+//
+//	for (int i = depth; i < n; ++i)
+//	{
+//		swap(arr[i], arr[depth]);
+//		MakePermutation(n, r, depth + 1);
+//		swap(arr[i], arr[depth]);
+//	}
+//
+//	return;
+//}
+//
+//int main()
+//{
+//	// 입력 받기
+//	for (int i = 0; i < 9; ++i)
+//	{
+//		cin >> arr[i];
+//	}
+//
+//	MakePermutation(n, r, 0);
+//
+//	return 0;
+//}
 
-void Solve()
-{
-	// 합산 0으로 초기화 작업
-	int Sum = 0;;
-
-	// 합산 작업
-	for (int i = 0; i < r; ++i) Sum += arr[i];
-	// 합산이 100일 경우
-	if (100 == Sum)
-	{
-		// 오름차순
-		sort(arr, arr + 7);
-		for (int i = 0; i < r; ++i) cout << arr[i] << "\n";
-		// main 함수 자체가 종료
-		// retunr을 하게 되면 해당 함수만 종료
-		exit(0);
-	}
-}
-
-void MakePermutation(int n, int r, int depth)
-{
-	// 7개 뽑기
-	if (r == depth)
-	{
-		Solve();
-
-		return;
-	}
-
-	for (int i = depth; i < n; ++i)
-	{
-		swap(arr[i], arr[depth]);
-		MakePermutation(n, r, depth + 1);
-		swap(arr[i], arr[depth]);
-	}
-
-	return;
-}
+// 2_알파벳 개수
+// https://www.acmicpc.net/problem/10808
+// 입력으로 들어오는 문자열에서 각 알파벳 단어가 몇 개인지 a~z까지 표현하는 것으로 개별 카운팅
+int AlphabetArr[26];
 
 int main()
 {
-	// 입력 받기
-	for (int i = 0; i < 9; ++i)
+	string m_str = "";
+	cin >> m_str;
+
+	for (int i = 0; i < m_str.size(); ++i)
 	{
-		cin >> arr[i];
+		// 아스키코드 생각하여 인덱스 별로 동일 알파벳 수 누적
+		++AlphabetArr[m_str[i] - 97];
 	}
 
-	MakePermutation(n, r, 0);
+	for (int i = 0; i < 26; ++i)
+	{
+		cout << AlphabetArr[i] << " ";
+	}
+
+	cout << "\n";
 
 	return 0;
 }
