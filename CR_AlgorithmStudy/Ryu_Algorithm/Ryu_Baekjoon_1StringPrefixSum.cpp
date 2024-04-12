@@ -232,20 +232,58 @@ using namespace std;
 
 // * 전역변수로 사용하게 되면 0으로 초기화 작업이 됨 => 컴파일에서 최적화를 시키기 때문
 // * 지역변수로 쓰게될 경우 항상 쓰레기 값이 들어가기 때문에 코딩 테스트를 한다 했을 때 전역변수 사용이 좋음 
-int cnt[26];
-string str;
+//int cnt[26];
+//string str;
+//
+//int main()
+//{
+//	cin >> str;
+//
+//	for (char a : str)
+//	{
+//		// 좌표이동을 이용한 배열로 a(97)만큼을 땡길거니까 들어오는 알파벳 - a
+//		++cnt[a - 'a'];
+//	}
+//
+//	for (int i : cnt) cout << i << " ";
+//
+//	return 0;
+//}
+
+// 3_트럭 주차
+// https://www.acmicpc.net/problem/2979
+// 시간을 배열로 잡아 카운팅하고 연산
+// 시간은 1과 100 사이이므로 array[100]
+int TimeCnt[100];
+int A, B, C, Sum;
 
 int main()
 {
-	cin >> str;
+	// 차량 수에 따른 요금 입력 받기
+	cin >> A >> B >> C;
 
-	for (char a : str)
+	// 3대의 차량 출입 시간
+	for (int i = 0; i < 3; ++i)
 	{
-		// 좌표이동을 이용한 배열로 a(97)만큼을 땡길거니까 들어오는 알파벳 - a
-		++cnt[a - 'a'];
+		int In, Out = 0;
+		cin >> In >> Out;
+
+		// 시간대 별 차량 수 카운팅
+		for (int j = In; j < Out; ++j)
+		{
+			++TimeCnt[j];
+		}
 	}
 
-	for (int i : cnt) cout << i << " ";
+	// 시간에 따른 차량 주차 요금 정산 로직
+	for (int i : TimeCnt)
+	{
+		if (1 == i) Sum += i * A;
+		else if (2 == i) Sum += i * B;
+		else if (3 == i) Sum += i * C;
+	}
+
+	cout << Sum << "\n";
 
 	return 0;
 }
