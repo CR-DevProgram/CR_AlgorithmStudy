@@ -254,36 +254,72 @@ using namespace std;
 // https://www.acmicpc.net/problem/2979
 // 시간을 배열로 잡아 카운팅하고 연산
 // 시간은 1과 100 사이이므로 array[100]
-int TimeCnt[100];
-int A, B, C, Sum;
+//int TimeCnt[100];
+//int A, B, C, Sum;
+//
+//int main()
+//{
+//	// 차량 수에 따른 요금 입력 받기
+//	cin >> A >> B >> C;
+//
+//	// 3대의 차량 출입 시간
+//	for (int i = 0; i < 3; ++i)
+//	{
+//		int In, Out = 0;
+//		cin >> In >> Out;
+//
+//		// 시간대 별 차량 수 카운팅
+//		for (int j = In; j < Out; ++j)
+//		{
+//			++TimeCnt[j];
+//		}
+//	}
+//
+//	// 시간에 따른 차량 주차 요금 정산 로직
+//	for (int i : TimeCnt)
+//	{
+//		if (1 == i) Sum += i * A;
+//		else if (2 == i) Sum += i * B;
+//		else if (3 == i) Sum += i * C;
+//	}
+//
+//	cout << Sum << "\n";
+//
+//	return 0;
+//}
+
+// 또 다른 풀이법(Counting)
+// 시간은 이상 미만이다
+// 풀이는 내 풀이랑 유사
+int A, B, C, a, b, cnt[104], ret;
 
 int main()
 {
-	// 차량 수에 따른 요금 입력 받기
 	cin >> A >> B >> C;
 
-	// 3대의 차량 출입 시간
 	for (int i = 0; i < 3; ++i)
 	{
-		int In, Out = 0;
-		cin >> In >> Out;
+		cin >> a >> b;
 
-		// 시간대 별 차량 수 카운팅
-		for (int j = In; j < Out; ++j)
+		// 시간의 이상 미만을 표현. a는 포함되어 있고 b는 포함되어있지 않음
+		for (int j = a; j < b; ++j) ++cnt[j];
+	}
+
+	// 문제의 최대 범위가 100이기 때문에 100까지만 확인
+	for (int j = 1; j < 100; ++j)
+	{
+		// 트럭이 있다면
+		if (0 != cnt[j])
 		{
-			++TimeCnt[j];
+			if (1 == cnt[j]) ret += A;
+			// 차량이 두대니까 곱하기 2(한대당 요금이 B)
+			else if (2 == cnt[j]) ret += B * 2;
+			// 차량이 세대니까 곱하기 3(한대당 요금이 C)
+			else if (3 == cnt[j]) ret += C * 3;
 		}
 	}
 
-	// 시간에 따른 차량 주차 요금 정산 로직
-	for (int i : TimeCnt)
-	{
-		if (1 == i) Sum += i * A;
-		else if (2 == i) Sum += i * B;
-		else if (3 == i) Sum += i * C;
-	}
-
-	cout << Sum << "\n";
+	cout << ret << "\n";
 
 	return 0;
 }
