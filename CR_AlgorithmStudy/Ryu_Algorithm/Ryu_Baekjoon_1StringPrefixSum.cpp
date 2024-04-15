@@ -328,22 +328,40 @@ using namespace std;
 // https://www.acmicpc.net/problem/10988
 // 팰린드롬이란 앞뒤로 읽을 때 동일한 단어
 // 뒤집어서 현재 문자랑 같은지 확인하면 되지 않을까? 
-string str, revstr;
-bool ret;
+//string str, revstr;
+//bool ret;
+//
+//int main()
+//{
+//	cin >> str;
+//
+//	// 문자열 복사
+//	revstr = str;
+//	// 복사한 문자열 뒤집기
+//	reverse(revstr.begin(), revstr.end());
+//
+//	// compare 함수를 이용하여 원본 문자와 뒤집은 문자가 같다는 0일 경우 true 0이 아닐 경우 false
+//	ret = 0 == str.compare(revstr) ? true : false;
+//
+//	cout << ret << "\n";
+//
+//	return 0;
+//}
+
+// 또 다른 풀이법(reverse)
+// 팰린드롬은 회문, 어떠한 문자열이 회문인지를 확인하는 로직을 구현하면 됨
+// 풀이는 내 풀이와 유사
+string s, temp;
 
 int main()
 {
-	cin >> str;
+	cin >> s;
 
-	// 문자열 복사
-	revstr = str;
-	// 복사한 문자열 뒤집기
-	reverse(revstr.begin(), revstr.end());
+	temp = s;
+	reverse(temp.begin(), temp.end());
 
-	// compare 함수를 이용하여 원본 문자와 뒤집은 문자가 같다는 0일 경우 true 0이 아닐 경우 false
-	ret = 0 == str.compare(revstr) ? true : false;
-
-	cout << ret << "\n";
+	if (temp == s) cout << 1 << "\n";
+	else cout << 0 << "\n";
 
 	return 0;
 }
