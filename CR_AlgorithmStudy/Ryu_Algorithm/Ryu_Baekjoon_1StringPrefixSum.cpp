@@ -291,33 +291,57 @@ using namespace std;
 // 또 다른 풀이법(Counting)
 // 시간은 이상 미만이다
 // 풀이는 내 풀이랑 유사
-int A, B, C, a, b, cnt[104], ret;
+//int A, B, C, a, b, cnt[104], ret;
+//
+//int main()
+//{
+//	cin >> A >> B >> C;
+//
+//	for (int i = 0; i < 3; ++i)
+//	{
+//		cin >> a >> b;
+//
+//		// 시간의 이상 미만을 표현. a는 포함되어 있고 b는 포함되어있지 않음
+//		for (int j = a; j < b; ++j) ++cnt[j];
+//	}
+//
+//	// 문제의 최대 범위가 100이기 때문에 100까지만 확인
+//	for (int j = 1; j < 100; ++j)
+//	{
+//		// 트럭이 있다면
+//		if (0 != cnt[j])
+//		{
+//			if (1 == cnt[j]) ret += A;
+//			// 차량이 두대니까 곱하기 2(한대당 요금이 B)
+//			else if (2 == cnt[j]) ret += B * 2;
+//			// 차량이 세대니까 곱하기 3(한대당 요금이 C)
+//			else if (3 == cnt[j]) ret += C * 3;
+//		}
+//	}
+//
+//	cout << ret << "\n";
+//
+//	return 0;
+//}
+
+// 4_팰린드롬인지 확인하기
+// https://www.acmicpc.net/problem/10988
+// 팰린드롬이란 앞뒤로 읽을 때 동일한 단어
+// 뒤집어서 현재 문자랑 같은지 확인하면 되지 않을까? 
+string str, revstr;
+bool ret;
 
 int main()
 {
-	cin >> A >> B >> C;
+	cin >> str;
 
-	for (int i = 0; i < 3; ++i)
-	{
-		cin >> a >> b;
+	// 문자열 복사
+	revstr = str;
+	// 복사한 문자열 뒤집기
+	reverse(revstr.begin(), revstr.end());
 
-		// 시간의 이상 미만을 표현. a는 포함되어 있고 b는 포함되어있지 않음
-		for (int j = a; j < b; ++j) ++cnt[j];
-	}
-
-	// 문제의 최대 범위가 100이기 때문에 100까지만 확인
-	for (int j = 1; j < 100; ++j)
-	{
-		// 트럭이 있다면
-		if (0 != cnt[j])
-		{
-			if (1 == cnt[j]) ret += A;
-			// 차량이 두대니까 곱하기 2(한대당 요금이 B)
-			else if (2 == cnt[j]) ret += B * 2;
-			// 차량이 세대니까 곱하기 3(한대당 요금이 C)
-			else if (3 == cnt[j]) ret += C * 3;
-		}
-	}
+	// compare 함수를 이용하여 원본 문자와 뒤집은 문자가 같다는 0일 경우 true 0이 아닐 경우 false
+	ret = 0 == str.compare(revstr) ? true : false;
 
 	cout << ret << "\n";
 
