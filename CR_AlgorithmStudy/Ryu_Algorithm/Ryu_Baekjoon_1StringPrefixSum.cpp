@@ -367,12 +367,43 @@ using namespace std;
 //}
 
 // 5_농구 경기
+// https://www.acmicpc.net/problem/1159
 // 성의 첫 글자가 같은 선수 5명 => 순서가 상관없는 조합
 // 조합이라고 생각했으나 예제 케이스 및 문제 상황을 봤을 때 카운팅배열 문제로 추정
 // n: 인원수
-vector<int> namecnt(26);
-string str, ret;
-int n;
+//vector<int> namecnt(26);
+//string str, ret;
+//int n;
+//
+//int main()
+//{
+//	cin >> n;
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		cin >> str;
+//		++namecnt[str[0] - 97];
+//	}
+//
+//	for (int i = 0; i < namecnt.size(); ++i)
+//	{
+//		if (5 <= namecnt[i])
+//		{
+//			ret += i + 'a';
+//		}
+//	}
+//
+//	if (true == ret.empty()) ret = "PREDAJA";
+//
+//	cout << ret << "\n";
+//
+//	return 0;
+//}
+
+// 또 다른 풀이법(countingarray)
+// 내 풀이와 유사
+int n, cnt[26];
+string s, ret;
 
 int main()
 {
@@ -380,21 +411,24 @@ int main()
 
 	for (int i = 0; i < n; ++i)
 	{
-		cin >> str;
-		++namecnt[str[0] - 97];
+		cin >> s;
+		// 첫 글자에 대한 카운팅
+		// 문자를 숫자화 시킴
+		++cnt[s[0] - 'a'];
 	}
 
-	for (int i = 0; i < namecnt.size(); ++i)
+	for (int i = 0; i < 26; ++i)
 	{
-		if (5 <= namecnt[i])
+		if (5 <= cnt[i])
 		{
-			ret += i + 'a';
+			// 아스키코드를 활용하여 5 이상의 알파벳 담기
+			// 숫자를 문자화 시킴
+			ret += (i + 'a');
 		}
 	}
 
-	if (true == ret.empty()) ret = "PREDAJA";
-
-	cout << ret << "\n";
+	if (0 != ret.size()) cout << ret << "\n";
+	else cout << "PREDAJA" << "\n";
 
 	return 0;
 }
