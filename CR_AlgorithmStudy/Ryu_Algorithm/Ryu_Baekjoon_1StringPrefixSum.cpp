@@ -351,17 +351,50 @@ using namespace std;
 // 또 다른 풀이법(reverse)
 // 팰린드롬은 회문, 어떠한 문자열이 회문인지를 확인하는 로직을 구현하면 됨
 // 풀이는 내 풀이와 유사
-string s, temp;
+//string s, temp;
+//
+//int main()
+//{
+//	cin >> s;
+//
+//	temp = s;
+//	reverse(temp.begin(), temp.end());
+//
+//	if (temp == s) cout << 1 << "\n";
+//	else cout << 0 << "\n";
+//
+//	return 0;
+//}
+
+// 5_농구 경기
+// 성의 첫 글자가 같은 선수 5명 => 순서가 상관없는 조합
+// 조합이라고 생각했으나 예제 케이스 및 문제 상황을 봤을 때 카운팅배열 문제로 추정
+// n: 인원수
+vector<int> namecnt(26);
+string str, ret;
+int n;
 
 int main()
 {
-	cin >> s;
+	cin >> n;
 
-	temp = s;
-	reverse(temp.begin(), temp.end());
+	for (int i = 0; i < n; ++i)
+	{
+		cin >> str;
+		++namecnt[str[0] - 97];
+	}
 
-	if (temp == s) cout << 1 << "\n";
-	else cout << 0 << "\n";
+	for (int i = 0; i < namecnt.size(); ++i)
+	{
+		if (5 <= namecnt[i])
+		{
+			ret += i + 'a';
+		}
+	}
+
+	if (true == ret.empty()) ret = "PREDAJA";
+
+	cout << ret << "\n";
 
 	return 0;
 }
