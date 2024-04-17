@@ -436,32 +436,62 @@ using namespace std;
 // 6_ROT13
 // https://www.acmicpc.net/problem/11655
 // 문자열을 받아서 대소문자인 경우에만 13자를 미루기?
-string str;
+//string str;
+//
+//int main()
+//{
+//    // getline을 이용하여 문자열 받기
+//    getline(cin, str);
+//
+//    for (int i = 0; i < str.size(); ++i)
+//    {
+//        // 대문자인경우
+//        if (65 <= str[i] && 90 >= str[i])
+//        {
+//            // 아스키코드 90을 초과한 경우 Z를 넘었을 경우
+//            if (90 < str[i] + 13) str[i] -= 13;
+//            else str[i] += 13;
+//        }
+//        // 소문자인경우
+//        else if (97 <= str[i] && 122 >= str[i])
+//        {
+//            // 아스키코드 122를 초과한 경우 z를 넘었을 경우
+//            if (122 < str[i] + 13) str[i] -= 13;
+//            else str[i] += 13;
+//        }
+//
+//        cout << str[i];
+//    }
+//
+//    return 0;
+//}
+
+// 또 다른 풀이법(?)
+// 아스키코드 암기할 건 2개 => A - 65, a - 97
+// 내 풀이와 동일
+string s;
 
 int main()
 {
-    // getline을 이용하여 문자열 받기
-    getline(cin, str);
+	getline(cin, s);
 
-    for (int i = 0; i < str.size(); ++i)
-    {
-        // 대문자인경우
-        if (65 <= str[i] && 90 >= str[i])
-        {
-            // 아스키코드 90을 초과한 경우 Z를 넘었을 경우
-            if (90 < str[i] + 13) str[i] -= 13;
-            else str[i] += 13;
-        }
-        // 소문자인경우
-        else if (97 <= str[i] && 122 >= str[i])
-        {
-            // 아스키코드 122를 초과한 경우 z를 넘었을 경우
-            if (122 < str[i] + 13) str[i] -= 13;
-            else str[i] += 13;
-        }
+	for (int i = 0; i < s.size(); ++i)
+	{
+		// 대문자
+		if (65 <= s[i] && 97 > s[i])
+		{
+			if (90 < s[i] + 13) s[i] = s[i] + 13 - 26;
+			else s[i] = s[i] + 13;
+		}
+		// 소문자
+		else if (97 <= s[i] && 122 >= s[i])
+		{
+			if (122 < s[i] + 13) s[i] = s[i] + 13 - 26;
+			else s[i] = s[i] + 13;
+		}
 
-        cout << str[i];
-    }
+		cout << s[i];
+	}
 
-    return 0;
+	return 0;
 }
