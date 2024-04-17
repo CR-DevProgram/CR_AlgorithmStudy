@@ -402,33 +402,66 @@ using namespace std;
 
 // 또 다른 풀이법(countingarray)
 // 내 풀이와 유사
-int n, cnt[26];
-string s, ret;
+//int n, cnt[26];
+//string s, ret;
+//
+//int main()
+//{
+//	cin >> n;
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		cin >> s;
+//		// 첫 글자에 대한 카운팅
+//		// 문자를 숫자화 시킴
+//		++cnt[s[0] - 'a'];
+//	}
+//
+//	for (int i = 0; i < 26; ++i)
+//	{
+//		if (5 <= cnt[i])
+//		{
+//			// 아스키코드를 활용하여 5 이상의 알파벳 담기
+//			// 숫자를 문자화 시킴
+//			ret += (i + 'a');
+//		}
+//	}
+//
+//	if (0 != ret.size()) cout << ret << "\n";
+//	else cout << "PREDAJA" << "\n";
+//
+//	return 0;
+//}
+
+// 6_ROT13
+// https://www.acmicpc.net/problem/11655
+// 문자열을 받아서 대소문자인 경우에만 13자를 미루기?
+string str;
 
 int main()
 {
-	cin >> n;
+    // getline을 이용하여 문자열 받기
+    getline(cin, str);
 
-	for (int i = 0; i < n; ++i)
-	{
-		cin >> s;
-		// 첫 글자에 대한 카운팅
-		// 문자를 숫자화 시킴
-		++cnt[s[0] - 'a'];
-	}
+    for (int i = 0; i < str.size(); ++i)
+    {
+        // 대문자인경우
+        if (65 <= str[i] && 90 >= str[i])
+        {
+            // 아스키코드 90을 초과한 경우 Z를 넘었을 경우
+            if (90 < str[i] + 13) str[i] -= 13;
+            else str[i] += 13;
+        }
+        // 소문자인경우
+        else if (97 <= str[i] && 122 >= str[i])
+        {
+            // 아스키코드 122를 초과한 경우 z를 넘었을 경우
+            if (122 < str[i] + 13) str[i] -= 13;
+            else str[i] += 13;
+        }
 
-	for (int i = 0; i < 26; ++i)
-	{
-		if (5 <= cnt[i])
-		{
-			// 아스키코드를 활용하여 5 이상의 알파벳 담기
-			// 숫자를 문자화 시킴
-			ret += (i + 'a');
-		}
-	}
+        cout << str[i];
+    }
 
-	if (0 != ret.size()) cout << ret << "\n";
-	else cout << "PREDAJA" << "\n";
-
-	return 0;
+    return 0;
 }
