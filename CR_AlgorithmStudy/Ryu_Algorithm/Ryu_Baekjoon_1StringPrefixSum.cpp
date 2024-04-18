@@ -503,31 +503,67 @@ using namespace std;
 // 따라서 *를 기준으로 앞 뒤 문자열을 구해서 비교하여 출력하는 형식으로 변경
 // 앞뒤 문자열의 총 크기와 파일명의 크기를 유의해야함 애초에 전자가 후자보다 클 경우 후자는 NE이므로 미리 걸러내는 과정이 필요(이 부분 안해줘서 오답처리 받음)
 // n: 파일 개수
-int n, pos;
-string filepattern, filename;
+//int n, pos;
+//string filepattern, filename;
+//
+//int main()
+//{
+//	cin >> n;
+//	cin >> filepattern;
+//
+//	pos = filepattern.find('*');
+//	// *표 앞 문자열
+//	string frontpat = filepattern.substr(0, pos);
+//	// *표 뒷 문자열
+//	string backpat = filepattern.substr(pos + 1);
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		cin >> filename;
+//
+//		// *표 앞뒤 문자열보다 파일명의 사이즈가 작으면 범위를 넘어서게 되므로 작을 경우의 별도 처리 필요
+//		if (filename.size() < frontpat.size() + backpat.size()) cout << "NE" << "\n";
+//		// *표 앞뒤 문자열보다 파일명의 사이즈가 큰 경우 파일명 비교 작업
+//		else
+//		{
+//			if (0 == frontpat.compare(filename.substr(0, frontpat.size())) && 0 == backpat.compare(filename.substr(filename.size() - backpat.size()))) cout << "DA" << "\n";
+//			else cout << "NE" << "\n";
+//		}
+//	}
+//
+//	return 0;
+//}
+
+// 또 다른 풀이법(?)
+// 내 풀이와 유사? 동일?
+int n;
+string s, ori_s, pre, suf;
 
 int main()
 {
 	cin >> n;
-	cin >> filepattern;
+	cin >> ori_s;
 
-	pos = filepattern.find('*');
-	// *표 앞 문자열
-	string frontpat = filepattern.substr(0, pos);
-	// *표 뒷 문자열
-	string backpat = filepattern.substr(pos + 1);
+	int pos = ori_s.find('*');
+	pre = ori_s.substr(0, pos);
+	suf = ori_s.substr(pos + 1);
 
 	for (int i = 0; i < n; ++i)
 	{
-		cin >> filename;
+		cin >> s;
 
-		// *표 앞뒤 문자열보다 파일명의 사이즈가 작으면 범위를 넘어서게 되므로 작을 경우의 별도 처리 필요
-		if (filename.size() < frontpat.size() + backpat.size()) cout << "NE" << "\n";
-		// *표 앞뒤 문자열보다 파일명의 사이즈가 큰 경우 파일명 비교 작업
+		// 반례를 위한 코드
+		// 만약 ab*ab일 때 비교하는 파일명이 ab로 들어올 경우 맞다고 처리가 됨
+		// 따라서 접두사와 접미사를 더한 사이즈보다 큰 사이즈가 와야 될 것
+		if (s.size() < pre.size() + suf.size())
+		{
+			cout << "NE\n";
+		}
 		else
 		{
-			if (0 == frontpat.compare(filename.substr(0, frontpat.size())) && 0 == backpat.compare(filename.substr(filename.size() - backpat.size()))) cout << "DA" << "\n";
-			else cout << "NE" << "\n";
+			// 메인 로직
+			if (pre == s.substr(0, pre.size()) && suf == s.substr(s.size() - suf.size())) cout << "DA\n";
+			else cout << "NE\n";
 		}
 	}
 
