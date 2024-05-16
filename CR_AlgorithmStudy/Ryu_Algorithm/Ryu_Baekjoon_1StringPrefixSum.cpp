@@ -578,32 +578,61 @@ using namespace std;
 // 오류 사항 때문에 max함수로 값을 비교해서 제일 큰 값을 출력하게 변경
 // n: 전체 날짜 수 2이상 100000이하
 // k: 연속적인 날짜 수 1과 n사이
-int n, k, num, ret = -1000000;
-vector<int> perfixsum;
+//int n, k, num, ret = -1000000;
+//vector<int> perfixsum;
+//
+//int main()
+//{
+//	cin >> n >> k;
+//	// 공간 재할당 
+//	perfixsum.resize(n);
+//
+//	// 인덱스 1번부터 입력받은 누적 값을 넣어줌
+//	for (int i = 1; i < n + 1; ++i)
+//	{
+//		int temp = 0;
+//		cin >> temp;
+//		num += temp;
+//		perfixsum[i] = num;
+//	}
+//
+//	// k만큼의 합산을 구하기 위한 반복문
+//	// 해당 과정에서 최대값 뽑아내기
+//	for (int i = k; i < perfixsum.size(); ++i)
+//	{
+//		ret = max(ret, perfixsum[i] - perfixsum[i - k]);
+//	}
+//
+//	cout << ret << "\n";
+//
+//	return 0;
+//}
+
+// 또 다른 풀이법(?)
+// 내 풀이와 유사
+// k의 범위는 1~n 사이값이므로 1~10만-1
+// 최대값 최솟값을 구하라하면 구간합을 떠올려라
+// 최댓값을 구하라 => 최솟값 기준을 잡아라(max를 쓸거니까)
+// 최솟값을 구하라 => 최댓값 기준을 잡아라(min을 쓸거니까)
+// 그렇다면 이 문제의 최솟값은? => 최악의 경우를 고려하여 -100 * 10만번 => -1000만
+int n, k, temp, ret = -1000000, perfixsum[100000];
 
 int main()
 {
 	cin >> n >> k;
-	// 공간 재할당 
-	perfixsum.resize(n);
 
-	// 인덱스 1번부터 입력받은 누적 값을 넣어줌
-	for (int i = 1; i < n + 1; ++i)
+	for (int i = 1; i <= n; ++i)
 	{
-		int temp = 0;
-		cin >> temp;
-		num += temp;
-		perfixsum[i] = num;
+		cin >> temp; 
+		perfixsum[i] = perfixsum[i - 1] + temp;
 	}
 
-	// k만큼의 합산을 구하기 위한 반복문
-	// 해당 과정에서 최대값 뽑아내기
-	for (int i = k; i < perfixsum.size(); ++i)
+	for (int i = k; i <= n; ++i)
 	{
 		ret = max(ret, perfixsum[i] - perfixsum[i - k]);
 	}
 
 	cout << ret << "\n";
-
+	
 	return 0;
 }
