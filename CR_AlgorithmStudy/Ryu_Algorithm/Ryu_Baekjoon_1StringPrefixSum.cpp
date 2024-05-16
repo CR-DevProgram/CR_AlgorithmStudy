@@ -536,36 +536,74 @@ using namespace std;
 
 // 또 다른 풀이법(?)
 // 내 풀이와 유사? 동일?
-int n;
-string s, ori_s, pre, suf;
+//int n;
+//string s, ori_s, pre, suf;
+//
+//int main()
+//{
+//	cin >> n;
+//	cin >> ori_s;
+//
+//	int pos = ori_s.find('*');
+//	pre = ori_s.substr(0, pos);
+//	suf = ori_s.substr(pos + 1);
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		cin >> s;
+//
+//		// 반례를 위한 코드
+//		// 만약 ab*ab일 때 비교하는 파일명이 ab로 들어올 경우 맞다고 처리가 됨
+//		// 따라서 접두사와 접미사를 더한 사이즈보다 큰 사이즈가 와야 될 것
+//		if (s.size() < pre.size() + suf.size())
+//		{
+//			cout << "NE\n";
+//		}
+//		else
+//		{
+//			// 메인 로직
+//			if (pre == s.substr(0, pre.size()) && suf == s.substr(s.size() - suf.size())) cout << "DA\n";
+//			else cout << "NE\n";
+//		}
+//	}
+//
+//	return 0;
+//}
+
+// 8_수열
+// https://www.acmicpc.net/problem/2559
+// 누적합을 이용해서 하는 것 같은데 오랜만에 해서 그런가 VS로 돌리면 테케 통과되고 했지만
+// 백준으로 제출하면 자꾸 범위기반 오류 혹은 빈 컨테이너 오류 발생(대체 왜지?)
+// 원래는 벡터 두개를 이용해서 하나는 sort함수 이용한 후 제일 큰 값을 꺼내서 출력했지만
+// 오류 사항 때문에 max함수로 값을 비교해서 제일 큰 값을 출력하게 변경
+// n: 전체 날짜 수 2이상 100000이하
+// k: 연속적인 날짜 수 1과 n사이
+int n, k, num, ret = -1000000;
+vector<int> perfixsum;
 
 int main()
 {
-	cin >> n;
-	cin >> ori_s;
+	cin >> n >> k;
+	// 공간 재할당 
+	perfixsum.resize(n);
 
-	int pos = ori_s.find('*');
-	pre = ori_s.substr(0, pos);
-	suf = ori_s.substr(pos + 1);
-
-	for (int i = 0; i < n; ++i)
+	// 인덱스 1번부터 입력받은 누적 값을 넣어줌
+	for (int i = 1; i < n + 1; ++i)
 	{
-		cin >> s;
-
-		// 반례를 위한 코드
-		// 만약 ab*ab일 때 비교하는 파일명이 ab로 들어올 경우 맞다고 처리가 됨
-		// 따라서 접두사와 접미사를 더한 사이즈보다 큰 사이즈가 와야 될 것
-		if (s.size() < pre.size() + suf.size())
-		{
-			cout << "NE\n";
-		}
-		else
-		{
-			// 메인 로직
-			if (pre == s.substr(0, pre.size()) && suf == s.substr(s.size() - suf.size())) cout << "DA\n";
-			else cout << "NE\n";
-		}
+		int temp = 0;
+		cin >> temp;
+		num += temp;
+		perfixsum[i] = num;
 	}
+
+	// k만큼의 합산을 구하기 위한 반복문
+	// 해당 과정에서 최대값 뽑아내기
+	for (int i = k; i < perfixsum.size(); ++i)
+	{
+		ret = max(ret, perfixsum[i] - perfixsum[i - k]);
+	}
+
+	cout << ret << "\n";
 
 	return 0;
 }
