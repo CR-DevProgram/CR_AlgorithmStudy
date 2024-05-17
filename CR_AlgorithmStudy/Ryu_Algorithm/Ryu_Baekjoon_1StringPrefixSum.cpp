@@ -647,64 +647,109 @@ using namespace std;
 // 따라서 끊어주는 작업으로 cin.tie(NULL);을 써줘야 된다고 함
 // n: 도감에 등록되어 있는 포켓몬 개수
 // m: 맞춰야 하는 문제 개수
+//int n, m;
+////vector<string> pocketmon;
+//map<int, string> mapNumberkey;
+//map<string, int> mapNamekey;
+//
+//int main()
+//{
+//	// 아래 코드 추가 안하면 시간초과
+//	// 몇 시간동안... 왜 시간 초과가 나는 것인지 검색 열심히 함ㅠ
+//	ios_base::sync_with_stdio(false);
+//	cin.tie(NULL);
+//	cout.tie(NULL);
+//	
+//	cin >> n >> m;
+//	//pocketmon.resize(n + 1);
+//
+//	for (int i = 1; i <= n; ++i)
+//	{
+//		string name = "";
+//		cin >> name;
+//
+//		//pocketmon[i] = name;
+//		mapNamekey[name] = i;
+//		mapNumberkey[i] = name;
+//	}
+//
+//	// 시간 초과(find 함수 사용해서 그런거 같음)
+//	//for (int i = 0; i < m; ++i)
+//	//{
+//	//	string quiz = "";
+//	//	cin >> quiz;
+//
+//	//	// 0이면 문자 0이 아니면 숫자
+//	//	// 문자
+//	//	if (0 == isdigit(quiz[0]))
+//	//	{
+//	//		int idx = find(pocketmon.begin(), pocketmon.end(), quiz) - pocketmon.begin();
+//	//		cout << idx << "\n";
+//	//	}
+//	//	// 숫자
+//	//	else
+//	//	{
+//	//		cout << pocketmon[stoi(quiz)] << "\n";
+//	//	}
+//	//}
+//
+//	for (int i = 0; i < m; ++i)
+//	{
+//		string quiz = "";
+//		cin >> quiz;
+//
+//		if (0 == isdigit(quiz[0]))
+//		{
+//			cout << mapNamekey[quiz] << "\n";
+//		}
+//		else
+//		{
+//			cout << mapNumberkey[stoi(quiz)] << "\n";
+//		}
+//	}
+//
+//	return 0;
+//}
+
+// 또 다른 풀이법(?)
+// 내 풀이와 유사
+// 문자열을 int로 바꿀 때 atoi(문자열.c_str())
+// 배열의 find 함수의 시간복잡도는 O(n)
 int n, m;
-//vector<string> pocketmon;
-map<int, string> mapNumberkey;
-map<string, int> mapNamekey;
+string s;
+string a[100004];
+map<string, int> mp;
+map<int, string> mp2;
 
 int main()
 {
-	// 아래 코드 추가 안하면 시간초과
-	// 몇 시간동안... 왜 시간 초과가 나는 것인지 검색 열심히 함ㅠ
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 	cout.tie(NULL);
-	
+
 	cin >> n >> m;
-	//pocketmon.resize(n + 1);
 
-	for (int i = 1; i <= n; ++i)
+	for (int i = 0; i < n; ++i)
 	{
-		string name = "";
-		cin >> name;
+		cin >> s;
 
-		//pocketmon[i] = name;
-		mapNamekey[name] = i;
-		mapNumberkey[i] = name;
+		mp[s] = i + 1;
+		mp2[i + 1] = s;
+		a[i + 1] = s;
 	}
-
-	// 시간 초과(find 함수 사용해서 그런거 같음)
-	//for (int i = 0; i < m; ++i)
-	//{
-	//	string quiz = "";
-	//	cin >> quiz;
-
-	//	// 0이면 문자 0이 아니면 숫자
-	//	// 문자
-	//	if (0 == isdigit(quiz[0]))
-	//	{
-	//		int idx = find(pocketmon.begin(), pocketmon.end(), quiz) - pocketmon.begin();
-	//		cout << idx << "\n";
-	//	}
-	//	// 숫자
-	//	else
-	//	{
-	//		cout << pocketmon[stoi(quiz)] << "\n";
-	//	}
-	//}
 
 	for (int i = 0; i < m; ++i)
 	{
-		string quiz = "";
-		cin >> quiz;
+		cin >> s;
 
-		if (0 == isdigit(quiz[0]))
+		if (0 == atoi(s.c_str()))
 		{
-			cout << mapNamekey[quiz] << "\n";
+			cout << mp[s] << "\n";
 		}
 		else
 		{
-			cout << mapNumberkey[stoi(quiz)] << "\n";
+			cout << a[atoi(s.c_str())] << "\n";
+			//cout << mp2[atoi(s.c_str())] << "\n";
 		}
 	}
 
