@@ -615,24 +615,98 @@ using namespace std;
 // 최댓값을 구하라 => 최솟값 기준을 잡아라(max를 쓸거니까)
 // 최솟값을 구하라 => 최댓값 기준을 잡아라(min을 쓸거니까)
 // 그렇다면 이 문제의 최솟값은? => 최악의 경우를 고려하여 -100 * 10만번 => -1000만
-int n, k, temp, ret = -1000000, perfixsum[100000];
+//int n, k, temp, ret = -1000000, perfixsum[100000];
+//
+//int main()
+//{
+//	cin >> n >> k;
+//
+//	for (int i = 1; i <= n; ++i)
+//	{
+//		cin >> temp; 
+//		perfixsum[i] = perfixsum[i - 1] + temp;
+//	}
+//
+//	for (int i = k; i <= n; ++i)
+//	{
+//		ret = max(ret, perfixsum[i] - perfixsum[i - k]);
+//	}
+//
+//	cout << ret << "\n";
+//	
+//	return 0;
+//}
+
+// 9_나는야 포켓몬 마스터 이다솜
+// https://www.acmicpc.net/problem/1620
+// 단순하게 벡터 컨테이너 하나로 돌리면서 find 사용하면 되겠다 싶었지만
+// 어림없지 시간초과!
+// 따라서 맵을 사용해줘서 잘 될 줄 알았으나 또.. 시간 초과ㅠ 구글링 빡시게 함
+// cout과 cin은 입출력으로 묶여 있고 입력 요청이 들어오면 출력 버퍼를 비워 출력하게 되는데
+// 이 작업이 반복되면 버퍼를 지운다고 오래 걸린다고 함
+// 따라서 끊어주는 작업으로 cin.tie(NULL);을 써줘야 된다고 함
+// n: 도감에 등록되어 있는 포켓몬 개수
+// m: 맞춰야 하는 문제 개수
+int n, m;
+//vector<string> pocketmon;
+map<int, string> mapNumberkey;
+map<string, int> mapNamekey;
 
 int main()
 {
-	cin >> n >> k;
+	// 아래 코드 추가 안하면 시간초과
+	// 몇 시간동안... 왜 시간 초과가 나는 것인지 검색 열심히 함ㅠ
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
+	
+	cin >> n >> m;
+	//pocketmon.resize(n + 1);
 
 	for (int i = 1; i <= n; ++i)
 	{
-		cin >> temp; 
-		perfixsum[i] = perfixsum[i - 1] + temp;
+		string name = "";
+		cin >> name;
+
+		//pocketmon[i] = name;
+		mapNamekey[name] = i;
+		mapNumberkey[i] = name;
 	}
 
-	for (int i = k; i <= n; ++i)
+	// 시간 초과(find 함수 사용해서 그런거 같음)
+	//for (int i = 0; i < m; ++i)
+	//{
+	//	string quiz = "";
+	//	cin >> quiz;
+
+	//	// 0이면 문자 0이 아니면 숫자
+	//	// 문자
+	//	if (0 == isdigit(quiz[0]))
+	//	{
+	//		int idx = find(pocketmon.begin(), pocketmon.end(), quiz) - pocketmon.begin();
+	//		cout << idx << "\n";
+	//	}
+	//	// 숫자
+	//	else
+	//	{
+	//		cout << pocketmon[stoi(quiz)] << "\n";
+	//	}
+	//}
+
+	for (int i = 0; i < m; ++i)
 	{
-		ret = max(ret, perfixsum[i] - perfixsum[i - k]);
+		string quiz = "";
+		cin >> quiz;
+
+		if (0 == isdigit(quiz[0]))
+		{
+			cout << mapNamekey[quiz] << "\n";
+		}
+		else
+		{
+			cout << mapNumberkey[stoi(quiz)] << "\n";
+		}
 	}
 
-	cout << ret << "\n";
-	
 	return 0;
 }
