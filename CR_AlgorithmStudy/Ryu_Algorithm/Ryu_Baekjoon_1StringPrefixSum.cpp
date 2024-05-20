@@ -715,43 +715,120 @@ using namespace std;
 // 내 풀이와 유사
 // 문자열을 int로 바꿀 때 atoi(문자열.c_str())
 // 배열의 find 함수의 시간복잡도는 O(n)
-int n, m;
-string s;
-string a[100004];
-map<string, int> mp;
-map<int, string> mp2;
+//int n, m;
+//string s;
+//string a[100004];
+//map<string, int> mp;
+//map<int, string> mp2;
+//
+//int main()
+//{
+//	ios_base::sync_with_stdio(false);
+//	cin.tie(NULL);
+//	cout.tie(NULL);
+//
+//	cin >> n >> m;
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		cin >> s;
+//
+//		mp[s] = i + 1;
+//		mp2[i + 1] = s;
+//		a[i + 1] = s;
+//	}
+//
+//	for (int i = 0; i < m; ++i)
+//	{
+//		cin >> s;
+//
+//		if (0 == atoi(s.c_str()))
+//		{
+//			cout << mp[s] << "\n";
+//		}
+//		else
+//		{
+//			cout << a[atoi(s.c_str())] << "\n";
+//			//cout << mp2[atoi(s.c_str())] << "\n";
+//		}
+//	}
+//
+//	return 0;
+//}
+
+// 10_패션왕 신해빈
+// https://www.acmicpc.net/problem/9375
+// 조합 관련이지만 간단하게 곱셈으로 풀이 가능
+// 근데 왜 25%에서 계속 안되는걸까.. 반례 수집해서 확인했는데 모두 통과되고
+// 강사님 답안과의 차이도 크게 없어보이는데 이유를 알 수 없음
+// 나중에 별도로 풀어봐야 될 듯
+// n: 가진 의상의 수
+int m, n;
+string name, type;
+map<string, vector<string>> match;
 
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-	cout.tie(NULL);
+	cin >> m;
 
-	cin >> n >> m;
-
-	for (int i = 0; i < n; ++i)
+	while (0 < m)
 	{
-		cin >> s;
+		--m;
+		cin >> n;
 
-		mp[s] = i + 1;
-		mp2[i + 1] = s;
-		a[i + 1] = s;
-	}
-
-	for (int i = 0; i < m; ++i)
-	{
-		cin >> s;
-
-		if (0 == atoi(s.c_str()))
+		for (int i = 0; i < n; ++i)
 		{
-			cout << mp[s] << "\n";
+			cin >> name >> type;
+
+			match[type].push_back(name);
 		}
-		else
+
+		int count = 1;
+		for (auto matchtype : match)
 		{
-			cout << a[atoi(s.c_str())] << "\n";
-			//cout << mp2[atoi(s.c_str())] << "\n";
+			// 안 입는 경우도 고려하여 경우의 수 하나 더 추가
+			count *= matchtype.second.size() + 1;
 		}
+
+		// 아예 안 입는 방법은 없으므로 -1
+		cout << count - 1 << "\n";
 	}
 
 	return 0;
+}
+
+// 또 다른 풀이법(?)
+// 내 풀이와 유사
+// 굳이 문자열로 담을 필요 없이 타입에 따른 가짓수를 이용해 연산
+// 강사님꺼는 되는데 내껀 왜 안돼?!!!!!!!!!
+int Type, Count;
+string a, b;
+
+int main()
+{
+    cin >> Type;
+
+    while (0 < Type)
+    {
+        map<string, int> map_Match;
+        cin >> Count;
+        for (int i = 0; i < Count; ++i)
+        {
+            cin >> a >> b;
+            ++map_Match[b];
+        }
+
+        long long ret = 1;
+        for (auto tmp : map_Match)
+        {
+            ret *= ((long long)tmp.second + 1);
+        }
+        --ret;
+
+        cout << ret << "\n";
+
+        --Type;
+    }
+
+    return 0;
 }
