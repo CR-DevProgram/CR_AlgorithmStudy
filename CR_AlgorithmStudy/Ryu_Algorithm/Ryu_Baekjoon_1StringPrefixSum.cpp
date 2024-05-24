@@ -839,7 +839,8 @@ using namespace std;
 // 단 문자가 홀수의 형태로 반전이 가능한 부분도 고려해야 함
 string name, ret;
 int midcount;				// 홀수가 몇 번 오는지 확인 용도(2번 넘게 오면 대칭 문자 생성 불가)
-pair<char, int> midinfo;	// 홀수로 오게 될 경우 중앙 위치에 들어갈 정보
+//pair<char, int> midinfo;	// 홀수로 오게 될 경우 중앙 위치에 들어갈 정보
+char midchar;
 int namecount[26];			// 문자별 횟수 누적 카운팅
 
 int main()
@@ -858,7 +859,9 @@ int main()
 		if (1 == namecount[i] % 2)
 		{
 			++midcount;
-			midinfo = { i + 'A', --namecount[i] };
+			//midinfo = { i + 'A', --namecount[i] };
+			midchar = i + 'A';
+			--namecount[i];
 		}
 
 		// 홀수 체크가 2번 이상(1초과일 경우) 지정된 문자열 담은 후 반복문 탈출
@@ -886,7 +889,8 @@ int main()
 		// 반전 및 최종 출력 작업
 		string reverseret = ret;
 		reverse(reverseret.begin(), reverseret.end());
-		ret = 0 == midinfo.first ? ret + reverseret : ret + midinfo.first + reverseret;
+		//ret = 0 == midinfo.first ? ret + reverseret : ret + midinfo.first + reverseret;
+		ret = '\0' == midchar ? ret + reverseret : ret + midchar + reverseret;
 	}
 
 	cout << ret << "\n";
