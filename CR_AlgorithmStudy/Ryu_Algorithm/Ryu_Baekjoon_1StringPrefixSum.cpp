@@ -763,72 +763,133 @@ using namespace std;
 // 강사님 답안과의 차이도 크게 없어보이는데 이유를 알 수 없음
 // 나중에 별도로 풀어봐야 될 듯
 // n: 가진 의상의 수
-int m, n;
-string name, type;
-map<string, vector<string>> match;
-
-int main()
-{
-	cin >> m;
-
-	while (0 < m)
-	{
-		--m;
-		cin >> n;
-
-		for (int i = 0; i < n; ++i)
-		{
-			cin >> name >> type;
-
-			match[type].push_back(name);
-		}
-
-		int count = 1;
-		for (auto matchtype : match)
-		{
-			// 안 입는 경우도 고려하여 경우의 수 하나 더 추가
-			count *= matchtype.second.size() + 1;
-		}
-
-		// 아예 안 입는 방법은 없으므로 -1
-		cout << count - 1 << "\n";
-	}
-
-	return 0;
-}
+//int m, n;
+//string name, type;
+//map<string, vector<string>> match;
+//
+//int main()
+//{
+//	cin >> m;
+//
+//	while (0 < m)
+//	{
+//		--m;
+//		cin >> n;
+//
+//		for (int i = 0; i < n; ++i)
+//		{
+//			cin >> name >> type;
+//
+//			match[type].push_back(name);
+//		}
+//
+//		int count = 1;
+//		for (auto matchtype : match)
+//		{
+//			// 안 입는 경우도 고려하여 경우의 수 하나 더 추가
+//			count *= matchtype.second.size() + 1;
+//		}
+//
+//		// 아예 안 입는 방법은 없으므로 -1
+//		cout << count - 1 << "\n";
+//	}
+//
+//	return 0;
+//}
 
 // 또 다른 풀이법(?)
 // 내 풀이와 유사
 // 굳이 문자열로 담을 필요 없이 타입에 따른 가짓수를 이용해 연산
 // 강사님꺼는 되는데 내껀 왜 안돼?!!!!!!!!!
-int Type, Count;
-string a, b;
+//int Type, Count;
+//string a, b;
+//
+//int main()
+//{
+//    cin >> Type;
+//
+//    while (0 < Type)
+//    {
+//        map<string, int> map_Match;
+//        cin >> Count;
+//        for (int i = 0; i < Count; ++i)
+//        {
+//            cin >> a >> b;
+//            ++map_Match[b];
+//        }
+//
+//        long long ret = 1;
+//        for (auto tmp : map_Match)
+//        {
+//            ret *= ((long long)tmp.second + 1);
+//        }
+//        --ret;
+//
+//        cout << ret << "\n";
+//
+//        --Type;
+//    }
+//
+//    return 0;
+//}
+
+// 11_팰린드롬 만들기
+// https://www.acmicpc.net/problem/1213
+// 중앙을 기점으로 뒤집어서 동일한 문자로 생성해야 하는 문제니까 중간까지 문자 정리 후 뒤집은거 붙이면 가능할 듯
+// 단 문자가 홀수의 형태로 반전이 가능한 부분도 고려해야 함
+string name, ret;
+int midcount;				// 홀수가 몇 번 오는지 확인 용도(2번 넘게 오면 대칭 문자 생성 불가)
+pair<char, int> midinfo;	// 홀수로 오게 될 경우 중앙 위치에 들어갈 정보
+int namecount[26];			// 문자별 횟수 누적 카운팅
 
 int main()
 {
-    cin >> Type;
+	cin >> name;
 
-    while (0 < Type)
-    {
-        map<string, int> map_Match;
-        cin >> Count;
-        for (int i = 0; i < Count; ++i)
-        {
-            cin >> a >> b;
-            ++map_Match[b];
-        }
+	for (int i = 0; i < name.size(); ++i)
+	{
+		// 입력된 문자별 횟수 관리
+		++namecount[name[i] - 'A'];
+	}
 
-        long long ret = 1;
-        for (auto tmp : map_Match)
-        {
-            ret *= ((long long)tmp.second + 1);
-        }
-        --ret;
+	for (int i = 0; i < 26; ++i)
+	{
+		// 문자별 누적 카운트가 홀수일 때 로직
+		if (1 == namecount[i] % 2)
+		{
+			++midcount;
+			midinfo = { i + 'A', --namecount[i] };
+		}
 
-        cout << ret << "\n";
+		// 홀수 체크가 2번 이상(1초과일 경우) 지정된 문자열 담은 후 반복문 탈출
+		// 해당 조건 체크를 위로 두면 마지막 Z 체크 시 midcount가 증가 됐을 때
+		// 조건에 들어오지 않아서 ret이 빈 값으로 출력되는 문제 발생, 따라서 최종적 확인을 위해 하단에서 조건 확인
+		if (2 <= midcount)
+		{
+			ret = "I'm Sorry Hansoo";
 
-        --Type;
-    }
+			break;
+		}
+	}
 
-    return 0;
+	if (1 >= midcount)
+	{
+		for (int i = 0; i < 26; ++i)
+		{
+			// 절반만 생성하는 작업을 위해 누적 카운트의 절반만 반복해서 문자 추가
+			for (int j = 0; j < namecount[i] * 0.5f; ++j)
+			{
+				ret += (i + 'A');
+			}
+		}
+
+		// 반전 및 최종 출력 작업
+		string reverseret = ret;
+		reverse(reverseret.begin(), reverseret.end());
+		ret = 0 == midinfo.first ? ret + reverseret : ret + midinfo.first + reverseret;
+	}
+
+	cout << ret << "\n";
+
+	return 0;
 }
