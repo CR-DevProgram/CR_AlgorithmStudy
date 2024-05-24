@@ -837,63 +837,116 @@ using namespace std;
 // https://www.acmicpc.net/problem/1213
 // 중앙을 기점으로 뒤집어서 동일한 문자로 생성해야 하는 문제니까 중간까지 문자 정리 후 뒤집은거 붙이면 가능할 듯
 // 단 문자가 홀수의 형태로 반전이 가능한 부분도 고려해야 함
-string name, ret;
-int midcount;				// 홀수가 몇 번 오는지 확인 용도(2번 넘게 오면 대칭 문자 생성 불가)
-//pair<char, int> midinfo;	// 홀수로 오게 될 경우 중앙 위치에 들어갈 정보
-char midchar;
-int namecount[26];			// 문자별 횟수 누적 카운팅
+//string name, ret;
+//int midcount;				// 홀수가 몇 번 오는지 확인 용도(2번 넘게 오면 대칭 문자 생성 불가)
+////pair<char, int> midinfo;	// 홀수로 오게 될 경우 중앙 위치에 들어갈 정보
+//char midchar;
+//int namecount[26];			// 문자별 횟수 누적 카운팅
+//
+//int main()
+//{
+//	cin >> name;
+//
+//	for (int i = 0; i < name.size(); ++i)
+//	{
+//		// 입력된 문자별 횟수 관리
+//		++namecount[name[i] - 'A'];
+//	}
+//
+//	for (int i = 0; i < 26; ++i)
+//	{
+//		// 문자별 누적 카운트가 홀수일 때 로직
+//		if (1 == namecount[i] % 2)
+//		{
+//			++midcount;
+//			//midinfo = { i + 'A', --namecount[i] };
+//			midchar = i + 'A';
+//			--namecount[i];
+//		}
+//
+//		// 홀수 체크가 2번 이상(1초과일 경우) 지정된 문자열 담은 후 반복문 탈출
+//		// 해당 조건 체크를 위로 두면 마지막 Z 체크 시 midcount가 증가 됐을 때
+//		// 조건에 들어오지 않아서 ret이 빈 값으로 출력되는 문제 발생, 따라서 최종적 확인을 위해 하단에서 조건 확인
+//		if (2 <= midcount)
+//		{
+//			ret = "I'm Sorry Hansoo";
+//
+//			break;
+//		}
+//	}
+//
+//	if (1 >= midcount)
+//	{
+//		for (int i = 0; i < 26; ++i)
+//		{
+//			// 절반만 생성하는 작업을 위해 누적 카운트의 절반만 반복해서 문자 추가
+//			for (int j = 0; j < namecount[i] * 0.5f; ++j)
+//			{
+//				ret += (i + 'A');
+//			}
+//		}
+//
+//		// 반전 및 최종 출력 작업
+//		string reverseret = ret;
+//		reverse(reverseret.begin(), reverseret.end());
+//		//ret = 0 == midinfo.first ? ret + reverseret : ret + midinfo.first + reverseret;
+//		ret = '\0' == midchar ? ret + reverseret : ret + midchar + reverseret;
+//	}
+//
+//	cout << ret << "\n";
+//
+//	return 0;
+//}
+
+// 또 다른 풀이법(비트연산자, 높은 아스키코드부터 덧붙이기 이용)
+// 불가능한 경우: 홀수가 2개 이상
+// 아스키코드 상 가장 위에 있는 것을 먼저
+string s, ret;
+int cnt[200], flag;
+char mid;
 
 int main()
 {
-	cin >> name;
+	cin >> s;
 
-	for (int i = 0; i < name.size(); ++i)
+	// 카운팅배열 이용
+	for (char a : s) ++cnt[a];
+
+	// Z부터 붙이기
+	for (int i = 'Z'; i >= 'A'; --i)
 	{
-		// 입력된 문자별 횟수 관리
-		++namecount[name[i] - 'A'];
-	}
-
-	for (int i = 0; i < 26; ++i)
-	{
-		// 문자별 누적 카운트가 홀수일 때 로직
-		if (1 == namecount[i] % 2)
+		// 카운팅 배열에 누적되어 있다면 
+		if (0 != cnt[i])
 		{
-			++midcount;
-			//midinfo = { i + 'A', --namecount[i] };
-			midchar = i + 'A';
-			--namecount[i];
-		}
-
-		// 홀수 체크가 2번 이상(1초과일 경우) 지정된 문자열 담은 후 반복문 탈출
-		// 해당 조건 체크를 위로 두면 마지막 Z 체크 시 midcount가 증가 됐을 때
-		// 조건에 들어오지 않아서 ret이 빈 값으로 출력되는 문제 발생, 따라서 최종적 확인을 위해 하단에서 조건 확인
-		if (2 <= midcount)
-		{
-			ret = "I'm Sorry Hansoo";
-
-			break;
-		}
-	}
-
-	if (1 >= midcount)
-	{
-		for (int i = 0; i < 26; ++i)
-		{
-			// 절반만 생성하는 작업을 위해 누적 카운트의 절반만 반복해서 문자 추가
-			for (int j = 0; j < namecount[i] * 0.5f; ++j)
+			// & 1: 홀수를 뜻함
+			// 홀수의 경우 이진수로 나타내면 마지막 비트값이 1
+			// 짝수의 경우 이진수로 나타내면 마지막 비트값이 0
+			// 따라서 해당 cnt[i] & 1 코드는 '홀수일 경우'라는 뜻
+			if (cnt[i] & 1)
 			{
-				ret += (i + 'A');
+				// 홀수 하나가 들어왔을 때 중간에 넣기 위한 작업
+				mid = char(i);
+				++flag;
+				--cnt[i];
+			}
+
+			// flag 즉 홀수가 2개 이상이면 break
+			if (2 == flag) break;
+
+			// 문자 붙이기
+			// j += 2인 이유는 앞뒤로 붙이면서 카운트 2개가 소모되기 때문
+			for (int j = 0; j < cnt[i]; j += 2)
+			{
+				ret = char(i) + ret;	// 앞에 붙이기
+				ret += char(i);			// 뒤에 붙이기
 			}
 		}
-
-		// 반전 및 최종 출력 작업
-		string reverseret = ret;
-		reverse(reverseret.begin(), reverseret.end());
-		//ret = 0 == midinfo.first ? ret + reverseret : ret + midinfo.first + reverseret;
-		ret = '\0' == midchar ? ret + reverseret : ret + midchar + reverseret;
 	}
 
-	cout << ret << "\n";
+	// 중앙에 mid 삽입
+	if (mid) ret.insert(ret.begin() + ret.size() / 2, mid);
+	if (2 == flag) cout << "I'm Sorry Hansoo\n";
+	else cout << ret << "\n";
 
 	return 0;
 }
