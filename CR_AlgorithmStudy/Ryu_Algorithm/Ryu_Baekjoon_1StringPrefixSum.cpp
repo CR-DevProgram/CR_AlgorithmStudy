@@ -957,30 +957,62 @@ using namespace std;
 // 대신 2개의 조합이므로 콤비 재귀 함수 없이 이중 포문으로 해결 가능
 // n: 재료 개수
 // m: 갑옷을 만드는데 필요한 수
-int n, m, ret;
-int materialnumbers[15000];
+//int n, m, ret;
+//int materialnumbers[15000];
+//
+//int main()
+//{
+//	cin >> n >> m;
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		cin >> materialnumbers[i];
+//	}
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		for (int j = i + 1; j < n; ++j)
+//		{
+//			if (m == materialnumbers[i] + materialnumbers[j])
+//			{
+//				++ret;
+//			}
+//		}
+//	}
+//
+//	cout << ret << "\n";
+//
+//	return 0;
+//}
+
+// 또 다른 풀이법(?)
+// 내 풀이와 유사
+// 15000개 이하의 재료 두 가지, 재료는 고유 번호 존재
+// 재료 두개의 합 카운팅
+// 재료를 고를 때 순서 상관X 따라서 조합
+int n, m, a[15001], cnt;
 
 int main()
 {
 	cin >> n >> m;
 
-	for (int i = 0; i < n; ++i)
-	{
-		cin >> materialnumbers[i];
-	}
+	for (int i = 0; i < n; ++i) cin >> a[i];
 
-	for (int i = 0; i < n; ++i)
+	// 문제마다 다르지만 시간 초과가 생기는 빠듯한 경우일 때를 대비
+	// 예외처리를 통해 시간초과를 줄이는 법
+	if (200000 < m) cout << 0 << "\n";
+	else
 	{
-		for (int j = i + 1; j < n; ++j)
+		for (int i = 0; i < n; ++i)
 		{
-			if (m == materialnumbers[i] + materialnumbers[j])
+			for (int j = i + 1; j < n; ++j)
 			{
-				++ret;
+				if (m == a[i] + a[j]) ++cnt;
 			}
 		}
 	}
 
-	cout << ret << "\n";
+	cout << cnt << "\n";
 
 	return 0;
 }
