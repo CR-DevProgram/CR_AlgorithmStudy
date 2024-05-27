@@ -901,52 +901,86 @@ using namespace std;
 // 또 다른 풀이법(비트연산자, 높은 아스키코드부터 덧붙이기 이용)
 // 불가능한 경우: 홀수가 2개 이상
 // 아스키코드 상 가장 위에 있는 것을 먼저
-string s, ret;
-int cnt[200], flag;
-char mid;
+//string s, ret;
+//int cnt[200], flag;
+//char mid;
+//
+//int main()
+//{
+//	cin >> s;
+//
+//	// 카운팅배열 이용
+//	for (char a : s) ++cnt[a];
+//
+//	// Z부터 붙이기
+//	for (int i = 'Z'; i >= 'A'; --i)
+//	{
+//		// 카운팅 배열에 누적되어 있다면 
+//		if (0 != cnt[i])
+//		{
+//			// & 1: 홀수를 뜻함
+//			// 홀수의 경우 이진수로 나타내면 마지막 비트값이 1
+//			// 짝수의 경우 이진수로 나타내면 마지막 비트값이 0
+//			// 따라서 해당 cnt[i] & 1 코드는 '홀수일 경우'라는 뜻
+//			if (cnt[i] & 1)
+//			{
+//				// 홀수 하나가 들어왔을 때 중간에 넣기 위한 작업
+//				mid = char(i);
+//				++flag;
+//				--cnt[i];
+//			}
+//
+//			// flag 즉 홀수가 2개 이상이면 break
+//			if (2 == flag) break;
+//
+//			// 문자 붙이기
+//			// j += 2인 이유는 앞뒤로 붙이면서 카운트 2개가 소모되기 때문
+//			for (int j = 0; j < cnt[i]; j += 2)
+//			{
+//				ret = char(i) + ret;	// 앞에 붙이기
+//				ret += char(i);			// 뒤에 붙이기
+//			}
+//		}
+//	}
+//
+//	// 중앙에 mid 삽입
+//	if (mid) ret.insert(ret.begin() + ret.size() / 2, mid);
+//	if (2 == flag) cout << "I'm Sorry Hansoo\n";
+//	else cout << ret << "\n";
+//
+//	return 0;
+//}
+
+// 12_주몽
+// https://www.acmicpc.net/problem/1940
+// 두 재료의 합산을 통해 몇 개의 장비를 만들 수 있는 것으로 순서와 상관 없는 조합
+// 대신 2개의 조합이므로 콤비 재귀 함수 없이 이중 포문으로 해결 가능
+// n: 재료 개수
+// m: 갑옷을 만드는데 필요한 수
+int n, m, ret;
+int materialnumbers[15000];
 
 int main()
 {
-	cin >> s;
+	cin >> n >> m;
 
-	// 카운팅배열 이용
-	for (char a : s) ++cnt[a];
-
-	// Z부터 붙이기
-	for (int i = 'Z'; i >= 'A'; --i)
+	for (int i = 0; i < n; ++i)
 	{
-		// 카운팅 배열에 누적되어 있다면 
-		if (0 != cnt[i])
+		cin >> materialnumbers[i];
+	}
+
+	for (int i = 0; i < n; ++i)
+	{
+		for (int j = i + 1; j < n; ++j)
 		{
-			// & 1: 홀수를 뜻함
-			// 홀수의 경우 이진수로 나타내면 마지막 비트값이 1
-			// 짝수의 경우 이진수로 나타내면 마지막 비트값이 0
-			// 따라서 해당 cnt[i] & 1 코드는 '홀수일 경우'라는 뜻
-			if (cnt[i] & 1)
+			if (m == materialnumbers[i] + materialnumbers[j])
 			{
-				// 홀수 하나가 들어왔을 때 중간에 넣기 위한 작업
-				mid = char(i);
-				++flag;
-				--cnt[i];
-			}
-
-			// flag 즉 홀수가 2개 이상이면 break
-			if (2 == flag) break;
-
-			// 문자 붙이기
-			// j += 2인 이유는 앞뒤로 붙이면서 카운트 2개가 소모되기 때문
-			for (int j = 0; j < cnt[i]; j += 2)
-			{
-				ret = char(i) + ret;	// 앞에 붙이기
-				ret += char(i);			// 뒤에 붙이기
+				++ret;
 			}
 		}
 	}
 
-	// 중앙에 mid 삽입
-	if (mid) ret.insert(ret.begin() + ret.size() / 2, mid);
-	if (2 == flag) cout << "I'm Sorry Hansoo\n";
-	else cout << ret << "\n";
+	cout << ret << "\n";
 
 	return 0;
 }
