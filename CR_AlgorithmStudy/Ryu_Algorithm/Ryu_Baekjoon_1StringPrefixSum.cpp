@@ -990,29 +990,73 @@ using namespace std;
 // 15000개 이하의 재료 두 가지, 재료는 고유 번호 존재
 // 재료 두개의 합 카운팅
 // 재료를 고를 때 순서 상관X 따라서 조합
-int n, m, a[15001], cnt;
+//int n, m, a[15001], cnt;
+//
+//int main()
+//{
+//	cin >> n >> m;
+//
+//	for (int i = 0; i < n; ++i) cin >> a[i];
+//
+//	// 문제마다 다르지만 시간 초과가 생기는 빠듯한 경우일 때를 대비
+//	// 예외처리를 통해 시간초과를 줄이는 법
+//	if (200000 < m) cout << 0 << "\n";
+//	else
+//	{
+//		for (int i = 0; i < n; ++i)
+//		{
+//			for (int j = i + 1; j < n; ++j)
+//			{
+//				if (m == a[i] + a[j]) ++cnt;
+//			}
+//		}
+//	}
+//
+//	cout << cnt << "\n";
+//
+//	return 0;
+//}
+
+// 13_좋은 단어
+// https://www.acmicpc.net/problem/3986
+// 문제 이해가 쉽지 않지만 단순히 풀어보면 ABAB는 동일한 글자끼리 쌍을 지을 수 없음
+// AABB는 AA와 BB로 쌍 짓기 가능
+// ABBA는 BB와 AA로 쌍 지을 때 선 교차 없이 쌍 짓기 가능
+// 즉 해당 구조는 스택 자료구조를 이용하여 쌍 짓기 여부를 판단하고 스택에 글자가 남아 있는지 없는지를 확인
+// n: 단어 수
+int n, ret;
+string word;
 
 int main()
 {
-	cin >> n >> m;
+	cin >> n;
 
-	for (int i = 0; i < n; ++i) cin >> a[i];
-
-	// 문제마다 다르지만 시간 초과가 생기는 빠듯한 경우일 때를 대비
-	// 예외처리를 통해 시간초과를 줄이는 법
-	if (200000 < m) cout << 0 << "\n";
-	else
+	for (int i = 0; i < n; ++i)
 	{
-		for (int i = 0; i < n; ++i)
+		cin >> word;
+
+		// 스택 초기화
+		stack<char> stkchar;
+		// 입력 받은 단어를 문자로 쪼개서 스택으로 관리
+		for (int j = 0; j < word.size(); ++j)
 		{
-			for (int j = i + 1; j < n; ++j)
+			// 스택이 비어있지 않고 상단의 문자와 새로 넣을 문자가 같을 경우 스택에 있던 문자 파괴
+			if (false == stkchar.empty() && stkchar.top() == word[j])
 			{
-				if (m == a[i] + a[j]) ++cnt;
+				stkchar.pop();
+			}
+			// 스택이 비어있거나 상단 문자와 새로 넣을 문자가 동일하지 않으면 스택에 문자 추가
+			else
+			{
+				stkchar.push(word[j]);
 			}
 		}
+
+		// 스택이 비어 있다면 좋은 문자이므로 카운트 증가
+		if (true == stkchar.empty()) ++ret;
 	}
 
-	cout << cnt << "\n";
+	cout << ret << "\n";
 
 	return 0;
 }
