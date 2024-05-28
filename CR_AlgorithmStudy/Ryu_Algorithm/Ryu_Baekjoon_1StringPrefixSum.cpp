@@ -1024,36 +1024,66 @@ using namespace std;
 // ABBA는 BB와 AA로 쌍 지을 때 선 교차 없이 쌍 짓기 가능
 // 즉 해당 구조는 스택 자료구조를 이용하여 쌍 짓기 여부를 판단하고 스택에 글자가 남아 있는지 없는지를 확인
 // n: 단어 수
+//int n, ret;
+//string word;
+//
+//int main()
+//{
+//	cin >> n;
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		cin >> word;
+//
+//		// 스택 초기화
+//		stack<char> stkchar;
+//		// 입력 받은 단어를 문자로 쪼개서 스택으로 관리
+//		for (int j = 0; j < word.size(); ++j)
+//		{
+//			// 스택이 비어있지 않고 상단의 문자와 새로 넣을 문자가 같을 경우 스택에 있던 문자 파괴
+//			if (false == stkchar.empty() && stkchar.top() == word[j])
+//			{
+//				stkchar.pop();
+//			}
+//			// 스택이 비어있거나 상단 문자와 새로 넣을 문자가 동일하지 않으면 스택에 문자 추가
+//			else
+//			{
+//				stkchar.push(word[j]);
+//			}
+//		}
+//
+//		// 스택이 비어 있다면 좋은 문자이므로 카운트 증가
+//		if (true == stkchar.empty()) ++ret;
+//	}
+//
+//	cout << ret << "\n";
+//
+//	return 0;
+//}
+
+// 또 다른 풀이법(?)
+// 내 풀이와 유사
+// 스택 풀이
+// 문제에서 짝짓기 혹은 폭발이다 라고 할 경우 스택을 생각할 것
 int n, ret;
-string word;
+string s;
 
 int main()
 {
 	cin >> n;
-
+	
 	for (int i = 0; i < n; ++i)
 	{
-		cin >> word;
+		cin >> s;
 
-		// 스택 초기화
-		stack<char> stkchar;
-		// 입력 받은 단어를 문자로 쪼개서 스택으로 관리
-		for (int j = 0; j < word.size(); ++j)
+		stack<char> stk;
+		for (char a : s)
 		{
-			// 스택이 비어있지 않고 상단의 문자와 새로 넣을 문자가 같을 경우 스택에 있던 문자 파괴
-			if (false == stkchar.empty() && stkchar.top() == word[j])
-			{
-				stkchar.pop();
-			}
-			// 스택이 비어있거나 상단 문자와 새로 넣을 문자가 동일하지 않으면 스택에 문자 추가
-			else
-			{
-				stkchar.push(word[j]);
-			}
+			if (0 != stk.size() && stk.top() == a) stk.pop();
+			else stk.push(a);
 		}
 
-		// 스택이 비어 있다면 좋은 문자이므로 카운트 증가
-		if (true == stkchar.empty()) ++ret;
+		if (0 == stk.size()) ++ret;
 	}
 
 	cout << ret << "\n";
