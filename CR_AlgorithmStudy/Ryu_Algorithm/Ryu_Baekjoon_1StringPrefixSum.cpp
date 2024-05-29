@@ -1098,29 +1098,74 @@ using namespace std;
 // 찾아보니까 분할정복 문제라는데 왜 문자열, 누적합에 배치한건지 알 수 없다
 // 분할정복할 줄 몰랐는데 이 문제 덕에 찾아보면서 해결
 // 아직 미숙해서 관련 문제 추가적으로 풀어보며 익혀야 될 듯
-long long a, b, c, ret;
+//long long a, b, c, ret;
+//
+//long long cal(long long _b)
+//{
+//	// 기저 사례
+//	// a의 0승은 1
+//	if (0 == _b) return 1;
+//
+//	// 분할정복 방식으로 승수를 절반으로 나눈 것에 c로 나눈 나머지를 연산할 것
+//	long long ll = cal(_b / 2) % c;
+//	// _b가 짝수
+//	if (0 == _b % 2) return ll * ll % c;
+//	// _b가 홀수(짝수와 동일하게 연산하지만 홀수이므로 a % c를 한 번 더)
+//	else return ll * ll % c * a % c;
+//}
+//
+//int main()
+//{
+//	cin >> a >> b >> c;
+//
+//	ret = cal(b);
+//
+//	cout << ret << "\n";
+//
+//	return 0;
+//}
 
-long long cal(long long _b)
+// 또 다른 풀이법(재귀와 모듈러 연산)
+// 내 풀이와 유사?
+// 문제의 최대 최소 범위를 먼저 살펴라
+// a, b는 20억 이하
+// 즉 a를 b번 곱하는 것을 for문으로 처리하면 시간복잡도는 20억
+// 따라서 for문 X
+// 2의 4승은 2^2 * 2^2
+// 2의 8승은 2^4 * 2^4
+// 2^4를 하나의 변수에 담아 놓고 해당 변수 * 변수하면 동일한 값
+// go(2, 64) -> go(2, 32) -> go(2, 16) -> go(2, 8) -> go(2, 4) -> go(2, 2) -> go(2, 1) => 총 6번(log2 64)
+// 즉 for문을 사용하면 O(20억), go함수를 만들어서 사용하면 O(log2 20억)
+// 해당 문제는 모듈러 연산
+// (a + b) % c == a % c + b % c
+// (a * b) % c == a % c * b % c
+// 범위로 인해 long long을 사용할 것인데 20억 * 20억을 사용하다보면 long long으로도 부족
+// 따라서 곱할 때 마다 모듈러 연산을 이용해 줄이며 연산
+// (a * a * a * ... * a) % c를 해도 되지만 이렇게 할 경우 오버플로우가 발생할 수 있음
+// a%c * a%c * a%c * ... * a%c로 줄여감
+long long a, b, c;
+
+long long go(long long a, long long b)
 {
 	// 기저 사례
-	// a의 0승은 1
-	if (0 == _b) return 1;
+	if (1 == b) return a % c;
 
-	// 분할정복 방식으로 승수를 절반으로 나눈 것에 c로 나눈 나머지를 연산할 것
-	long long ll = cal(_b / 2) % c;
-	// _b가 짝수
-	if (0 == _b % 2) return ll * ll % c;
-	// _b가 홀수(짝수와 동일하게 연산하지만 홀수이므로 a % c를 한 번 더)
-	else return ll * ll % c * a % c;
+	// 변수에 담기
+	long long ret = go(a, b / 2);
+	// 변수에 담은것 끼리 곱해서 모듈러 연산
+	ret = (ret * ret) % c;
+
+	// 홀수라면 한 번 더 곱해야 한다!
+	if (1 == b % 2) ret = (ret * a) % c;
+
+	return ret;
 }
 
 int main()
 {
 	cin >> a >> b >> c;
 
-	ret = cal(b);
-
-	cout << ret << "\n";
+	cout << go(a, b) << "\n";
 
 	return 0;
 }
