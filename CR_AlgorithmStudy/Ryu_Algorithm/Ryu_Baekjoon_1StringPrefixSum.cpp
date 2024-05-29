@@ -1065,26 +1065,60 @@ using namespace std;
 // 내 풀이와 유사
 // 스택 풀이
 // 문제에서 짝짓기 혹은 폭발이다 라고 할 경우 스택을 생각할 것
-int n, ret;
-string s;
+//int n, ret;
+//string s;
+//
+//int main()
+//{
+//	cin >> n;
+//	
+//	for (int i = 0; i < n; ++i)
+//	{
+//		cin >> s;
+//
+//		stack<char> stk;
+//		for (char a : s)
+//		{
+//			if (0 != stk.size() && stk.top() == a) stk.pop();
+//			else stk.push(a);
+//		}
+//
+//		if (0 == stk.size()) ++ret;
+//	}
+//
+//	cout << ret << "\n";
+//
+//	return 0;
+//}
+
+// 14_곱셈
+// https://www.acmicpc.net/problem/1629
+// 단순하게 pow 함수를 사용하려고 했으나 pow는 double형을 반환
+// 따라서 매우 큰 수가 될 경우 범위를 넘어서(오버플로우) 음수가 나옴
+// 찾아보니까 분할정복 문제라는데 왜 문자열, 누적합에 배치한건지 알 수 없다
+// 분할정복할 줄 몰랐는데 이 문제 덕에 찾아보면서 해결
+// 아직 미숙해서 관련 문제 추가적으로 풀어보며 익혀야 될 듯
+long long a, b, c, ret;
+
+long long cal(long long _b)
+{
+	// 기저 사례
+	// a의 0승은 1
+	if (0 == _b) return 1;
+
+	// 분할정복 방식으로 승수를 절반으로 나눈 것에 c로 나눈 나머지를 연산할 것
+	long long ll = cal(_b / 2) % c;
+	// _b가 짝수
+	if (0 == _b % 2) return ll * ll % c;
+	// _b가 홀수(짝수와 동일하게 연산하지만 홀수이므로 a % c를 한 번 더)
+	else return ll * ll % c * a % c;
+}
 
 int main()
 {
-	cin >> n;
-	
-	for (int i = 0; i < n; ++i)
-	{
-		cin >> s;
+	cin >> a >> b >> c;
 
-		stack<char> stk;
-		for (char a : s)
-		{
-			if (0 != stk.size() && stk.top() == a) stk.pop();
-			else stk.push(a);
-		}
-
-		if (0 == stk.size()) ++ret;
-	}
+	ret = cal(b);
 
 	cout << ret << "\n";
 
