@@ -1143,29 +1143,67 @@ using namespace std;
 // 따라서 곱할 때 마다 모듈러 연산을 이용해 줄이며 연산
 // (a * a * a * ... * a) % c를 해도 되지만 이렇게 할 경우 오버플로우가 발생할 수 있음
 // a%c * a%c * a%c * ... * a%c로 줄여감
-long long a, b, c;
+//long long a, b, c;
+//
+//long long go(long long a, long long b)
+//{
+//	// 기저 사례
+//	if (1 == b) return a % c;
+//
+//	// 변수에 담기
+//	long long ret = go(a, b / 2);
+//	// 변수에 담은것 끼리 곱해서 모듈러 연산
+//	ret = (ret * ret) % c;
+//
+//	// 홀수라면 한 번 더 곱해야 한다!
+//	if (1 == b % 2) ret = (ret * a) % c;
+//
+//	return ret;
+//}
+//
+//int main()
+//{
+//	cin >> a >> b >> c;
+//
+//	cout << go(a, b) << "\n";
+//
+//	return 0;
+//}
 
-long long go(long long a, long long b)
-{
-	// 기저 사례
-	if (1 == b) return a % c;
-
-	// 변수에 담기
-	long long ret = go(a, b / 2);
-	// 변수에 담은것 끼리 곱해서 모듈러 연산
-	ret = (ret * ret) % c;
-
-	// 홀수라면 한 번 더 곱해야 한다!
-	if (1 == b % 2) ret = (ret * a) % c;
-
-	return ret;
-}
+// 15_1
+// https://www.acmicpc.net/problem/4375
+// 문제 이해 중요
+// 1, 11, 111, 1111 ... 와 같이 1로만 이루어진 수를 n으로 나눠 떨어지는 최소값의 자리수를 구하는 문제
+// 따라서 입력 받은 n을 계속해서 나눠주면 됨
+// 단, 입력은 여러 개의 테스트 케이스로 이루어진다는 점을 보아 eof 활용 필요
+int n;
 
 int main()
 {
-	cin >> a >> b >> c;
+	while (true)
+	{
+		cin >> n;
 
-	cout << go(a, b) << "\n";
+		if (true == cin.eof()) break;
+
+		int ret = 1;
+		long long value = 1;
+
+		// 초반에는 pow함수를 이용하여 0 + 10^0 -> 1 + 10^1 -> 11 + 10^2 -> 111 + 10^3 ... 과 같이 연산하여 처리했더니 시간초과로 실패
+		// 큰 수가 될 때까지 1을 붙이면서 나누라고 하니 시간초과가 날 수밖에 없습니다. 큰 수를 만들지 않으면서 답을 내는 방법을 생각해 보세요.
+		// 위 조언으로 나머지를 활용하여 연산
+		while (true)
+		{
+			if (0 == value % n) break;
+
+			// value를 n으로 나눈 나머지 값 뒤에 1이 붙으면 다음 1로만 이루어진 수의 연산을 줄일 수 있음
+			// 따라서 나머지 값에 10을 곱하고 1을 더함
+			value = (value % n) * 10 + 1;
+			++ret;
+		}
+
+		cout << ret << "\n";
+	}
 
 	return 0;
 }
