@@ -1216,35 +1216,35 @@ using namespace std;
 // 테케 예시를 보면 9901의 배수라고 했을 때 12자리가 나온다는 것을 보면 long long으로 커버 가능
 // 그러나 long long도 벗어나는 숫자가 만들어짐
 // 따라서 정수론의 모듈러 연산 법칙 사용 => (a + b) % n == (a%n + b%n) % n, (a * b) % n == (a%n * b%n) % n
-int n;
-
-int main()
-{
-	while (EOF != scanf("%d", &n))
-	{
-		long long cnt = 1, ret = 1;
-
-		while (true)
-		{
-			// n의 배수
-			if (0 == cnt % n)
-			{
-				printf("%lld\n", ret);
-				break;
-			}
-			else
-			{
-				// 그 전 수 * 10 + 1
-				// 다음에 사용될 수 생성, 하지만 이렇게만 하면 시간초과
-				cnt = (cnt * 10) + 1;
-				// 따라서 끝 마무리에서 모듈러 연산을 하는 것이 아닌 중간중간 모듈러 연산해도 괜찮음
-				cnt %= n;
-
-				// 자릿수 세기
-				++ret;
-			}
-		}
-	}
-
-	return 0;
-}
+//int n;
+//
+//int main()
+//{
+//	while (EOF != scanf("%d", &n))
+//	{
+//		long long cnt = 1, ret = 1;
+//
+//		while (true)
+//		{
+//			// n의 배수
+//			if (0 == cnt % n)
+//			{
+//				printf("%lld\n", ret);
+//				break;
+//			}
+//			else
+//			{
+//				// 그 전 수 * 10 + 1
+//				// 다음에 사용될 수 생성, 하지만 이렇게만 하면 시간초과
+//				cnt = (cnt * 10) + 1;
+//				// 따라서 끝 마무리에서 모듈러 연산을 하는 것이 아닌 중간중간 모듈러 연산해도 괜찮음
+//				cnt %= n;
+//
+//				// 자릿수 세기
+//				++ret;
+//			}
+//		}
+//	}
+//
+//	return 0;
+//}
