@@ -122,48 +122,112 @@ using namespace std;
 // 내 풀이와 유사?
 // 해당 문제는 무조건 BFS라는 말이 나와야 한다
 // 가중치가 1로 동일하고 연결되어 있는 것으로 BFS
-const int max_n = 104;
-int dy[4] = { -1, 0, 1, 0 };
-int dx[4] = { 0, 1, 0, -1 };
-int n, m, a[max_n][max_n], visited[max_n][max_n], y, x;
+//const int max_n = 104;
+//int dy[4] = { -1, 0, 1, 0 };
+//int dx[4] = { 0, 1, 0, -1 };
+//int n, m, a[max_n][max_n], visited[max_n][max_n], y, x;
+//
+//int main()
+//{
+//    // 연속적으로 붙어 있는 경우 1)string으로 변환 2)scanf로 받기
+//    scanf("%d %d", &n, &m);
+//    for (int i = 0; i < n; ++i) 
+//    {
+//        for (int j = 0; j < m; ++j) 
+//        {
+//            // 1d로 받을 것!
+//            scanf("%1d", &a[i][j]);
+//        }
+//    }
+//
+//    queue<pair<int, int>> q;
+//    visited[0][0] = 1;
+//    q.push({ 0, 0 });
+//
+//    while (0 != q.size()) 
+//    {
+//        tie(y, x) = q.front(); 
+//        q.pop();
+//
+//        for (int i = 0; i < 4; ++i) 
+//        {
+//            int ny = y + dy[i];
+//            int nx = x + dx[i];
+//
+//            // 범위를 먼저 체크하고 배열 체크할 것
+//            if (0 > ny || 0 > nx || n <= ny || m <= nx) continue;
+//            if (0 == a[ny][nx] || 1 == visited[ny][nx]) continue;
+//
+//            visited[ny][nx] = visited[y][x] + 1;
+//            q.push({ ny, nx });
+//        }
+//    }
+//
+//    printf("%d", visited[n - 1][m - 1]);
+//    
+//	return 0;
+//}
+
+// 2_유기농 배추
+// https://www.acmicpc.net/problem/1012
+// 1: 배추가 심어진 곳 0: 배추가 심어지지 않은 곳
+// 배추에 지렁이로 해충 퇴치문제 한마리만 있어도 인접한 배추로 퍼짐
+// 커넥티드 컴포넌트 방식
+// 틀렸습니다 헤맨 부분: 초기화 작업
+// T: 테케 개수, M: 배추밭 가로길이, N: 배추밭 세로길이, K: 배추 심어진 개수, XY: 배추 위치
+int dy[] = { -1, 0, 1, 0 };
+int dx[] = { 0, 1, 0, -1 };
+int T, M, N, K, X, Y, farm[50][50], visited[50][50];
+
+void earthwormdfs(int y, int x)
+{
+	visited[y][x] = 1;
+
+	for (int i = 0; i < 4; ++i)
+	{
+		int ny = y + dy[i];
+		int nx = x + dx[i];
+
+		if (0 > ny || 0 > nx || N <= ny || M <= nx) continue;
+		if (1 == farm[ny][nx] && 0 == visited[ny][nx]) earthwormdfs(ny, nx);
+	}
+}
 
 int main()
 {
-    // 연속적으로 붙어 있는 경우 1)string으로 변환 2)scanf로 받기
-    scanf("%d %d", &n, &m);
-    for (int i = 0; i < n; ++i) 
-    {
-        for (int j = 0; j < m; ++j) 
-        {
-            // 1d로 받을 것!
-            scanf("%1d", &a[i][j]);
-        }
-    }
+	cin >> T;
 
-    queue<pair<int, int>> q;
-    visited[0][0] = 1;
-    q.push({ 0, 0 });
+	while (T--)
+	{
+		cin >> M >> N >> K;
 
-    while (0 != q.size()) 
-    {
-        tie(y, x) = q.front(); 
-        q.pop();
+		// 초기화 작업
+		fill(&farm[0][0], &farm[49][49], 0);
+		fill(&visited[0][0], &visited[49][49], 0);
+		int ret = 0;
 
-        for (int i = 0; i < 4; ++i) 
-        {
-            int ny = y + dy[i];
-            int nx = x + dx[i];
+		// 배추밭 생성
+		for (int i = 0; i < K; ++i)
+		{
+			cin >> X >> Y;
+			farm[Y][X] = 1;
+		}
 
-            // 범위를 먼저 체크하고 배열 체크할 것
-            if (0 > ny || 0 > nx || n <= ny || m <= nx) continue;
-            if (0 == a[ny][nx] || 1 == visited[ny][nx]) continue;
+		// 배추&지렁이 탐색
+		for (int i = 0; i < N; ++i)
+		{
+			for (int j = 0; j < M; ++j)
+			{
+				if (1 == farm[i][j] && 0 == visited[i][j])
+				{
+					++ret;
+					earthwormdfs(i, j);
+				}
+			}
+		}
 
-            visited[ny][nx] = visited[y][x] + 1;
-            q.push({ ny, nx });
-        }
-    }
+		cout << ret << "\n";
+	}
 
-    printf("%d", visited[n - 1][m - 1]);
-    
 	return 0;
 }
