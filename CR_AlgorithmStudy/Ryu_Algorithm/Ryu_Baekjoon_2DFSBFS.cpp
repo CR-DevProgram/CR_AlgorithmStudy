@@ -175,57 +175,118 @@ using namespace std;
 // 커넥티드 컴포넌트 방식
 // 틀렸습니다 헤맨 부분: 초기화 작업
 // T: 테케 개수, M: 배추밭 가로길이, N: 배추밭 세로길이, K: 배추 심어진 개수, XY: 배추 위치
+//int dy[] = { -1, 0, 1, 0 };
+//int dx[] = { 0, 1, 0, -1 };
+//int T, M, N, K, X, Y, farm[50][50], visited[50][50];
+//
+//void earthwormdfs(int y, int x)
+//{
+//	visited[y][x] = 1;
+//
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		int ny = y + dy[i];
+//		int nx = x + dx[i];
+//
+//		if (0 > ny || 0 > nx || N <= ny || M <= nx) continue;
+//		if (1 == farm[ny][nx] && 0 == visited[ny][nx]) earthwormdfs(ny, nx);
+//	}
+//}
+//
+//int main()
+//{
+//	cin >> T;
+//
+//	while (T--)
+//	{
+//		cin >> M >> N >> K;
+//
+//		// 초기화 작업
+//		fill(&farm[0][0], &farm[49][49], 0);
+//		fill(&visited[0][0], &visited[49][49], 0);
+//		int ret = 0;
+//
+//		// 배추밭 생성
+//		for (int i = 0; i < K; ++i)
+//		{
+//			cin >> X >> Y;
+//			farm[Y][X] = 1;
+//		}
+//
+//		// 배추&지렁이 탐색
+//		for (int i = 0; i < N; ++i)
+//		{
+//			for (int j = 0; j < M; ++j)
+//			{
+//				if (1 == farm[i][j] && 0 == visited[i][j])
+//				{
+//					++ret;
+//					earthwormdfs(i, j);
+//				}
+//			}
+//		}
+//
+//		cout << ret << "\n";
+//	}
+//
+//	return 0;
+//}
+
+// 또 다른 풀이법(커넥티드 컴포넌트_DFS)
+// 내 풀이와 유사?
+// 최단거리를 찾는 것이 아니니까 굳이 BFS로 할 필요 없음
+// 대신 BFS로 구현해도 상관없음
+int t, m, n, k, x, y, ny, nx, ret;
+int a[51][51], visited[51][51];
 int dy[] = { -1, 0, 1, 0 };
 int dx[] = { 0, 1, 0, -1 };
-int T, M, N, K, X, Y, farm[50][50], visited[50][50];
 
-void earthwormdfs(int y, int x)
+void dfs(int y, int x)
 {
 	visited[y][x] = 1;
 
 	for (int i = 0; i < 4; ++i)
 	{
-		int ny = y + dy[i];
-		int nx = x + dx[i];
+		ny = y + dy[i];
+		nx = x + dx[i];
 
-		if (0 > ny || 0 > nx || N <= ny || M <= nx) continue;
-		if (1 == farm[ny][nx] && 0 == visited[ny][nx]) earthwormdfs(ny, nx);
+		if (0 > ny || 0 > nx || n <= ny || m <= nx) continue;
+		if (1 == a[ny][nx] && !visited[ny][nx])
+		{
+			dfs(ny, nx);
+		}
 	}
 }
 
 int main()
 {
-	cin >> T;
+	cin >> t;
 
-	while (T--)
+	while (t--)
 	{
-		cin >> M >> N >> K;
+		// 테케마다 초기화
+		fill(&a[0][0], &a[0][0] + 51 * 51, 0);
+		fill(&visited[0][0], &visited[0][0] + 51 * 51, 0);
+		ret = 0;
 
-		// 초기화 작업
-		fill(&farm[0][0], &farm[49][49], 0);
-		fill(&visited[0][0], &visited[49][49], 0);
-		int ret = 0;
-
-		// 배추밭 생성
-		for (int i = 0; i < K; ++i)
+		cin >> m >> n >> k;
+		for (int i = 0; i < k; ++i)
 		{
-			cin >> X >> Y;
-			farm[Y][X] = 1;
+			cin >> x >> y;
+			a[y][x] = 1;
 		}
 
-		// 배추&지렁이 탐색
-		for (int i = 0; i < N; ++i)
+		for (int i = 0; i < n; ++i)
 		{
-			for (int j = 0; j < M; ++j)
+			for (int j = 0; j < m; ++j)
 			{
-				if (1 == farm[i][j] && 0 == visited[i][j])
+				if (1 == a[i][j] && !visited[i][j])
 				{
+					dfs(i, j);
 					++ret;
-					earthwormdfs(i, j);
 				}
 			}
 		}
-
 		cout << ret << "\n";
 	}
 
