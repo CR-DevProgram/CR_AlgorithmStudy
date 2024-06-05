@@ -299,13 +299,90 @@ using namespace std;
 // 장마철이지만 비가 안 오는 경우도 고려
 // 따라서 비의 양이 0 ~ 100이 될 것(최대 100으로 잡은 이유는 건물의 높이가 1 ~ 100이기 때문)
 // N: 행열 개수
-const int MAX = 100;
-int N, rain, maximum, ret;
-int area[MAX][MAX], visited[MAX][MAX];
+//const int MAX = 100;
+//int N, rain, maximum, ret;
+//int area[MAX][MAX], visited[MAX][MAX];
+//int dy[] = { -1, 0, 1, 0 };
+//int dx[] = { 0, 1, 0, -1 };
+//
+//void safezone(int y, int x)
+//{
+//	visited[y][x] = 1;
+//
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		int ny = y + dy[i];
+//		int nx = x + dx[i];
+//
+//		if (0 > ny || 0 > nx || N <= ny || N <= nx) continue;
+//		// 비의 양보다 지역 높이가 큰 경우이며 방문하지 않았을 때만 safezone 재귀 탐색
+//		if (rain < area[ny][nx] && 0 == visited[ny][nx]) safezone(ny, nx);
+//	}
+//}
+//
+//int main()
+//{
+//	cin >> N;
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		for (int j = 0; j < N; ++j)
+//		{
+//			cin >> area[i][j];
+//			// 지역 최대치를 알아내 비의 양 계산 부분에서 탈출 구문으로 사용
+//			maximum = max(maximum, area[i][j]);
+//		}
+//	}
+//
+//	// 비의 양이 지역 높이 최대를 넘어서면 중단
+//	while (rain < maximum)
+//	{
+//		// 비의 양에 따른 안전 영역 확인을 위한 초기화 처리
+//		fill(&visited[0][0], &visited[99][99], 0);
+//		int cnt = 0;
+//
+//		for (int i = 0; i < N; ++i)
+//		{
+//			for (int j = 0; j < N; ++j)
+//			{
+//				if (rain < area[i][j] && 0 == visited[i][j])
+//				{
+//					++cnt;
+//					safezone(i, j);
+//				}
+//			}
+//		}
+//
+//		// 단순히 생각했을 때 최대 영역 개수 도달하고 이후에 더 큰 수치로 잠기면서 최대 영역 개수보다 작을 것이라 생각하여 조건 부여
+//		// 그러나 줄었다가 다시 늘어나는 부분이 존재하는지 2n퍼 쯤 틀렸다고 나옴
+//		// 따라서 별도로 지역 높이의 최대를 알아내 많은 비의 양을 계산하지 않게(시간초과 방지 차원) 처리
+//		//if (ret > cnt) break;
+//
+//		// 최대 안전 영역 개수
+//		ret = max(ret, cnt);
+//
+//		// 비의 양 증가
+//		++rain;
+//	}
+//
+//	cout << ret << "\n";
+//
+//	return 0;
+//}
+
+// 또 다른 풀이법(커넥티드 컴포넌트_DFS)
+// 내리는 비의 양에 따라 모두 조사해서 그 중에서 가장 큰 안전 영역 개수 구하기
+// 깊이높이 관련도 DFS 매개 변수로 넣을 것
+// ***반례: 최소, 최대, 없거나, 있거나***
+// ***변수명의 통일***
+// 해당 문제의 반례는 아무 지역도 물에 잠기지 않을 수도 있다.
+int n, ret = 1;
+int a[101][101], visited[101][101];
 int dy[] = { -1, 0, 1, 0 };
 int dx[] = { 0, 1, 0, -1 };
 
-void safezone(int y, int x)
+// d를 전역으로 두어도 되지만 명시적으로 하기 위해 매개변수 사용
+void dfs(int y, int x, int d)
 {
 	visited[y][x] = 1;
 
@@ -314,55 +391,41 @@ void safezone(int y, int x)
 		int ny = y + dy[i];
 		int nx = x + dx[i];
 
-		if (0 > ny || 0 > nx || N <= ny || N <= nx) continue;
-		// 비의 양보다 지역 높이가 큰 경우이며 방문하지 않았을 때만 safezone 재귀 탐색
-		if (rain < area[ny][nx] && 0 == visited[ny][nx]) safezone(ny, nx);
+		if (0 > ny || 0 > nx || n <= ny || n <= nx) continue;
+		if (!visited[ny][nx] && d < a[ny][nx]) dfs(ny, nx, d);
 	}
 }
 
 int main()
 {
-	cin >> N;
+	cin >> n;
 
-	for (int i = 0; i < N; ++i)
+	for (int i = 0; i < n; ++i)
 	{
-		for (int j = 0; j < N; ++j)
+		for (int j = 0; j < n; ++j)
 		{
-			cin >> area[i][j];
-			// 지역 최대치를 알아내 비의 양 계산 부분에서 탈출 구문으로 사용
-			maximum = max(maximum, area[i][j]);
+			cin >> a[i][j];
 		}
 	}
 
-	// 비의 양이 지역 높이 최대를 넘어서면 중단
-	while (rain < maximum)
+	for (int d = 1; d < 101; ++d)
 	{
-		// 비의 양에 따른 안전 영역 확인을 위한 초기화 처리
-		fill(&visited[0][0], &visited[99][99], 0);
-		int cnt = 0;
+		fill(&visited[0][0], &visited[0][0] + 101 * 101, 0);
 
-		for (int i = 0; i < N; ++i)
+		int cnt = 0;
+		for (int i = 0; i < n; ++i)
 		{
-			for (int j = 0; j < N; ++j)
+			for (int j = 0; j < n; ++j)
 			{
-				if (rain < area[i][j] && 0 == visited[i][j])
+				if (d < a[i][j] && !visited[i][j])
 				{
+					dfs(i, j, d);
 					++cnt;
-					safezone(i, j);
 				}
 			}
 		}
 
-		// 단순히 생각했을 때 최대 영역 개수 도달하고 이후에 더 큰 수치로 잠기면서 최대 영역 개수보다 작을 것이라 생각하여 조건 부여
-		// 그러나 줄었다가 다시 늘어나는 부분이 존재하는지 2n퍼 쯤 틀렸다고 나옴
-		// 따라서 별도로 지역 높이의 최대를 알아내 많은 비의 양을 계산하지 않게(시간초과 방지 차원) 처리
-		//if (ret > cnt) break;
-
-		// 최대 안전 영역 개수
 		ret = max(ret, cnt);
-
-		// 비의 양 증가
-		++rain;
 	}
 
 	cout << ret << "\n";
