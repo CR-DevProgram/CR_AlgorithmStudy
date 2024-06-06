@@ -376,13 +376,73 @@ using namespace std;
 // ***반례: 최소, 최대, 없거나, 있거나***
 // ***변수명의 통일***
 // 해당 문제의 반례는 아무 지역도 물에 잠기지 않을 수도 있다.
-int n, ret = 1;
-int a[101][101], visited[101][101];
+//int n, ret = 1;
+//int a[101][101], visited[101][101];
+//int dy[] = { -1, 0, 1, 0 };
+//int dx[] = { 0, 1, 0, -1 };
+//
+//// d를 전역으로 두어도 되지만 명시적으로 하기 위해 매개변수 사용
+//void dfs(int y, int x, int d)
+//{
+//	visited[y][x] = 1;
+//
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		int ny = y + dy[i];
+//		int nx = x + dx[i];
+//
+//		if (0 > ny || 0 > nx || n <= ny || n <= nx) continue;
+//		if (!visited[ny][nx] && d < a[ny][nx]) dfs(ny, nx, d);
+//	}
+//}
+//
+//int main()
+//{
+//	cin >> n;
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		for (int j = 0; j < n; ++j)
+//		{
+//			cin >> a[i][j];
+//		}
+//	}
+//
+//	for (int d = 1; d < 101; ++d)
+//	{
+//		fill(&visited[0][0], &visited[0][0] + 101 * 101, 0);
+//
+//		int cnt = 0;
+//		for (int i = 0; i < n; ++i)
+//		{
+//			for (int j = 0; j < n; ++j)
+//			{
+//				if (d < a[i][j] && !visited[i][j])
+//				{
+//					dfs(i, j, d);
+//					++cnt;
+//				}
+//			}
+//		}
+//
+//		ret = max(ret, cnt);
+//	}
+//
+//	cout << ret << "\n";
+//
+//	return 0;
+//}
+
+// 4_영역 구하기
+// https://www.acmicpc.net/problem/2583
+// M*N: 직사각형 모눈 종이 크기, K: 직사각형 개수
+const int MAX_SIZE = 100;
+int M, N, K, areasize;
+int graphpaper[MAX_SIZE][MAX_SIZE], visited[MAX_SIZE][MAX_SIZE];
 int dy[] = { -1, 0, 1, 0 };
 int dx[] = { 0, 1, 0, -1 };
 
-// d를 전역으로 두어도 되지만 명시적으로 하기 위해 매개변수 사용
-void dfs(int y, int x, int d)
+void areaserch(int y, int x)
 {
 	visited[y][x] = 1;
 
@@ -391,44 +451,63 @@ void dfs(int y, int x, int d)
 		int ny = y + dy[i];
 		int nx = x + dx[i];
 
-		if (0 > ny || 0 > nx || n <= ny || n <= nx) continue;
-		if (!visited[ny][nx] && d < a[ny][nx]) dfs(ny, nx, d);
+		if (0 > ny || 0 > nx || M <= ny || N <= nx) continue;
+		if (0 == graphpaper[ny][nx] && 0 == visited[ny][nx])
+		{
+			++areasize;
+			areaserch(ny, nx);
+		}
 	}
 }
 
 int main()
 {
-	cin >> n;
+	cin >> M >> N >> K;
 
-	for (int i = 0; i < n; ++i)
+	for (int i = 0; i < K; ++i)
 	{
-		for (int j = 0; j < n; ++j)
-		{
-			cin >> a[i][j];
-		}
-	}
+		pair<int, int> lefttop, rightbot;
+		// 사각형 좌상단
+		cin >> lefttop.first >> lefttop.second;
+		// 사각형 우하단
+		cin >> rightbot.first >> rightbot.second;
 
-	for (int d = 1; d < 101; ++d)
-	{
-		fill(&visited[0][0], &visited[0][0] + 101 * 101, 0);
-
-		int cnt = 0;
-		for (int i = 0; i < n; ++i)
+		// 모눈 종이에 직사각형 그리기
+		for (int rectY = lefttop.second; rectY < rightbot.second; ++rectY)
 		{
-			for (int j = 0; j < n; ++j)
+			for (int rectX = lefttop.first; rectX < rightbot.first; ++rectX)
 			{
-				if (d < a[i][j] && !visited[i][j])
-				{
-					dfs(i, j, d);
-					++cnt;
-				}
+				graphpaper[rectY][rectX] = 1;
 			}
 		}
-
-		ret = max(ret, cnt);
 	}
 
-	cout << ret << "\n";
+	// 영역 크기 담을 vector
+	vector<int> vecareasize;
+	for (int i = 0; i < M; ++i)
+	{
+		for (int j = 0; j < N; ++j)
+		{
+			// 커넥티드 컴포넌트 별 영역 크기 파악을 위한 변수 초기화
+			areasize = 0;
+			if (0 == graphpaper[i][j] && 0 == visited[i][j])
+			{
+				++areasize;
+				areaserch(i, j);
+
+				if (0 != areasize) vecareasize.push_back(areasize);
+			}
+		}
+	}
+
+	// 크기 오름차순 정렬
+	sort(vecareasize.begin(), vecareasize.end());
+
+	cout << vecareasize.size() << "\n";
+	for (int i = 0; i < vecareasize.size(); ++i)
+	{
+		cout << vecareasize[i] << " ";
+	}
 
 	return 0;
 }
