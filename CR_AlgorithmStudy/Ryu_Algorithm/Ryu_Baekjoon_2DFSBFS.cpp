@@ -436,78 +436,152 @@ using namespace std;
 // 4_영역 구하기
 // https://www.acmicpc.net/problem/2583
 // M*N: 직사각형 모눈 종이 크기, K: 직사각형 개수
-const int MAX_SIZE = 100;
-int M, N, K, areasize;
-int graphpaper[MAX_SIZE][MAX_SIZE], visited[MAX_SIZE][MAX_SIZE];
-int dy[] = { -1, 0, 1, 0 };
-int dx[] = { 0, 1, 0, -1 };
+//const int MAX_SIZE = 100;
+//int M, N, K, areasize;
+//int graphpaper[MAX_SIZE][MAX_SIZE], visited[MAX_SIZE][MAX_SIZE];
+//int dy[] = { -1, 0, 1, 0 };
+//int dx[] = { 0, 1, 0, -1 };
+//
+//void areaserch(int y, int x)
+//{
+//	visited[y][x] = 1;
+//
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		int ny = y + dy[i];
+//		int nx = x + dx[i];
+//
+//		if (0 > ny || 0 > nx || M <= ny || N <= nx) continue;
+//		if (0 == graphpaper[ny][nx] && 0 == visited[ny][nx])
+//		{
+//			++areasize;
+//			areaserch(ny, nx);
+//		}
+//	}
+//}
+//
+//int main()
+//{
+//	cin >> M >> N >> K;
+//
+//	for (int i = 0; i < K; ++i)
+//	{
+//		pair<int, int> lefttop, rightbot;
+//		// 사각형 좌상단
+//		cin >> lefttop.first >> lefttop.second;
+//		// 사각형 우하단
+//		cin >> rightbot.first >> rightbot.second;
+//
+//		// 모눈 종이에 직사각형 그리기
+//		for (int rectY = lefttop.second; rectY < rightbot.second; ++rectY)
+//		{
+//			for (int rectX = lefttop.first; rectX < rightbot.first; ++rectX)
+//			{
+//				graphpaper[rectY][rectX] = 1;
+//			}
+//		}
+//	}
+//
+//	// 영역 크기 담을 vector
+//	vector<int> vecareasize;
+//	for (int i = 0; i < M; ++i)
+//	{
+//		for (int j = 0; j < N; ++j)
+//		{
+//			// 커넥티드 컴포넌트 별 영역 크기 파악을 위한 변수 초기화
+//			areasize = 0;
+//			if (0 == graphpaper[i][j] && 0 == visited[i][j])
+//			{
+//				++areasize;
+//				areaserch(i, j);
+//
+//				if (0 != areasize) vecareasize.push_back(areasize);
+//			}
+//		}
+//	}
+//
+//	// 크기 오름차순 정렬
+//	sort(vecareasize.begin(), vecareasize.end());
+//
+//	cout << vecareasize.size() << "\n";
+//	for (int i = 0; i < vecareasize.size(); ++i)
+//	{
+//		cout << vecareasize[i] << " ";
+//	}
+//
+//	return 0;
+//}
 
-void areaserch(int y, int x)
+// 또 다른 풀이법(커넥티드 컴포넌트_DFS int형)
+// 문제를 보고 커넥티드 컴포넌트를 떠올려야 함
+// y1을 사용하려면 #define 걸어줘야 됨 => #include <bits/stdc++.h>에 y1라는 전역변수가 걸려있기 때문, 따라서 임의로 할당해야 사용 가능
+// 변수명에서 에러가 뜬다면 해당 변수명을 define 작업해 볼 것
+// 문제의 핵심은 dfs를 void가 아닌 int로 했는가
+#define y1 yy
+vector<int> vec;
+int a[104][104], visited[104][104], m, n, k, x1, x2, y1, y2;
+const int dy[] = { -1, 0, 1, 0 };
+const int dx[] = { 0, 1, 0, -1 };
+
+// 반환 타입을 void가 아닌 int로 쓴 이유 => 사이즈 누적 연산을 위함, 커넥티드 컴포넌트로 해당 사이즈를 구하기 위해 int 반환 센스 이용
+int dfs(int y, int x)
 {
 	visited[y][x] = 1;
 
+	// 정점의 값 1을 기반으로 이동한 위치들의 값을 더함
+	int ret = 1;
 	for (int i = 0; i < 4; ++i)
 	{
 		int ny = y + dy[i];
 		int nx = x + dx[i];
 
-		if (0 > ny || 0 > nx || M <= ny || N <= nx) continue;
-		if (0 == graphpaper[ny][nx] && 0 == visited[ny][nx])
-		{
-			++areasize;
-			areaserch(ny, nx);
-		}
+		if (0 > ny || 0 > nx || m <= ny || n <= nx) continue;
+		if (1 == a[ny][nx] || 1 == visited[ny][nx]) continue;
+
+		ret += dfs(ny, nx);
 	}
+
+	return ret;
 }
 
 int main()
 {
-	cin >> M >> N >> K;
+	cin >> m >> n >> k;
 
-	for (int i = 0; i < K; ++i)
+	for (int i = 0; i < k; ++i)
 	{
-		pair<int, int> lefttop, rightbot;
-		// 사각형 좌상단
-		cin >> lefttop.first >> lefttop.second;
-		// 사각형 우하단
-		cin >> rightbot.first >> rightbot.second;
+		cin >> x1 >> y1 >> x2 >> y2;
 
-		// 모눈 종이에 직사각형 그리기
-		for (int rectY = lefttop.second; rectY < rightbot.second; ++rectY)
+		for (int x = x1; x < x2; ++x)
 		{
-			for (int rectX = lefttop.first; rectX < rightbot.first; ++rectX)
+			for (int y = y1; y < y2; ++y)
 			{
-				graphpaper[rectY][rectX] = 1;
+				a[y][x] = 1;
 			}
 		}
 	}
 
-	// 영역 크기 담을 vector
-	vector<int> vecareasize;
-	for (int i = 0; i < M; ++i)
+	for (int i = 0; i < m; ++i)
 	{
-		for (int j = 0; j < N; ++j)
+		for (int j = 0; j < n; ++j)
 		{
-			// 커넥티드 컴포넌트 별 영역 크기 파악을 위한 변수 초기화
-			areasize = 0;
-			if (0 == graphpaper[i][j] && 0 == visited[i][j])
+			// 강사님께선 논리연산자(&&)가 아닌 비트연산자(&)를 사용
+			// &&과 || 같은 연산들은 어차피 0, 1의 결과값을 가지므로 & 연산을 해줘도 &&을 한 것과 같기 때문
+			// 초록 밑줄이 신경쓰여서 비트 말고 논리로 바꿈
+			if (1 != a[i][j] && 0 == visited[i][j])
 			{
-				++areasize;
-				areaserch(i, j);
-
-				if (0 != areasize) vecareasize.push_back(areasize);
+				// 사이즈를 구해서 벡터에 넣기
+				vec.push_back(dfs(i, j));
 			}
 		}
 	}
 
-	// 크기 오름차순 정렬
-	sort(vecareasize.begin(), vecareasize.end());
+	sort(vec.begin(), vec.end());
 
-	cout << vecareasize.size() << "\n";
-	for (int i = 0; i < vecareasize.size(); ++i)
-	{
-		cout << vecareasize[i] << " ";
-	}
+	// 커넥티드 컴포넌트가 몇 개인지
+	cout << vec.size() << "\n";
+	// 사이즈들은 어떻게 되는지
+	for (int a : vec) cout << a << " ";
 
 	return 0;
 }
