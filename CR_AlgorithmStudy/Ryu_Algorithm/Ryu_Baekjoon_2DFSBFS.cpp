@@ -591,54 +591,116 @@ using namespace std;
 // (왼쪽위 오른쪽위 왼쪽아래 오른쪽아래)
 // 0과 1이 섞여있다면 해당 부분을 괄호로 표시
 // N: 영상 크기
-int quadtree[64][64];
-int N;
+//int quadtree[64][64];
+//int N;
+//
+//void quadtreeserch(int y, int x, int quadsize)
+//{
+//	for (int i = y; i < y + quadsize; ++i)
+//	{
+//		for (int j = x; j < x + quadsize; ++j)
+//		{
+//			// 기준으로 세운 y,x와 다르다면
+//			if (quadtree[y][x] != quadtree[i][j])
+//			{
+//				cout << "(";
+//				// 왼쪽위
+//				quadtreeserch(y, x, quadsize / 2);
+//				// 오른쪽위
+//				quadtreeserch(y, x + quadsize / 2, quadsize / 2);
+//				// 왼쪽아래
+//				quadtreeserch(y + quadsize / 2, x, quadsize / 2);
+//				// 오른쪽아래
+//				quadtreeserch(y + quadsize / 2, x + quadsize / 2, quadsize / 2);
+//				cout << ")";
+//				return;
+//			}
+//		}
+//	}
+//
+//	// 다르지 않다면 해당 값으로 출력
+//	cout << quadtree[y][x];
+//}
+//
+//int main()
+//{
+//	cin >> N;
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		string s = "";
+//		cin >> s;
+//
+//		// quadtree 채우기
+//		for (int j = 0; j < s.size(); ++j)
+//		{
+//			quadtree[i][j] = s[j] - '0';
+//		}
+//	}
+//
+//	quadtreeserch(0, 0, N);
+//
+//	return 0;
+//}
 
-void quadtreeserch(int y, int x, int quadsize)
+// 또 다른 풀이법(분할정복)
+// 내 풀이와 유사?
+// 모두 0 => 0, 모두 1 =>1, 0과1 혼합이면 => (왼위 오위 왼아 오아)
+// 반복되는 행위 규칙이 보이면 재귀함수 활용
+// 분할정복: 큰 문제를 하위 문제로 쪼개는 방식, 하위 문제를 해결하는 방식으로 상위 문제가 해결
+// 분할정복은 재귀 혹은 스택으로 풀이 가능
+int n;
+string s;
+char a[101][101];
+
+string quard(int y, int x, int size)
 {
-	for (int i = y; i < y + quadsize; ++i)
+	// 더이상 쪼개지지 않을 때
+	// string(1, a[y][x]) => 캐릭터형을 스트링으로 바꾸기 위함
+	if (1 == size) return string(1, a[y][x]);
+
+	bool flag = false;
+	char b = a[y][x];
+	string ret = "";
+
+	for (int i = y; i < y + size; ++i)
 	{
-		for (int j = x; j < x + quadsize; ++j)
+		for (int j = x; j < x + size; ++j)
 		{
-			// 기준으로 세운 y,x와 다르다면
-			if (quadtree[y][x] != quadtree[i][j])
+			if (b != a[i][j])
 			{
-				cout << "(";
-				// 왼쪽위
-				quadtreeserch(y, x, quadsize / 2);
-				// 오른쪽위
-				quadtreeserch(y, x + quadsize / 2, quadsize / 2);
-				// 왼쪽아래
-				quadtreeserch(y + quadsize / 2, x, quadsize / 2);
-				// 오른쪽아래
-				quadtreeserch(y + quadsize / 2, x + quadsize / 2, quadsize / 2);
-				cout << ")";
-				return;
+				// 같지 않을 경우 괄호 속 문자열 로직
+				ret += '(';
+				ret += quard(y, x, size / 2);
+				ret += quard(y, x + size / 2, size / 2);
+				ret += quard(y + size / 2, x, size / 2);
+				ret += quard(y + size / 2, x + size / 2, size / 2);
+				ret += ')';
+				
+				return ret;
 			}
 		}
 	}
 
-	// 다르지 않다면 해당 값으로 출력
-	cout << quadtree[y][x];
+	// 위의 로직에 걸리지 않는다면 0 또는 1을 반환하게 설계
+	return string(1, a[y][x]);
 }
 
 int main()
 {
-	cin >> N;
+	cin >> n;
 
-	for (int i = 0; i < N; ++i)
+	for (int i = 0; i < n; ++i)
 	{
-		string s = "";
 		cin >> s;
 
-		// quadtree 채우기
-		for (int j = 0; j < s.size(); ++j)
+		for (int j = 0; j < n; ++j)
 		{
-			quadtree[i][j] = s[j] - '0';
+			a[i][j] = s[j];
 		}
 	}
 
-	quadtreeserch(0, 0, N);
+	cout << quard(0, 0, n) << "\n";
 
 	return 0;
 }
