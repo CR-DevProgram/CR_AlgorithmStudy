@@ -517,71 +517,128 @@ using namespace std;
 // y1을 사용하려면 #define 걸어줘야 됨 => #include <bits/stdc++.h>에 y1라는 전역변수가 걸려있기 때문, 따라서 임의로 할당해야 사용 가능
 // 변수명에서 에러가 뜬다면 해당 변수명을 define 작업해 볼 것
 // 문제의 핵심은 dfs를 void가 아닌 int로 했는가
-#define y1 yy
-vector<int> vec;
-int a[104][104], visited[104][104], m, n, k, x1, x2, y1, y2;
-const int dy[] = { -1, 0, 1, 0 };
-const int dx[] = { 0, 1, 0, -1 };
+//#define y1 yy
+//vector<int> vec;
+//int a[104][104], visited[104][104], m, n, k, x1, x2, y1, y2;
+//const int dy[] = { -1, 0, 1, 0 };
+//const int dx[] = { 0, 1, 0, -1 };
+//
+//// 반환 타입을 void가 아닌 int로 쓴 이유 => 사이즈 누적 연산을 위함, 커넥티드 컴포넌트로 해당 사이즈를 구하기 위해 int 반환 센스 이용
+//int dfs(int y, int x)
+//{
+//	visited[y][x] = 1;
+//
+//	// 정점의 값 1을 기반으로 이동한 위치들의 값을 더함
+//	int ret = 1;
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		int ny = y + dy[i];
+//		int nx = x + dx[i];
+//
+//		if (0 > ny || 0 > nx || m <= ny || n <= nx) continue;
+//		if (1 == a[ny][nx] || 1 == visited[ny][nx]) continue;
+//
+//		ret += dfs(ny, nx);
+//	}
+//
+//	return ret;
+//}
+//
+//int main()
+//{
+//	cin >> m >> n >> k;
+//
+//	for (int i = 0; i < k; ++i)
+//	{
+//		cin >> x1 >> y1 >> x2 >> y2;
+//
+//		for (int x = x1; x < x2; ++x)
+//		{
+//			for (int y = y1; y < y2; ++y)
+//			{
+//				a[y][x] = 1;
+//			}
+//		}
+//	}
+//
+//	for (int i = 0; i < m; ++i)
+//	{
+//		for (int j = 0; j < n; ++j)
+//		{
+//			// 강사님께선 논리연산자(&&)가 아닌 비트연산자(&)를 사용
+//			// &&과 || 같은 연산들은 어차피 0, 1의 결과값을 가지므로 & 연산을 해줘도 &&을 한 것과 같기 때문
+//			// 초록 밑줄이 신경쓰여서 비트 말고 논리로 바꿈
+//			if (1 != a[i][j] && 0 == visited[i][j])
+//			{
+//				// 사이즈를 구해서 벡터에 넣기
+//				vec.push_back(dfs(i, j));
+//			}
+//		}
+//	}
+//
+//	sort(vec.begin(), vec.end());
+//
+//	// 커넥티드 컴포넌트가 몇 개인지
+//	cout << vec.size() << "\n";
+//	// 사이즈들은 어떻게 되는지
+//	for (int a : vec) cout << a << " ";
+//
+//	return 0;
+//}
 
-// 반환 타입을 void가 아닌 int로 쓴 이유 => 사이즈 누적 연산을 위함, 커넥티드 컴포넌트로 해당 사이즈를 구하기 위해 int 반환 센스 이용
-int dfs(int y, int x)
+// 5_쿼드트리
+// https://www.acmicpc.net/problem/1992
+// (왼쪽위 오른쪽위 왼쪽아래 오른쪽아래)
+// 0과 1이 섞여있다면 해당 부분을 괄호로 표시
+// N: 영상 크기
+int quadtree[64][64];
+int N;
+
+void quadtreeserch(int y, int x, int quadsize)
 {
-	visited[y][x] = 1;
-
-	// 정점의 값 1을 기반으로 이동한 위치들의 값을 더함
-	int ret = 1;
-	for (int i = 0; i < 4; ++i)
+	for (int i = y; i < y + quadsize; ++i)
 	{
-		int ny = y + dy[i];
-		int nx = x + dx[i];
-
-		if (0 > ny || 0 > nx || m <= ny || n <= nx) continue;
-		if (1 == a[ny][nx] || 1 == visited[ny][nx]) continue;
-
-		ret += dfs(ny, nx);
+		for (int j = x; j < x + quadsize; ++j)
+		{
+			// 기준으로 세운 y,x와 다르다면
+			if (quadtree[y][x] != quadtree[i][j])
+			{
+				cout << "(";
+				// 왼쪽위
+				quadtreeserch(y, x, quadsize / 2);
+				// 오른쪽위
+				quadtreeserch(y, x + quadsize / 2, quadsize / 2);
+				// 왼쪽아래
+				quadtreeserch(y + quadsize / 2, x, quadsize / 2);
+				// 오른쪽아래
+				quadtreeserch(y + quadsize / 2, x + quadsize / 2, quadsize / 2);
+				cout << ")";
+				return;
+			}
+		}
 	}
 
-	return ret;
+	// 다르지 않다면 해당 값으로 출력
+	cout << quadtree[y][x];
 }
 
 int main()
 {
-	cin >> m >> n >> k;
+	cin >> N;
 
-	for (int i = 0; i < k; ++i)
+	for (int i = 0; i < N; ++i)
 	{
-		cin >> x1 >> y1 >> x2 >> y2;
+		string s = "";
+		cin >> s;
 
-		for (int x = x1; x < x2; ++x)
+		// quadtree 채우기
+		for (int j = 0; j < s.size(); ++j)
 		{
-			for (int y = y1; y < y2; ++y)
-			{
-				a[y][x] = 1;
-			}
+			quadtree[i][j] = s[j] - '0';
 		}
 	}
 
-	for (int i = 0; i < m; ++i)
-	{
-		for (int j = 0; j < n; ++j)
-		{
-			// 강사님께선 논리연산자(&&)가 아닌 비트연산자(&)를 사용
-			// &&과 || 같은 연산들은 어차피 0, 1의 결과값을 가지므로 & 연산을 해줘도 &&을 한 것과 같기 때문
-			// 초록 밑줄이 신경쓰여서 비트 말고 논리로 바꿈
-			if (1 != a[i][j] && 0 == visited[i][j])
-			{
-				// 사이즈를 구해서 벡터에 넣기
-				vec.push_back(dfs(i, j));
-			}
-		}
-	}
-
-	sort(vec.begin(), vec.end());
-
-	// 커넥티드 컴포넌트가 몇 개인지
-	cout << vec.size() << "\n";
-	// 사이즈들은 어떻게 되는지
-	for (int a : vec) cout << a << " ";
+	quadtreeserch(0, 0, N);
 
 	return 0;
 }
