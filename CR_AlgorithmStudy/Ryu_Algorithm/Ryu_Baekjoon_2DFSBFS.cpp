@@ -712,32 +712,75 @@ using namespace std;
 // 이동할 시 왼쪽 위치를 변경
 // N: 스크린 크기 M: 바구니 크기, 1 <= M < N <= 10
 // J: 사과 개수
-int N, M, J, lpos = 1, rpos, ret;
+//int N, M, J, lpos = 1, rpos, ret;
+//
+//int main()
+//{
+//	cin >> N >> M >> J;
+//
+//	for (int i = 0; i < J; ++i)
+//	{
+//		int value = 0;
+//		cin >> value;
+//		// 현재 왼쪽 위치 기준으로 오른쪽 위치 초기화
+//		rpos = lpos + M - 1;
+//		
+//		if (0 == (lpos <= value && rpos >= value))
+//		{
+//			// 왼쪽 위치 보다 사과 위치가 더 작은 경우
+//			if (lpos > value)
+//			{
+//				ret += (lpos - value);
+//				lpos = value;
+//			}
+//			// 왼쪽 위치 보다 사과 위치가 더 작은 경우
+//			else
+//			{
+//				ret += (value - rpos);
+//				lpos += value - rpos;
+//			}
+//		}
+//	}
+//
+//	cout << ret << "\n";
+//
+//	return 0;
+//}
+
+// 또 다른 풀이법(?)
+// 내 풀이와 유사
+// 최소로 움직여야 한다
+int n, m, j, l, r, temp, ret;
 
 int main()
 {
-	cin >> N >> M >> J;
+	cin >> n >> m >> j;
+	// 왼쪽 시작 위치 지정
+	l = 1;
 
-	for (int i = 0; i < J; ++i)
+	for (int i = 0; i < j; ++i)
 	{
-		int value = 0;
-		cin >> value;
-		// 현재 왼쪽 위치 기준으로 오른쪽 위치 초기화
-		rpos = lpos + M - 1;
-		
-		if (0 == (lpos <= value && rpos >= value))
+		// l로부터 시작해서 m - 1까지가 r
+		// 수정된 l을 기반으로 r 정의
+		r = l + m - 1;
+		cin >> temp;
+
+		// 바구니 안에 들어오면 continue
+		if (l <= temp && r >= temp) continue;
+		// 바구니에 담기 위해 바구니 이동
+		else
 		{
-			// 왼쪽 위치 보다 사과 위치가 더 작은 경우
-			if (lpos > value)
+			// 왼쪽 이동
+			if (l > temp)
 			{
-				ret += (lpos - value);
-				lpos = value;
+				ret += (l - temp);
+				l = temp;
 			}
-			// 왼쪽 위치 보다 사과 위치가 더 작은 경우
+			// 오른쪽 이동
 			else
 			{
-				ret += (value - rpos);
-				lpos += value - rpos;
+				ret += (temp - r);
+				l += (temp - r);
 			}
 		}
 	}
