@@ -649,58 +649,100 @@ using namespace std;
 // 반복되는 행위 규칙이 보이면 재귀함수 활용
 // 분할정복: 큰 문제를 하위 문제로 쪼개는 방식, 하위 문제를 해결하는 방식으로 상위 문제가 해결
 // 분할정복은 재귀 혹은 스택으로 풀이 가능
-int n;
-string s;
-char a[101][101];
+//int n;
+//string s;
+//char a[101][101];
+//
+//string quard(int y, int x, int size)
+//{
+//	// 더이상 쪼개지지 않을 때
+//	// string(1, a[y][x]) => 캐릭터형을 스트링으로 바꾸기 위함
+//	if (1 == size) return string(1, a[y][x]);
+//
+//	bool flag = false;
+//	char b = a[y][x];
+//	string ret = "";
+//
+//	for (int i = y; i < y + size; ++i)
+//	{
+//		for (int j = x; j < x + size; ++j)
+//		{
+//			if (b != a[i][j])
+//			{
+//				// 같지 않을 경우 괄호 속 문자열 로직
+//				ret += '(';
+//				ret += quard(y, x, size / 2);
+//				ret += quard(y, x + size / 2, size / 2);
+//				ret += quard(y + size / 2, x, size / 2);
+//				ret += quard(y + size / 2, x + size / 2, size / 2);
+//				ret += ')';
+//				
+//				return ret;
+//			}
+//		}
+//	}
+//
+//	// 위의 로직에 걸리지 않는다면 0 또는 1을 반환하게 설계
+//	return string(1, a[y][x]);
+//}
+//
+//int main()
+//{
+//	cin >> n;
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		cin >> s;
+//
+//		for (int j = 0; j < n; ++j)
+//		{
+//			a[i][j] = s[j];
+//		}
+//	}
+//
+//	cout << quard(0, 0, n) << "\n";
+//
+//	return 0;
+//}
 
-string quard(int y, int x, int size)
+// 6_사과 담기 게임
+// https://www.acmicpc.net/problem/2828
+// 바구니는 가장 처음 왼쪽에 위치
+// 바구니 왼쪽을 기준으로 크기에 따라 오른쪽 위치를 재설정해주기 때문에
+// 이동할 시 왼쪽 위치를 변경
+// N: 스크린 크기 M: 바구니 크기, 1 <= M < N <= 10
+// J: 사과 개수
+int N, M, J, lpos = 1, rpos, ret;
+
+int main()
 {
-	// 더이상 쪼개지지 않을 때
-	// string(1, a[y][x]) => 캐릭터형을 스트링으로 바꾸기 위함
-	if (1 == size) return string(1, a[y][x]);
+	cin >> N >> M >> J;
 
-	bool flag = false;
-	char b = a[y][x];
-	string ret = "";
-
-	for (int i = y; i < y + size; ++i)
+	for (int i = 0; i < J; ++i)
 	{
-		for (int j = x; j < x + size; ++j)
+		int value = 0;
+		cin >> value;
+		// 현재 왼쪽 위치 기준으로 오른쪽 위치 초기화
+		rpos = lpos + M - 1;
+		
+		if (0 == (lpos <= value && rpos >= value))
 		{
-			if (b != a[i][j])
+			// 왼쪽 위치 보다 사과 위치가 더 작은 경우
+			if (lpos > value)
 			{
-				// 같지 않을 경우 괄호 속 문자열 로직
-				ret += '(';
-				ret += quard(y, x, size / 2);
-				ret += quard(y, x + size / 2, size / 2);
-				ret += quard(y + size / 2, x, size / 2);
-				ret += quard(y + size / 2, x + size / 2, size / 2);
-				ret += ')';
-				
-				return ret;
+				ret += (lpos - value);
+				lpos = value;
+			}
+			// 왼쪽 위치 보다 사과 위치가 더 작은 경우
+			else
+			{
+				ret += (value - rpos);
+				lpos += value - rpos;
 			}
 		}
 	}
 
-	// 위의 로직에 걸리지 않는다면 0 또는 1을 반환하게 설계
-	return string(1, a[y][x]);
-}
-
-int main()
-{
-	cin >> n;
-
-	for (int i = 0; i < n; ++i)
-	{
-		cin >> s;
-
-		for (int j = 0; j < n; ++j)
-		{
-			a[i][j] = s[j];
-		}
-	}
-
-	cout << quard(0, 0, n) << "\n";
+	cout << ret << "\n";
 
 	return 0;
 }
