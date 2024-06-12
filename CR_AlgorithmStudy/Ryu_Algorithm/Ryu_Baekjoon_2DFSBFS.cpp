@@ -797,24 +797,92 @@ using namespace std;
 // 숫자, 카운트, 순서를 생각해서 벡터 자료 구조 두개 이용, 하나로는 잘 안 떠올라서..
 // N: 메시지 숫자 개수(최대 천)
 // C: 숫자(수열)의 최대(최대 10억)
-int N, C;
-vector<int> order;
-vector<pair<int, int>> code;	// first: 카운트, second: 숫자
+//int N, C;
+//vector<int> order;
+//vector<pair<int, int>> code;	// first: 카운트, second: 숫자
+//
+//bool compare(const pair<int, int>& a, const pair<int, int>& b)
+//{
+//	// 카운트가 같을 경우
+//	if (a.first == b.first)
+//	{
+//		// 입력 순서대로 담긴 order 배열 이용해 정렬 정리
+//		for (int i : order)
+//		{
+//			// a의 첫 인덱스와 b의 첫 인덱스를 비교
+//			int idxa = find(order.begin(), order.end(), a.second) - order.begin();
+//			int idxb = find(order.begin(), order.end(), b.second) - order.begin();
+//
+//			return idxa < idxb ? true : false;
+//		}
+//	}
+//
+//	return a.first > b.first;
+//}
+//
+//int main()
+//{
+//	cin >> N >> C;
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		int number = 0;
+//		cin >> number;
+//
+//		order.push_back(number);
+//	}
+//
+//	for (int number : order)
+//	{
+//		// code에 이미 숫자가 있는 경우 없는 경우를 구분하기 위한 flag bool
+//		bool flag = false;
+//		// code가 비어있지 않을 경우
+//		if (false == code.empty())
+//		{
+//			for (int i = 0; i < code.size(); ++i)
+//			{
+//				// 같은 수가 있다면 카운트 증가 및 flag 변경
+//				if (number == code[i].second)
+//				{
+//					++code[i].first;
+//					flag = true;
+//					break;
+//				}
+//			}
+//		}
+//		// code가 비어있거나 flag 변경이 없었다면 code에 추가
+//		if (true == code.empty() || false == flag) code.push_back(make_pair(1, number));
+//	}
+//
+//	// 카운트 중점 내림차순 정렬
+//	sort(code.begin(), code.end(), compare);
+//
+//	for (pair<int, int> temp : code)
+//	{
+//		// 카운트 숫자에 맞게 반복 출력
+//		for (int i = 0; i < temp.first; ++i)
+//		{
+//			cout << temp.second << " ";
+//		}
+//	}
+//
+//	return 0;
+//}
 
-bool compare(const pair<int, int>& a, const pair<int, int>& b)
+// 또 다른 풀이법(?)
+// 해당 문제는 커스텀 오퍼레이터(?)를 떠올려야 한다
+// 1순위 정렬: 카운팅, 2순위 정렬: 먼저 나온 수
+int n, c, a[1004];
+vector<pair<int, int>> v;
+map<int, int> mp, mp_first;		// mp: 카운팅 배열로 사용, mp_first: 첫 번째 값 할당
+
+bool cmp(pair<int, int> a, pair<int, int> b)
 {
-	// 카운트가 같을 경우
+	// 카운팅이 같다면
 	if (a.first == b.first)
 	{
-		// 입력 순서대로 담긴 order 배열 이용해 정렬 정리
-		for (int i : order)
-		{
-			// a의 첫 인덱스와 b의 첫 인덱스를 비교
-			int idxa = find(order.begin(), order.end(), a.second) - order.begin();
-			int idxb = find(order.begin(), order.end(), b.second) - order.begin();
-
-			return idxa < idxb ? true : false;
-		}
+		// 먼저 나온 것을 비교
+		return mp_first[a.second] < mp_first[b.second];
 	}
 
 	return a.first > b.first;
@@ -822,47 +890,27 @@ bool compare(const pair<int, int>& a, const pair<int, int>& b)
 
 int main()
 {
-	cin >> N >> C;
+	cin >> n >> c;
 
-	for (int i = 0; i < N; ++i)
+	for (int i = 0; i < n; ++i)
 	{
-		int number = 0;
-		cin >> number;
+		cin >> a[i];
+		++mp_first[a[i]];
 
-		order.push_back(number);
+		// mp_first[a[i]]에 값이 있는지 없는지, 0이면 값이 없었던 것으로 새로 할당
+		// i + 1로 한 이유는, 참조가 일어나지 않았으면 0이기 때문에 i로 할 경우 초반에 0으로 되어 로직에 문제가 발생하기 때문 
+		if (0 == mp_first[a[i]]) mp_first[a[i]] = i + 1;
 	}
 
-	for (int number : order)
-	{
-		// code에 이미 숫자가 있는 경우 없는 경우를 구분하기 위한 flag bool
-		bool flag = false;
-		// code가 비어있지 않을 경우
-		if (false == code.empty())
-		{
-			for (int i = 0; i < code.size(); ++i)
-			{
-				// 같은 수가 있다면 카운트 증가 및 flag 변경
-				if (number == code[i].second)
-				{
-					++code[i].first;
-					flag = true;
-					break;
-				}
-			}
-		}
-		// code가 비어있거나 flag 변경이 없었다면 code에 추가
-		if (true == code.empty() || false == flag) code.push_back(make_pair(1, number));
-	}
+	for (auto& it : mp) v.push_back({ it.second, it.first });
 
-	// 카운트 중점 내림차순 정렬
-	sort(code.begin(), code.end(), compare);
+	sort(v.begin(), v.end(), cmp);
 
-	for (pair<int, int> temp : code)
+	for (auto& i : v)
 	{
-		// 카운트 숫자에 맞게 반복 출력
-		for (int i = 0; i < temp.first; ++i)
+		for (int j = 0; j < i.first; ++j)
 		{
-			cout << temp.second << " ";
+			cout << i.second << " ";
 		}
 	}
 
