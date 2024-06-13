@@ -921,76 +921,147 @@ using namespace std;
 // https://www.acmicpc.net/problem/4659
 // 모음 하나를 반드시 포함 / 연속된 모음 3개 혹은 연속된 자음 3개 불가 / 같은 문자 연속 두번X(단, ee나 oo 가능)
 // 비밀번호는 20자 이하의 문자열
-string str;
-int vowelcnt, consonantcnt;
+//string str;
+//int vowelcnt, consonantcnt;
+//
+//bool password()
+//{
+//	// 초기화
+//	vowelcnt = 0;
+//	consonantcnt = 0;
+//
+//	// 모음 포함 확인
+//	bool bVowel = false;
+//	for (char c : str)
+//	{
+//		if ('a' == c || 'e' == c || 'i' == c || 'o' == c || 'u' == c)
+//		{
+//			bVowel = true;
+//			break;
+//		}
+//	}
+//
+//	if (false == bVowel) return false;
+//
+//	// 연속 모음 3개, 자음 3개 => false 확인
+//	for (int i = 0; i < str.size(); ++i)
+//	{
+//		// 모음
+//		if ('a' == str[i] || 'e' == str[i] || 'i' == str[i] || 'o' == str[i] || 'u' == str[i])
+//		{
+//			++vowelcnt;
+//			consonantcnt = 0;
+//		}
+//		// 자음
+//		else
+//		{
+//			++consonantcnt;
+//			vowelcnt = 0;
+//		}
+//
+//		if (3 <= vowelcnt || 3 <= consonantcnt) return false;
+//	}
+//
+//
+//	// 같은 문자 연속 두번 => false
+//	// ee, oo => true
+//	for (int i = 1; i < str.size(); ++i)
+//	{
+//		if ('e' == str[i] || 'o' == str[i]) continue;
+//		if (str[i] == str[i - 1]) return false;
+//	}
+//	
+//	// 위의 조건들에 안 걸리고 여기까지 왔다면 비밀번호 성공
+//	return true;
+//}
+//
+//void print(bool bFT)
+//{
+//	string ret = bFT ? "> is acceptable." : "> is not acceptable.";
+//	
+//	cout << '<' << str << ret << "\n";
+//}
+//
+//int main()
+//{
+//	while (true)
+//	{
+//		cin >> str;
+//
+//		if ("end" == str) break;
+//
+//		print(password());
+//	}
+//
+//	return 0;
+//}
 
-bool password()
+// 또 다른 풀이법(?)
+// flag를 이용하여 풀이
+// 조건1) 모음 또는 자음이 3개 이상X
+// 조건2) 모음 반드시 포함
+// 조건3) o,e 제외 연속 불가
+string s;
+int lcnt, vcnt;
+
+bool isVowel(int idx)
 {
-	// 초기화
-	vowelcnt = 0;
-	consonantcnt = 0;
-
-	// 모음 포함 확인
-	bool bVowel = false;
-	for (char c : str)
-	{
-		if ('a' == c || 'e' == c || 'i' == c || 'o' == c || 'u' == c)
-		{
-			bVowel = true;
-			break;
-		}
-	}
-
-	if (false == bVowel) return false;
-
-	// 연속 모음 3개, 자음 3개 => false 확인
-	for (int i = 0; i < str.size(); ++i)
-	{
-		// 모음
-		if ('a' == str[i] || 'e' == str[i] || 'i' == str[i] || 'o' == str[i] || 'u' == str[i])
-		{
-			++vowelcnt;
-			consonantcnt = 0;
-		}
-		// 자음
-		else
-		{
-			++consonantcnt;
-			vowelcnt = 0;
-		}
-
-		if (3 <= vowelcnt || 3 <= consonantcnt) return false;
-	}
-
-
-	// 같은 문자 연속 두번 => false
-	// ee, oo => true
-	for (int i = 1; i < str.size(); ++i)
-	{
-		if ('e' == str[i] || 'o' == str[i]) continue;
-		if (str[i] == str[i - 1]) return false;
-	}
-	
-	// 위의 조건들에 안 걸리고 여기까지 왔다면 비밀번호 성공
-	return true;
-}
-
-void print(bool bFT)
-{
-	string ret = bFT ? "> is acceptable." : "> is not acceptable.";
-	
-	cout << '<' << str << ret << "\n";
+	return ('a' == idx || 'e' == idx || 'i' == idx || 'o' == idx || 'u' == idx);
 }
 
 int main()
 {
 	while (true)
 	{
-		cin >> str;
+		cin >> s;
 
-		if ("end" == str) break;
+		if ("end" == s) break;
 
-		print(password());
+		// 초기화
+		lcnt = vcnt = 0;
+
+		bool flag = 0;
+		bool is_include_v = 0;
+		int prev = -1;
+
+		// s 문자열만큼 순회
+		for (int i = 0; i < s.size(); ++i)
+		{
+			// idx == 알파벳 아스키코드
+			int idx = s[i];
+			// isVowel함수로 모음인지 확인
+			// 모음
+			if (true == isVowel(idx))
+			{
+				++lcnt;
+				vcnt = 0;
+				// 모음이 반드시 있는지 확인하기 위한 것
+				is_include_v = 1;
+			}
+			// 자음
+			else
+			{
+				++vcnt;
+				lcnt = 0;
+			}
+
+			// 모음 혹은 자음이 연속 3개일 때를 확인
+			if (3 == vcnt || 3 == lcnt) flag = 1;
+
+			// s[i] == a[i - 1]도 가능하지만 prev를 이용하는 방법도 있음
+			// 0의 이전은 존재하지 않으니까 1이상인지 확인
+			// 현재 idx와 이전이 같은지 확인
+			// e,o가 아닌지 확인
+			if ((1 <= i) && (idx == prev) && ('e' != idx && 'o' != idx)) flag = 1;
+			// 연속된 같은 문자 확인을 위한, 전항에 대한 정보를 업데이트
+			// 이와 같이하면 직전 항과 비교를 변수 하나로 쉽게 해결 가능
+			prev = idx;
+		}
+
+		if (0 == is_include_v) flag = 1;
+
+		if (true == flag) cout << "<" << s << ">" << " is not acceptable.\n";
+		else cout << "<" << s << ">" << " is acceptable.\n";
 	}
 
 	return 0;
