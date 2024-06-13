@@ -872,46 +872,125 @@ using namespace std;
 // 또 다른 풀이법(?)
 // 해당 문제는 커스텀 오퍼레이터(?)를 떠올려야 한다
 // 1순위 정렬: 카운팅, 2순위 정렬: 먼저 나온 수
-int n, c, a[1004];
-vector<pair<int, int>> v;
-map<int, int> mp, mp_first;		// mp: 카운팅 배열로 사용, mp_first: 첫 번째 값 할당
+//int n, c, a[1004];
+//vector<pair<int, int>> v;
+//map<int, int> mp, mp_first;		// mp: 카운팅 배열로 사용, mp_first: 첫 번째 값 할당
+//
+//bool cmp(pair<int, int> a, pair<int, int> b)
+//{
+//	// 카운팅이 같다면
+//	if (a.first == b.first)
+//	{
+//		// 먼저 나온 것을 비교
+//		return mp_first[a.second] < mp_first[b.second];
+//	}
+//
+//	return a.first > b.first;
+//}
+//
+//int main()
+//{
+//	cin >> n >> c;
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		cin >> a[i];
+//		++mp_first[a[i]];
+//
+//		// mp_first[a[i]]에 값이 있는지 없는지, 0이면 값이 없었던 것으로 새로 할당
+//		// i + 1로 한 이유는, 참조가 일어나지 않았으면 0이기 때문에 i로 할 경우 초반에 0으로 되어 로직에 문제가 발생하기 때문 
+//		if (0 == mp_first[a[i]]) mp_first[a[i]] = i + 1;
+//	}
+//
+//	for (auto& it : mp) v.push_back({ it.second, it.first });
+//
+//	sort(v.begin(), v.end(), cmp);
+//
+//	for (auto& i : v)
+//	{
+//		for (int j = 0; j < i.first; ++j)
+//		{
+//			cout << i.second << " ";
+//		}
+//	}
+//
+//	return 0;
+//}
 
-bool cmp(pair<int, int> a, pair<int, int> b)
+// 8_비밀번호 발음하기
+// https://www.acmicpc.net/problem/4659
+// 모음 하나를 반드시 포함 / 연속된 모음 3개 혹은 연속된 자음 3개 불가 / 같은 문자 연속 두번X(단, ee나 oo 가능)
+// 비밀번호는 20자 이하의 문자열
+string str;
+int vowelcnt, consonantcnt;
+
+bool password()
 {
-	// 카운팅이 같다면
-	if (a.first == b.first)
+	// 초기화
+	vowelcnt = 0;
+	consonantcnt = 0;
+
+	// 모음 포함 확인
+	bool bVowel = false;
+	for (char c : str)
 	{
-		// 먼저 나온 것을 비교
-		return mp_first[a.second] < mp_first[b.second];
+		if ('a' == c || 'e' == c || 'i' == c || 'o' == c || 'u' == c)
+		{
+			bVowel = true;
+			break;
+		}
 	}
 
-	return a.first > b.first;
+	if (false == bVowel) return false;
+
+	// 연속 모음 3개, 자음 3개 => false 확인
+	for (int i = 0; i < str.size(); ++i)
+	{
+		// 모음
+		if ('a' == str[i] || 'e' == str[i] || 'i' == str[i] || 'o' == str[i] || 'u' == str[i])
+		{
+			++vowelcnt;
+			consonantcnt = 0;
+		}
+		// 자음
+		else
+		{
+			++consonantcnt;
+			vowelcnt = 0;
+		}
+
+		if (3 <= vowelcnt || 3 <= consonantcnt) return false;
+	}
+
+
+	// 같은 문자 연속 두번 => false
+	// ee, oo => true
+	for (int i = 1; i < str.size(); ++i)
+	{
+		if ('e' == str[i] || 'o' == str[i]) continue;
+		if (str[i] == str[i - 1]) return false;
+	}
+	
+	// 위의 조건들에 안 걸리고 여기까지 왔다면 비밀번호 성공
+	return true;
+}
+
+void print(bool bFT)
+{
+	string ret = bFT ? "> is acceptable." : "> is not acceptable.";
+	
+	cout << '<' << str << ret << "\n";
 }
 
 int main()
 {
-	cin >> n >> c;
-
-	for (int i = 0; i < n; ++i)
+	while (true)
 	{
-		cin >> a[i];
-		++mp_first[a[i]];
+		cin >> str;
 
-		// mp_first[a[i]]에 값이 있는지 없는지, 0이면 값이 없었던 것으로 새로 할당
-		// i + 1로 한 이유는, 참조가 일어나지 않았으면 0이기 때문에 i로 할 경우 초반에 0으로 되어 로직에 문제가 발생하기 때문 
-		if (0 == mp_first[a[i]]) mp_first[a[i]] = i + 1;
-	}
+		if ("end" == str) break;
 
-	for (auto& it : mp) v.push_back({ it.second, it.first });
-
-	sort(v.begin(), v.end(), cmp);
-
-	for (auto& i : v)
-	{
-		for (int j = 0; j < i.first; ++j)
-		{
-			cout << i.second << " ";
-		}
+		print(password());
 	}
 
 	return 0;
