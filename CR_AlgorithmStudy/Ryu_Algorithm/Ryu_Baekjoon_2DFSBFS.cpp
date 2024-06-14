@@ -1072,13 +1072,95 @@ using namespace std;
 // 오름차순 정렬
 // 숫자 앞에 0이 있을 경우 생략 가능
 // N: 종이 줄 개수
-int N;
-// long long 또한 8바이트로 64자리까지 밖에 표현 못한다..
-// string으로 담아서 sort 할 때 문자열 길이로 정렬하고 길이가 같을 경우 아스키코드상 작은 수가 먼저 오게 정렬하는 함수 필요 할 듯? => 성공
-//vector<long long> vec;
-vector<string> vec;
+//int N;
+//// long long 또한 8바이트로 64자리까지 밖에 표현 못한다..
+//// string으로 담아서 sort 할 때 문자열 길이로 정렬하고 길이가 같을 경우 아스키코드상 작은 수가 먼저 오게 정렬하는 함수 필요 할 듯? => 성공
+////vector<long long> vec;
+//vector<string> vec;
+//
+//bool compare(string& a, string& b)
+//{
+//	if (a.size() == b.size()) return a < b;
+//
+//	return a.size() < b.size();
+//}
+//
+//int main()
+//{
+//	cin >> N;
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		string str = "";
+//		cin >> str;
+//
+//		string num = "";
+//		for (int j = 0; j < str.size(); ++j)
+//		{
+//			// 숫자문자 일 경우
+//			if (10 > str[j] - '0')
+//			{
+//				// 숫자 앞에 0이 있으면 제거하기 위함
+//				if ("0" == num)
+//				{
+//					num = str[j];
+//					continue;
+//				}
+//
+//				num += str[j];
+//			}
+//			else
+//			{
+//				if (false == num.empty())
+//				{
+//					vec.push_back(num);
+//					num = "";
+//				}
+//			}
+//		}
+//
+//		// 중복되는 코드라 마음에 들지 않지만.. 마지막이 숫자 문자거나 숫자문자로만 들어오는 경우 때문에 추가
+//		if (false == num.empty()) vec.push_back(num);
+//	}
+//
+//	sort(vec.begin(), vec.end(), compare);
+//
+//	for (string i : vec) cout << i << "\n";
+//
+//	return 0;
+//}
 
-bool compare(string& a, string& b)
+// 또 다른 풀이법(?)
+// 100글자, 문자열 중 숫자를 찾아 벡터에 담아 숫자 정렬
+// int는 10글자 표현 가능
+// long long은 19글자 => 엇 비트와 바이트를 생각해서 해당 크기만큼의 자리인줄 알고 64자리까지 되는 줄 알았는데 너무나도 잘못 알고 있었다
+// string으로 처리해야됨
+// 숫자만 뽑는 로직 -> 앞에 0이 있을 때 뺴는 로직
+int n;
+string s, ret;
+vector<string> v;
+
+// 0에 대한 처리 함수
+void go()
+{
+	// 0 제거
+	while (true)
+	{
+		// ret이 비어있지 않고 ret의 제일 앞이 '0'이라면, 앞 0을 지우기
+		if (0 != ret.size() && '0' == ret.front()) ret.erase(ret.begin());
+		else break;
+	}
+
+	// 0 하나인 경우가 있기 때문에 다 없으면 0이 없어지는 해당 오류부분 잡기
+	if (0 == ret.size()) ret = "0";
+
+	v.push_back(ret);
+	ret = "";
+}
+
+// 문자열 비교를 했을 때 123, 20이 있다면 string sort는 123이 20보다 작다고 처리
+// 따라서 해당 부분에 대한 커스텀 오퍼레이터
+bool cmp(string a, string b)
 {
 	if (a.size() == b.size()) return a < b;
 
@@ -1087,45 +1169,28 @@ bool compare(string& a, string& b)
 
 int main()
 {
-	cin >> N;
+	cin >> n;
 
-	for (int i = 0; i < N; ++i)
+	for (int i = 0; i < n; ++i)
 	{
-		string str = "";
-		cin >> str;
+		cin >> s;
+		// 문자 초기화
+		ret = "";
 
-		string num = "";
-		for (int j = 0; j < str.size(); ++j)
+		for (int j = 0; j < s.size(); ++j)
 		{
-			// 숫자문자 일 경우
-			if (10 > str[j] - '0')
-			{
-				// 숫자 앞에 0이 있으면 제거하기 위함
-				if ("0" == num)
-				{
-					num = str[j];
-					continue;
-				}
-
-				num += str[j];
-			}
-			else
-			{
-				if (false == num.empty())
-				{
-					vec.push_back(num);
-					num = "";
-				}
-			}
+			// 숫자 만들기
+			if (65 > s[j]) ret += s[j];
+			// 문자가 숫자가 아니고 ret이 비어있지 않으면 go 호출
+			else if (0 != ret.size()) go();
 		}
 
-		// 중복되는 코드라 마음에 들지 않지만.. 마지막이 숫자 문자거나 숫자문자로만 들어오는 경우 때문에 추가
-		if (false == num.empty()) vec.push_back(num);
+		if (0 != ret.size()) go();
 	}
 
-	sort(vec.begin(), vec.end(), compare);
+	sort(v.begin(), v.end(), cmp);
 
-	for (string i : vec) cout << i << "\n";
+	for (string i : v) cout << i << "\n";
 
 	return 0;
 }
