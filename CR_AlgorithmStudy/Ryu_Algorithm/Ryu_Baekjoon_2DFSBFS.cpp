@@ -1001,68 +1001,131 @@ using namespace std;
 // 조건1) 모음 또는 자음이 3개 이상X
 // 조건2) 모음 반드시 포함
 // 조건3) o,e 제외 연속 불가
-string s;
-int lcnt, vcnt;
+//string s;
+//int lcnt, vcnt;
+//
+//bool isVowel(int idx)
+//{
+//	return ('a' == idx || 'e' == idx || 'i' == idx || 'o' == idx || 'u' == idx);
+//}
+//
+//int main()
+//{
+//	while (true)
+//	{
+//		cin >> s;
+//
+//		if ("end" == s) break;
+//
+//		// 초기화
+//		lcnt = vcnt = 0;
+//
+//		bool flag = 0;
+//		bool is_include_v = 0;
+//		int prev = -1;
+//
+//		// s 문자열만큼 순회
+//		for (int i = 0; i < s.size(); ++i)
+//		{
+//			// idx == 알파벳 아스키코드
+//			int idx = s[i];
+//			// isVowel함수로 모음인지 확인
+//			// 모음
+//			if (true == isVowel(idx))
+//			{
+//				++lcnt;
+//				vcnt = 0;
+//				// 모음이 반드시 있는지 확인하기 위한 것
+//				is_include_v = 1;
+//			}
+//			// 자음
+//			else
+//			{
+//				++vcnt;
+//				lcnt = 0;
+//			}
+//
+//			// 모음 혹은 자음이 연속 3개일 때를 확인
+//			if (3 == vcnt || 3 == lcnt) flag = 1;
+//
+//			// s[i] == a[i - 1]도 가능하지만 prev를 이용하는 방법도 있음
+//			// 0의 이전은 존재하지 않으니까 1이상인지 확인
+//			// 현재 idx와 이전이 같은지 확인
+//			// e,o가 아닌지 확인
+//			if ((1 <= i) && (idx == prev) && ('e' != idx && 'o' != idx)) flag = 1;
+//			// 연속된 같은 문자 확인을 위한, 전항에 대한 정보를 업데이트
+//			// 이와 같이하면 직전 항과 비교를 변수 하나로 쉽게 해결 가능
+//			prev = idx;
+//		}
+//
+//		if (0 == is_include_v) flag = 1;
+//
+//		if (true == flag) cout << "<" << s << ">" << " is not acceptable.\n";
+//		else cout << "<" << s << ">" << " is acceptable.\n";
+//	}
+//
+//	return 0;
+//}
 
-bool isVowel(int idx)
+// 9_수학숙제
+// https://www.acmicpc.net/problem/2870
+// 오름차순 정렬
+// 숫자 앞에 0이 있을 경우 생략 가능
+// N: 종이 줄 개수
+int N;
+// long long 또한 8바이트로 64자리까지 밖에 표현 못한다..
+// string으로 담아서 sort 할 때 문자열 길이로 정렬하고 길이가 같을 경우 아스키코드상 작은 수가 먼저 오게 정렬하는 함수 필요 할 듯? => 성공
+//vector<long long> vec;
+vector<string> vec;
+
+bool compare(string& a, string& b)
 {
-	return ('a' == idx || 'e' == idx || 'i' == idx || 'o' == idx || 'u' == idx);
+	if (a.size() == b.size()) return a < b;
+
+	return a.size() < b.size();
 }
 
 int main()
 {
-	while (true)
+	cin >> N;
+
+	for (int i = 0; i < N; ++i)
 	{
-		cin >> s;
+		string str = "";
+		cin >> str;
 
-		if ("end" == s) break;
-
-		// 초기화
-		lcnt = vcnt = 0;
-
-		bool flag = 0;
-		bool is_include_v = 0;
-		int prev = -1;
-
-		// s 문자열만큼 순회
-		for (int i = 0; i < s.size(); ++i)
+		string num = "";
+		for (int j = 0; j < str.size(); ++j)
 		{
-			// idx == 알파벳 아스키코드
-			int idx = s[i];
-			// isVowel함수로 모음인지 확인
-			// 모음
-			if (true == isVowel(idx))
+			// 숫자문자 일 경우
+			if (10 > str[j] - '0')
 			{
-				++lcnt;
-				vcnt = 0;
-				// 모음이 반드시 있는지 확인하기 위한 것
-				is_include_v = 1;
+				// 숫자 앞에 0이 있으면 제거하기 위함
+				if ("0" == num)
+				{
+					num = str[j];
+					continue;
+				}
+
+				num += str[j];
 			}
-			// 자음
 			else
 			{
-				++vcnt;
-				lcnt = 0;
+				if (false == num.empty())
+				{
+					vec.push_back(num);
+					num = "";
+				}
 			}
-
-			// 모음 혹은 자음이 연속 3개일 때를 확인
-			if (3 == vcnt || 3 == lcnt) flag = 1;
-
-			// s[i] == a[i - 1]도 가능하지만 prev를 이용하는 방법도 있음
-			// 0의 이전은 존재하지 않으니까 1이상인지 확인
-			// 현재 idx와 이전이 같은지 확인
-			// e,o가 아닌지 확인
-			if ((1 <= i) && (idx == prev) && ('e' != idx && 'o' != idx)) flag = 1;
-			// 연속된 같은 문자 확인을 위한, 전항에 대한 정보를 업데이트
-			// 이와 같이하면 직전 항과 비교를 변수 하나로 쉽게 해결 가능
-			prev = idx;
 		}
 
-		if (0 == is_include_v) flag = 1;
-
-		if (true == flag) cout << "<" << s << ">" << " is not acceptable.\n";
-		else cout << "<" << s << ">" << " is acceptable.\n";
+		// 중복되는 코드라 마음에 들지 않지만.. 마지막이 숫자 문자거나 숫자문자로만 들어오는 경우 때문에 추가
+		if (false == num.empty()) vec.push_back(num);
 	}
+
+	sort(vec.begin(), vec.end(), compare);
+
+	for (string i : vec) cout << i << "\n";
 
 	return 0;
 }
