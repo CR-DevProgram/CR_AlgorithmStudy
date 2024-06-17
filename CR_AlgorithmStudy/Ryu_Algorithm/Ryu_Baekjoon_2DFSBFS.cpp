@@ -1200,46 +1200,98 @@ using namespace std;
 // 1분마다 동쪽으로 이동
 // 외부 구름 유입X
 // H: 행, W: 열
-int H, W;
-int cloudemove[100][100];
+//int H, W;
+//int cloudemove[100][100];
+//
+//int main()
+//{
+//	cin >> H >> W;
+//
+//	for (int i = 0; i < H; ++i)
+//	{
+//		string str = "";
+//		cin >> str;
+//
+//		for (int j = 0; j < W; ++j)
+//		{
+//			// 구름을 제외한 나머지 -1
+//			if ('.' == str[j]) cloudemove[i][j] = -1;
+//		}
+//	}
+//
+//	for (int i = 0; i < H; ++i)
+//	{
+//		int cnt = -1;
+//		for (int j = 0; j < W; ++j)
+//		{
+//			// 구름을 만났을 때 카운팅 시작
+//			if (0 == cloudemove[i][j])
+//			{
+//				cnt = 0;
+//				continue;
+//			}
+//			// 구름 만나서 cnt의 값이 변경되면 카운트
+//			else if(-1 != cnt) ++cnt;
+//
+//			cloudemove[i][j] = cnt;
+//		}
+//	}
+//
+//	for (int i = 0; i < H; ++i) 
+//	{
+//		for (int j = 0; j < W; ++j) cout << cloudemove[i][j] << " ";
+//
+//		cout << "\n";
+//	}
+//
+//	return 0;
+//}
+
+// 또 다른 풀이법(?)
+// 구름이 있다면 0으로 시작해서 카운트 증가
+// 구름이 계속 없다면 -1
+int n, m, a[104][104];
+string s;
 
 int main()
 {
-	cin >> H >> W;
+	cin >> n >> m;
 
-	for (int i = 0; i < H; ++i)
+	for (int i = 0; i < n; ++i)
 	{
-		string str = "";
-		cin >> str;
+		cin >> s;
 
-		for (int j = 0; j < W; ++j)
+		for (int j = 0; j < m; ++j)
 		{
-			// 구름을 제외한 나머지 -1
-			if ('.' == str[j]) cloudemove[i][j] = -1;
+			//'.' == s[j] ? a[i][j] = -1 : a[i][j] = 0;
+			if ('.' == s[j]) a[i][j] = -1;
+			else a[i][j] = 0;
 		}
 	}
 
-	for (int i = 0; i < H; ++i)
+	for (int i = 0; i < n; ++i)
 	{
-		int cnt = -1;
-		for (int j = 0; j < W; ++j)
+		for (int j = 0; j < m; ++j)
 		{
-			// 구름을 만났을 때 카운팅 시작
-			if (0 == cloudemove[i][j])
+			// 구름이 있다면
+			if (0 == a[i][j])
 			{
-				cnt = 0;
-				continue;
-			}
-			// 구름 만나서 cnt의 값이 변경되면 카운트
-			else if(-1 != cnt) ++cnt;
+				int cnt = 0;
 
-			cloudemove[i][j] = cnt;
+				// 구름이 아닌 지점은 계속 탐색해서 증가
+				while (-1 == a[i][j + 1])
+				{
+					a[i][j + 1] = ++cnt;
+					// 끝난 지점부터 시작해야되기 때문
+					++j;
+				}
+			}
 		}
 	}
 
-	for (int i = 0; i < H; ++i) 
+	for (int i = 0; i < n; ++i)
 	{
-		for (int j = 0; j < W; ++j) cout << cloudemove[i][j] << " ";
+		for (int j = 0; j < m; ++j) cout << a[i][j] << " ";
 
 		cout << "\n";
 	}
