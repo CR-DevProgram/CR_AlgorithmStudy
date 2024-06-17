@@ -1136,61 +1136,113 @@ using namespace std;
 // long long은 19글자 => 엇 비트와 바이트를 생각해서 해당 크기만큼의 자리인줄 알고 64자리까지 되는 줄 알았는데 너무나도 잘못 알고 있었다
 // string으로 처리해야됨
 // 숫자만 뽑는 로직 -> 앞에 0이 있을 때 뺴는 로직
-int n;
-string s, ret;
-vector<string> v;
+//int n;
+//string s, ret;
+//vector<string> v;
+//
+//// 0에 대한 처리 함수
+//void go()
+//{
+//	// 0 제거
+//	while (true)
+//	{
+//		// ret이 비어있지 않고 ret의 제일 앞이 '0'이라면, 앞 0을 지우기
+//		if (0 != ret.size() && '0' == ret.front()) ret.erase(ret.begin());
+//		else break;
+//	}
+//
+//	// 0 하나인 경우가 있기 때문에 다 없으면 0이 없어지는 해당 오류부분 잡기
+//	if (0 == ret.size()) ret = "0";
+//
+//	v.push_back(ret);
+//	ret = "";
+//}
+//
+//// 문자열 비교를 했을 때 123, 20이 있다면 string sort는 123이 20보다 작다고 처리
+//// 따라서 해당 부분에 대한 커스텀 오퍼레이터
+//bool cmp(string a, string b)
+//{
+//	if (a.size() == b.size()) return a < b;
+//
+//	return a.size() < b.size();
+//}
+//
+//int main()
+//{
+//	cin >> n;
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		cin >> s;
+//		// 문자 초기화
+//		ret = "";
+//
+//		for (int j = 0; j < s.size(); ++j)
+//		{
+//			// 숫자 만들기
+//			if (65 > s[j]) ret += s[j];
+//			// 문자가 숫자가 아니고 ret이 비어있지 않으면 go 호출
+//			else if (0 != ret.size()) go();
+//		}
+//
+//		if (0 != ret.size()) go();
+//	}
+//
+//	sort(v.begin(), v.end(), cmp);
+//
+//	for (string i : v) cout << i << "\n";
+//
+//	return 0;
+//}
 
-// 0에 대한 처리 함수
-void go()
-{
-	// 0 제거
-	while (true)
-	{
-		// ret이 비어있지 않고 ret의 제일 앞이 '0'이라면, 앞 0을 지우기
-		if (0 != ret.size() && '0' == ret.front()) ret.erase(ret.begin());
-		else break;
-	}
-
-	// 0 하나인 경우가 있기 때문에 다 없으면 0이 없어지는 해당 오류부분 잡기
-	if (0 == ret.size()) ret = "0";
-
-	v.push_back(ret);
-	ret = "";
-}
-
-// 문자열 비교를 했을 때 123, 20이 있다면 string sort는 123이 20보다 작다고 처리
-// 따라서 해당 부분에 대한 커스텀 오퍼레이터
-bool cmp(string a, string b)
-{
-	if (a.size() == b.size()) return a < b;
-
-	return a.size() < b.size();
-}
+// 10_기상캐스터
+// https://www.acmicpc.net/problem/10709
+// 1분마다 동쪽으로 이동
+// 외부 구름 유입X
+// H: 행, W: 열
+int H, W;
+int cloudemove[100][100];
 
 int main()
 {
-	cin >> n;
+	cin >> H >> W;
 
-	for (int i = 0; i < n; ++i)
+	for (int i = 0; i < H; ++i)
 	{
-		cin >> s;
-		// 문자 초기화
-		ret = "";
+		string str = "";
+		cin >> str;
 
-		for (int j = 0; j < s.size(); ++j)
+		for (int j = 0; j < W; ++j)
 		{
-			// 숫자 만들기
-			if (65 > s[j]) ret += s[j];
-			// 문자가 숫자가 아니고 ret이 비어있지 않으면 go 호출
-			else if (0 != ret.size()) go();
+			// 구름을 제외한 나머지 -1
+			if ('.' == str[j]) cloudemove[i][j] = -1;
 		}
-
-		if (0 != ret.size()) go();
 	}
 
-	sort(v.begin(), v.end(), cmp);
+	for (int i = 0; i < H; ++i)
+	{
+		int cnt = -1;
+		for (int j = 0; j < W; ++j)
+		{
+			// 구름을 만났을 때 카운팅 시작
+			if (0 == cloudemove[i][j])
+			{
+				cnt = 0;
+				continue;
+			}
+			// 구름 만나서 cnt의 값이 변경되면 카운트
+			else if(-1 != cnt) ++cnt;
 
-	for (string i : v) cout << i << "\n";
+			cloudemove[i][j] = cnt;
+		}
+	}
+
+	for (int i = 0; i < H; ++i) 
+	{
+		for (int j = 0; j < W; ++j) cout << cloudemove[i][j] << " ";
+
+		cout << "\n";
+	}
 
 	return 0;
 }
