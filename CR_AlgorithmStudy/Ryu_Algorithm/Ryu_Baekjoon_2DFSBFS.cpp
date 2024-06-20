@@ -1250,51 +1250,51 @@ using namespace std;
 // 또 다른 풀이법(?)
 // 구름이 있다면 0으로 시작해서 카운트 증가
 // 구름이 계속 없다면 -1
-int n, m, a[104][104];
-string s;
-
-int main()
-{
-	cin >> n >> m;
-
-	for (int i = 0; i < n; ++i)
-	{
-		cin >> s;
-
-		for (int j = 0; j < m; ++j)
-		{
-			//'.' == s[j] ? a[i][j] = -1 : a[i][j] = 0;
-			if ('.' == s[j]) a[i][j] = -1;
-			else a[i][j] = 0;
-		}
-	}
-
-	for (int i = 0; i < n; ++i)
-	{
-		for (int j = 0; j < m; ++j)
-		{
-			// 구름이 있다면
-			if (0 == a[i][j])
-			{
-				int cnt = 0;
-
-				// 구름이 아닌 지점은 계속 탐색해서 증가
-				while (-1 == a[i][j + 1])
-				{
-					a[i][j + 1] = ++cnt;
-					// 끝난 지점부터 시작해야되기 때문
-					++j;
-				}
-			}
-		}
-	}
-
-	for (int i = 0; i < n; ++i)
-	{
-		for (int j = 0; j < m; ++j) cout << a[i][j] << " ";
-
-		cout << "\n";
-	}
-
-	return 0;
-}
+//int n, m, a[104][104];
+//string s;
+//
+//int main()
+//{
+//	cin >> n >> m;
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		cin >> s;
+//
+//		for (int j = 0; j < m; ++j)
+//		{
+//			//'.' == s[j] ? a[i][j] = -1 : a[i][j] = 0;
+//			if ('.' == s[j]) a[i][j] = -1;
+//			else a[i][j] = 0;
+//		}
+//	}
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		for (int j = 0; j < m; ++j)
+//		{
+//			// 구름이 있다면
+//			if (0 == a[i][j])
+//			{
+//				int cnt = 0;
+//
+//				// 구름이 아닌 지점은 계속 탐색해서 증가
+//				while (-1 == a[i][j + 1])
+//				{
+//					a[i][j + 1] = ++cnt;
+//					// 끝난 지점부터 시작해야되기 때문
+//					++j;
+//				}
+//			}
+//		}
+//	}
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		for (int j = 0; j < m; ++j) cout << a[i][j] << " ";
+//
+//		cout << "\n";
+//	}
+//
+//	return 0;
+//}
