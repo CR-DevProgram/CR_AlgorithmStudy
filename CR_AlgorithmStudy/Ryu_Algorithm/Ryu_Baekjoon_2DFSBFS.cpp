@@ -1303,32 +1303,70 @@ using namespace std;
 // https://www.acmicpc.net/problem/3474
 // 오른쪽 끝에 있는 0의 개수, 10을 만들 수 있는 2,5의 수를 파악하면 0의 개수를 알기 쉬울 듯?
 // T: 테스트 케이스 개수
-int T;
+//int T;
+//
+//int main()
+//{
+//	// 아래 코드 추가 안하면 시간초과
+//	ios_base::sync_with_stdio(false);
+//	cin.tie(NULL);
+//	cout.tie(NULL);
+//
+//	cin >> T;
+//
+//	while (0 < T)
+//	{
+//		int N = 0;
+//		cin >> N;
+//
+//		// 5의 배수만 알아도 파악 가능
+//		int multi5 = 0;
+//		for (int i = 5; i <= N; i *= 5)
+//		{
+//			multi5 += (N / i);
+//		}
+//
+//		cout << multi5 << "\n";
+//
+//		--T;
+//	}
+//
+//	return 0;
+//}
+
+// 또 다른 풀이법(?)
+// 내 풀이와 유사
+// 만약 2400이라는 수가 있으면 24 x 10 x 10
+// 즉 0의 개수는 10의 개수
+// 10은 2 x 5, 따라서 2의 개수 5의 개수를 알면 0의 개수를 구할 수 있음
+// 순차적 탐색은 무리, 따라서 2와 5의 승수 배수를 구하는 것이 빠름
+// 해당 개수를 구한 것을 바탕은 최소 min 값을 구하면 됨
+int n, a;
 
 int main()
 {
-	// 아래 코드 추가 안하면 시간초과
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 	cout.tie(NULL);
 
-	cin >> T;
+	cin >> n;
 
-	while (0 < T)
+	for (int i = 0; i < n; ++i)
 	{
-		int N = 0;
-		cin >> N;
-
-		// 5의 배수만 알아도 파악 가능
-		int multi5 = 0;
-		for (int i = 5; i <= N; i *= 5)
+		cin >> a;
+		int ret2 = 0, ret5 = 0;
+		// 2의 승수
+		for (int j = 2; j <= a; j *= 2)
 		{
-			multi5 += (N / i);
+			ret2 += a / j;
+		}
+		// 5의 승수
+		for (int j = 5; j <= a; j *= 5)
+		{
+			ret5 += a / j;
 		}
 
-		cout << multi5 << "\n";
-
-		--T;
+		cout << min(ret2, ret5) << "\n";
 	}
 
 	return 0;
