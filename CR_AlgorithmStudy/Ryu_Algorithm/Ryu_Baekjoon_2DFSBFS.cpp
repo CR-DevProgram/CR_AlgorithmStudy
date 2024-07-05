@@ -1298,3 +1298,38 @@ using namespace std;
 //
 //	return 0;
 //}
+
+// 11_교수가 된 현우
+// https://www.acmicpc.net/problem/3474
+// 오른쪽 끝에 있는 0의 개수, 10을 만들 수 있는 2,5의 수를 파악하면 0의 개수를 알기 쉬울 듯?
+// T: 테스트 케이스 개수
+int T;
+
+int main()
+{
+	// 아래 코드 추가 안하면 시간초과
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
+
+	cin >> T;
+
+	while (0 < T)
+	{
+		int N = 0;
+		cin >> N;
+
+		// 5의 배수만 알아도 파악 가능
+		int multi5 = 0;
+		for (int i = 5; i <= N; i *= 5)
+		{
+			multi5 += (N / i);
+		}
+
+		cout << multi5 << "\n";
+
+		--T;
+	}
+
+	return 0;
+}
