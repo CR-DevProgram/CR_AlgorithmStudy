@@ -1376,49 +1376,103 @@ using namespace std;
 // https://www.acmicpc.net/problem/2852
 // 48분은 48 x 60 = 2880초
 // N: 골 들어간 횟수
-int N, Team1, Team2, LastScore;
-vector<int> Record(2);
+//int N, Team1, Team2, LastScore;
+//vector<int> Record(2);
+//
+//// 문자열로 받은 시간을 정수형 초로 변환
+//int TimeToSeconds(const string& InTime)
+//{
+//	return atoi(InTime.substr(0, 2).c_str()) * 60 + atoi(InTime.substr(3, 2).c_str());
+//}
+//
+//int main()
+//{
+//	cin >> N;
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		int Winner = 0;
+//		string ScoreTime = "";
+//		cin >> Winner;
+//		cin >> ScoreTime;
+//
+//		// 각 팀이 이기고 있을 때 현재 시간과 이전 점수 낸 시간차를 누적
+//		if (Team1 > Team2)
+//		{
+//			Record[0] += TimeToSeconds(ScoreTime) - LastScore;
+//		}
+//		else if (Team1 < Team2)
+//		{
+//			Record[1] += TimeToSeconds(ScoreTime) - LastScore;
+//		}
+//
+//		// 팀 점수 계산
+//		1 == Winner ? ++Team1 : ++Team2;
+//		// 현재 점수 낸 시간을 초로 변환하여 다음 계산 시 이전 시간으로 활용
+//		LastScore = TimeToSeconds(ScoreTime);
+//	}
+//
+//	// 최종 우승팀의 경기 종료 시간까지의 합산
+//	if (Team1 > Team2) Record[0] += 2880 - LastScore;
+//	else if (Team1 < Team2) Record[1] += 2880 - LastScore;
+//
+//	// '00' 두자리 표시를 위해 분 및 초 시간 길이를 통하여 시간 앞에 0 붙이는 작업이자 출력
+//	cout << string(2 - to_string(Record[0] / 60).size(), '0').append(to_string(Record[0] / 60)) << ":" << string(2 - to_string(Record[0] % 60).size(), '0').append(to_string(Record[0] % 60)) << "\n";
+//	cout << string(2 - to_string(Record[1] / 60).size(), '0').append(to_string(Record[1] / 60)) << ":" << string(2 - to_string(Record[1] % 60).size(), '0').append(to_string(Record[1] % 60)) << "\n";
+//
+//	return 0;
+//}
 
-// 문자열로 받은 시간을 정수형 초로 변환
-int TimeToSeconds(const string& InTime)
+// 또 다른 풀이법(prev 활용 및 단위 통일)
+// 내 풀이와 유사...한가?
+// prev를 이용하여 변수 하나만으로 직전 값을 쉽게 활용(define을 사용해야함, 번거로워서 pre로 사용)
+// 시간의 간격을 기반으로 시간 합산
+// 시, 분, 초가 나오면 하나의 단위로 통일할 것(작은 단위 기반의 단위로 통일하는 것이 좋음)
+int n, o, A, B, asum, bsum;
+string s, pre;
+
+// MM:SS 로 변경
+string print(int a)
 {
-	return atoi(InTime.substr(0, 2).c_str()) * 60 + atoi(InTime.substr(3, 2).c_str());
+	// 포맷화 작업
+	string d = "00" + to_string(a / 60);
+	string e = "00" + to_string(a % 60);
+
+	return d.substr(d.size() - 2, 2) + ":" + e.substr(e.size() - 2, 2);
+}
+
+// 초 단위로 변경
+int changeToInt(string a)
+{
+	return atoi(a.substr(0, 2).c_str()) * 60 + atoi(a.substr(3, 2).c_str());
+}
+
+void go(int& sum, string s)
+{
+	// 시간차 간격을 합산
+	sum += (changeToInt(s) - changeToInt(pre));
 }
 
 int main()
 {
-	cin >> N;
-
-	for (int i = 0; i < N; ++i)
+	cin >> n;
+	for (int i = 0; i < n; ++i)
 	{
-		int Winner = 0;
-		string ScoreTime = "";
-		cin >> Winner;
-		cin >> ScoreTime;
+		cin >> o >> s;
+		// A팀이 이기고 있는지 B팀이 이기고 있는지에 따라 얼마만큼 이기고 있는지 연산
+		if (A > B) go(asum, s);
+		else if (A < B) go(bsum, s);
 
-		// 각 팀이 이기고 있을 때 현재 시간과 이전 점수 낸 시간차를 누적
-		if (Team1 > Team2)
-		{
-			Record[0] += TimeToSeconds(ScoreTime) - LastScore;
-		}
-		else if (Team1 < Team2)
-		{
-			Record[1] += TimeToSeconds(ScoreTime) - LastScore;
-		}
-
-		// 팀 점수 계산
-		1 == Winner ? ++Team1 : ++Team2;
-		// 현재 점수 낸 시간을 초로 변환하여 다음 계산 시 이전 시간으로 활용
-		LastScore = TimeToSeconds(ScoreTime);
+		1 == o ? ++A : ++B;
+		pre = s;
 	}
 
-	// 최종 우승팀의 경기 종료 시간까지의 합산
-	if (Team1 > Team2) Record[0] += 2880 - LastScore;
-	else if (Team1 < Team2) Record[1] += 2880 - LastScore;
+	// 마지막 끝 점수 처리
+	if (A > B) go(asum, "48:00");
+	else if (A < B) go(bsum, "48:00");
 
-	// '00' 두자리 표시를 위해 분 및 초 시간 길이를 통하여 시간 앞에 0 붙이는 작업이자 출력
-	cout << string(2 - to_string(Record[0] / 60).size(), '0').append(to_string(Record[0] / 60)) << ":" << string(2 - to_string(Record[0] % 60).size(), '0').append(to_string(Record[0] % 60)) << "\n";
-	cout << string(2 - to_string(Record[1] / 60).size(), '0').append(to_string(Record[1] / 60)) << ":" << string(2 - to_string(Record[1] % 60).size(), '0').append(to_string(Record[1] % 60)) << "\n";
+	cout << print(asum) << "\n";
+	cout << print(bsum) << "\n";
 
 	return 0;
 }
