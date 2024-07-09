@@ -1341,33 +1341,84 @@ using namespace std;
 // 10은 2 x 5, 따라서 2의 개수 5의 개수를 알면 0의 개수를 구할 수 있음
 // 순차적 탐색은 무리, 따라서 2와 5의 승수 배수를 구하는 것이 빠름
 // 해당 개수를 구한 것을 바탕은 최소 min 값을 구하면 됨
-int n, a;
+//int n, a;
+//
+//int main()
+//{
+//	ios_base::sync_with_stdio(false);
+//	cin.tie(NULL);
+//	cout.tie(NULL);
+//
+//	cin >> n;
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		cin >> a;
+//		int ret2 = 0, ret5 = 0;
+//		// 2의 승수
+//		for (int j = 2; j <= a; j *= 2)
+//		{
+//			ret2 += a / j;
+//		}
+//		// 5의 승수
+//		for (int j = 5; j <= a; j *= 5)
+//		{
+//			ret5 += a / j;
+//		}
+//
+//		cout << min(ret2, ret5) << "\n";
+//	}
+//
+//	return 0;
+//}
+
+// 12_NBA 농구
+// https://www.acmicpc.net/problem/2852
+// 48분은 48 x 60 = 2880초
+// N: 골 들어간 횟수
+int N, Team1, Team2, LastScore;
+vector<int> Record(2);
+
+// 문자열로 받은 시간을 정수형 초로 변환
+int TimeToSeconds(const string& InTime)
+{
+	return atoi(InTime.substr(0, 2).c_str()) * 60 + atoi(InTime.substr(3, 2).c_str());
+}
 
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-	cout.tie(NULL);
+	cin >> N;
 
-	cin >> n;
-
-	for (int i = 0; i < n; ++i)
+	for (int i = 0; i < N; ++i)
 	{
-		cin >> a;
-		int ret2 = 0, ret5 = 0;
-		// 2의 승수
-		for (int j = 2; j <= a; j *= 2)
+		int Winner = 0;
+		string ScoreTime = "";
+		cin >> Winner;
+		cin >> ScoreTime;
+
+		// 각 팀이 이기고 있을 때 현재 시간과 이전 점수 낸 시간차를 누적
+		if (Team1 > Team2)
 		{
-			ret2 += a / j;
+			Record[0] += TimeToSeconds(ScoreTime) - LastScore;
 		}
-		// 5의 승수
-		for (int j = 5; j <= a; j *= 5)
+		else if (Team1 < Team2)
 		{
-			ret5 += a / j;
+			Record[1] += TimeToSeconds(ScoreTime) - LastScore;
 		}
 
-		cout << min(ret2, ret5) << "\n";
+		// 팀 점수 계산
+		1 == Winner ? ++Team1 : ++Team2;
+		// 현재 점수 낸 시간을 초로 변환하여 다음 계산 시 이전 시간으로 활용
+		LastScore = TimeToSeconds(ScoreTime);
 	}
+
+	// 최종 우승팀의 경기 종료 시간까지의 합산
+	if (Team1 > Team2) Record[0] += 2880 - LastScore;
+	else if (Team1 < Team2) Record[1] += 2880 - LastScore;
+
+	// '00' 두자리 표시를 위해 분 및 초 시간 길이를 통하여 시간 앞에 0 붙이는 작업이자 출력
+	cout << string(2 - to_string(Record[0] / 60).size(), '0').append(to_string(Record[0] / 60)) << ":" << string(2 - to_string(Record[0] % 60).size(), '0').append(to_string(Record[0] % 60)) << "\n";
+	cout << string(2 - to_string(Record[1] / 60).size(), '0').append(to_string(Record[1] / 60)) << ":" << string(2 - to_string(Record[1] % 60).size(), '0').append(to_string(Record[1] % 60)) << "\n";
 
 	return 0;
 }
