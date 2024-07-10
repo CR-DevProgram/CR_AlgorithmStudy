@@ -1428,51 +1428,77 @@ using namespace std;
 // prev를 이용하여 변수 하나만으로 직전 값을 쉽게 활용(define을 사용해야함, 번거로워서 pre로 사용)
 // 시간의 간격을 기반으로 시간 합산
 // 시, 분, 초가 나오면 하나의 단위로 통일할 것(작은 단위 기반의 단위로 통일하는 것이 좋음)
-int n, o, A, B, asum, bsum;
-string s, pre;
+//int n, o, A, B, asum, bsum;
+//string s, pre;
+//
+//// MM:SS 로 변경
+//string print(int a)
+//{
+//	// 포맷화 작업
+//	string d = "00" + to_string(a / 60);
+//	string e = "00" + to_string(a % 60);
+//
+//	return d.substr(d.size() - 2, 2) + ":" + e.substr(e.size() - 2, 2);
+//}
+//
+//// 초 단위로 변경
+//int changeToInt(string a)
+//{
+//	return atoi(a.substr(0, 2).c_str()) * 60 + atoi(a.substr(3, 2).c_str());
+//}
+//
+//void go(int& sum, string s)
+//{
+//	// 시간차 간격을 합산
+//	sum += (changeToInt(s) - changeToInt(pre));
+//}
+//
+//int main()
+//{
+//	cin >> n;
+//	for (int i = 0; i < n; ++i)
+//	{
+//		cin >> o >> s;
+//		// A팀이 이기고 있는지 B팀이 이기고 있는지에 따라 얼마만큼 이기고 있는지 연산
+//		if (A > B) go(asum, s);
+//		else if (A < B) go(bsum, s);
+//
+//		1 == o ? ++A : ++B;
+//		pre = s;
+//	}
+//
+//	// 마지막 끝 점수 처리
+//	if (A > B) go(asum, "48:00");
+//	else if (A < B) go(bsum, "48:00");
+//
+//	cout << print(asum) << "\n";
+//	cout << print(bsum) << "\n";
+//
+//	return 0;
+//}
 
-// MM:SS 로 변경
-string print(int a)
-{
-	// 포맷화 작업
-	string d = "00" + to_string(a / 60);
-	string e = "00" + to_string(a % 60);
-
-	return d.substr(d.size() - 2, 2) + ":" + e.substr(e.size() - 2, 2);
-}
-
-// 초 단위로 변경
-int changeToInt(string a)
-{
-	return atoi(a.substr(0, 2).c_str()) * 60 + atoi(a.substr(3, 2).c_str());
-}
-
-void go(int& sum, string s)
-{
-	// 시간차 간격을 합산
-	sum += (changeToInt(s) - changeToInt(pre));
-}
+// 13_영화감독 숌
+// https://www.acmicpc.net/problem/1436
+// N: 숌의 N번째 영화 제목
+int N, cnt, number = 666;
 
 int main()
 {
-	cin >> n;
-	for (int i = 0; i < n; ++i)
-	{
-		cin >> o >> s;
-		// A팀이 이기고 있는지 B팀이 이기고 있는지에 따라 얼마만큼 이기고 있는지 연산
-		if (A > B) go(asum, s);
-		else if (A < B) go(bsum, s);
+	cin >> N;
 
-		1 == o ? ++A : ++B;
-		pre = s;
+	// number(666부터 시작, 666이 첫번째 시리즈)가 주어진 조건 만족될 때까지 증가
+	while(true)
+	{
+		// number에 666이 있을 경우 카운트
+		if (string::npos != to_string(number).find("666")) ++cnt;
+		// N번째 시리즈와 카운트가 같다면 종료
+		if (N == cnt) break;
+
+		++number;
 	}
 
-	// 마지막 끝 점수 처리
-	if (A > B) go(asum, "48:00");
-	else if (A < B) go(bsum, "48:00");
-
-	cout << print(asum) << "\n";
-	cout << print(bsum) << "\n";
+	// N번째 시리즈의 숫자
+	cout << number << "\n";
 
 	return 0;
 }
