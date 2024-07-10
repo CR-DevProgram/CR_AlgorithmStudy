@@ -1480,25 +1480,51 @@ using namespace std;
 // 13_영화감독 숌
 // https://www.acmicpc.net/problem/1436
 // N: 숌의 N번째 영화 제목
-int N, cnt, number = 666;
+//int N, cnt, number = 666;
+//
+//int main()
+//{
+//	cin >> N;
+//
+//	// number(666부터 시작, 666이 첫번째 시리즈)가 주어진 조건 만족될 때까지 증가
+//	while(true)
+//	{
+//		// number에 666이 있을 경우 카운트
+//		if (string::npos != to_string(number).find("666")) ++cnt;
+//		// N번째 시리즈와 카운트가 같다면 종료
+//		if (N == cnt) break;
+//
+//		++number;
+//	}
+//
+//	// N번째 시리즈의 숫자
+//	cout << number << "\n";
+//
+//	return 0;
+//}
+
+// 또 다른 풀이법(?)
+// 내 풀이와 유사
+// 666이 들어간 n번째의 숫자
+// 해당 문제는 어떻게 풀지 생각하기 보단 무식하게 먼저 푸는 것을 고려
+// n의 범위가 10000 => 어림잡아 6660000
+// 보통은 10000000까지는 무식하게 해볼 법 함
+int n;
 
 int main()
 {
-	cin >> N;
+	cin >> n;
 
-	// number(666부터 시작, 666이 첫번째 시리즈)가 주어진 조건 만족될 때까지 증가
-	while(true)
+	int i = 666;
+	for (;; ++i)					// 해당 부분은 무한루프와도 같다고 보면 됨, 끝조건이 없으므로 무한
 	{
-		// number에 666이 있을 경우 카운트
-		if (string::npos != to_string(number).find("666")) ++cnt;
-		// N번째 시리즈와 카운트가 같다면 종료
-		if (N == cnt) break;
+		// 666이 포함되면 n을 감소
+		if (string::npos != to_string(i).find("666")) --n;
+		if (0 == n) break;
 
-		++number;
 	}
 
-	// N번째 시리즈의 숫자
-	cout << number << "\n";
+	cout << i << "\n";
 
 	return 0;
 }
