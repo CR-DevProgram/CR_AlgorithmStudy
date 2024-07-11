@@ -1509,22 +1509,67 @@ using namespace std;
 // 해당 문제는 어떻게 풀지 생각하기 보단 무식하게 먼저 푸는 것을 고려
 // n의 범위가 10000 => 어림잡아 6660000
 // 보통은 10000000까지는 무식하게 해볼 법 함
-int n;
+//int n;
+//
+//int main()
+//{
+//	cin >> n;
+//
+//	int i = 666;
+//	for (;; ++i)					// 해당 부분은 무한루프와도 같다고 보면 됨, 끝조건이 없으므로 무한
+//	{
+//		// 666이 포함되면 n을 감소
+//		if (string::npos != to_string(i).find("666")) --n;
+//		if (0 == n) break;
+//
+//	}
+//
+//	cout << i << "\n";
+//
+//	return 0;
+//}
+
+// 14_괄호
+// https://www.acmicpc.net/problem/9012
+// 스택 활용 문제
+// T: 입력 테스트 데이터 개수
+int T;
 
 int main()
 {
-	cin >> n;
+	cin >> T;
 
-	int i = 666;
-	for (;; ++i)					// 해당 부분은 무한루프와도 같다고 보면 됨, 끝조건이 없으므로 무한
+	while (T--)
 	{
-		// 666이 포함되면 n을 감소
-		if (string::npos != to_string(i).find("666")) --n;
-		if (0 == n) break;
+		string Parentheses = "";
+		stack<char> stk;
+		cin >> Parentheses;
 
+		for (int i = 0; i < Parentheses.size(); ++i)
+		{
+			// 처음으로 )이 들어 올경우 NO 반환
+			if (true == stk.empty() && ')' == Parentheses[i])
+			{
+				stk.push(Parentheses[i]);
+				break;
+			}
+
+			// 스택이 비어 있지 않고 들어온 문자가 ')'이고 스택의 탑이 '('이면 탑 삭제 하고 컨티뉴
+			if (false == stk.empty() && ')' == Parentheses[i] && '(' == stk.top())
+			{
+				stk.pop();
+				continue;
+			}
+
+			// 위에 아무 조건도 해당 안된다면 스택에 추가
+			stk.push(Parentheses[i]);
+		}
+
+		// 스택이 비어있으면 YES, 비어있지 않으면 NO
+		string ret = true == stk.empty() ? "YES" : "NO";
+
+		cout << ret << "\n";
 	}
-
-	cout << i << "\n";
 
 	return 0;
 }
