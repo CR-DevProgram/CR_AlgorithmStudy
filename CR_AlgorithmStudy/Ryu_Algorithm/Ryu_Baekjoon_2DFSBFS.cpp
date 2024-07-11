@@ -1533,42 +1533,88 @@ using namespace std;
 // https://www.acmicpc.net/problem/9012
 // 스택 활용 문제
 // T: 입력 테스트 데이터 개수
-int T;
+//int T;
+//
+//int main()
+//{
+//	cin >> T;
+//
+//	while (T--)
+//	{
+//		string Parentheses = "";
+//		stack<char> stk;
+//		cin >> Parentheses;
+//
+//		for (int i = 0; i < Parentheses.size(); ++i)
+//		{
+//			// 처음으로 )이 들어 올경우 NO 반환
+//			if (true == stk.empty() && ')' == Parentheses[i])
+//			{
+//				stk.push(Parentheses[i]);
+//				break;
+//			}
+//
+//			// 스택이 비어 있지 않고 들어온 문자가 ')'이고 스택의 탑이 '('이면 탑 삭제 하고 컨티뉴
+//			if (false == stk.empty() && ')' == Parentheses[i] && '(' == stk.top())
+//			{
+//				stk.pop();
+//				continue;
+//			}
+//
+//			// 위에 아무 조건도 해당 안된다면 스택에 추가
+//			stk.push(Parentheses[i]);
+//		}
+//
+//		// 스택이 비어있으면 YES, 비어있지 않으면 NO
+//		string ret = true == stk.empty() ? "YES" : "NO";
+//
+//		cout << ret << "\n";
+//	}
+//
+//	return 0;
+//}
+
+// 또 다른 풀이법(stack)
+// 짝짓기, 폭발, 아름다운 괄호만들기 => stack으로 풀지 않을까 생각할 것
+// 해당 문제의 로직을 작성할 때 2가지 고려할 것
+// 1. ()가 될 때 pop
+// 2. 빈 스택에 ')'이 들어오면 더이상 처리될 필요 없이 바로 NO
+int n;
+string s;
+
+// 올바른 괄호인지 아닌지 확인해주는 불리언 함수
+bool check(string s)
+{
+	// 스택을 매번 정의해서 새로운 스택을 초기화한다고 생각하면 됨
+	stack<char> stk;
+	for (char c : s)
+	{
+		// '('이면 그냥 push
+		if ('(' == c) stk.push(c);
+		// 그게 아니면(')'일 때)
+		else
+		{
+			// 만약 스택이 비어있지 않으면 pop
+			// 즉 ')'인데 스택이 비어있지 않으면 '()'이 만들어지므로 pop
+			if (false == stk.empty()) stk.pop();
+			// 스택이 비어있다면 결과는 false
+			// 즉 빈 공간에 ')'이면 뭘해도 빈 스택을 만들 수 없기 때문
+			else return false;
+		}
+	}
+
+	return stk.empty();
+}
 
 int main()
 {
-	cin >> T;
+	cin >> n;
 
-	while (T--)
+	for (int i = 0; i < n; ++i)
 	{
-		string Parentheses = "";
-		stack<char> stk;
-		cin >> Parentheses;
-
-		for (int i = 0; i < Parentheses.size(); ++i)
-		{
-			// 처음으로 )이 들어 올경우 NO 반환
-			if (true == stk.empty() && ')' == Parentheses[i])
-			{
-				stk.push(Parentheses[i]);
-				break;
-			}
-
-			// 스택이 비어 있지 않고 들어온 문자가 ')'이고 스택의 탑이 '('이면 탑 삭제 하고 컨티뉴
-			if (false == stk.empty() && ')' == Parentheses[i] && '(' == stk.top())
-			{
-				stk.pop();
-				continue;
-			}
-
-			// 위에 아무 조건도 해당 안된다면 스택에 추가
-			stk.push(Parentheses[i]);
-		}
-
-		// 스택이 비어있으면 YES, 비어있지 않으면 NO
-		string ret = true == stk.empty() ? "YES" : "NO";
-
-		cout << ret << "\n";
+		cin >> s;
+		if (true == check(s)) cout << "YES\n";
+		else cout << "NO\n";
 	}
 
 	return 0;
