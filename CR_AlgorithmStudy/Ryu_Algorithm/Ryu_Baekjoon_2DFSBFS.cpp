@@ -1579,42 +1579,93 @@ using namespace std;
 // 해당 문제의 로직을 작성할 때 2가지 고려할 것
 // 1. ()가 될 때 pop
 // 2. 빈 스택에 ')'이 들어오면 더이상 처리될 필요 없이 바로 NO
-int n;
-string s;
+//int n;
+//string s;
+//
+//// 올바른 괄호인지 아닌지 확인해주는 불리언 함수
+//bool check(string s)
+//{
+//	// 스택을 매번 정의해서 새로운 스택을 초기화한다고 생각하면 됨
+//	stack<char> stk;
+//	for (char c : s)
+//	{
+//		// '('이면 그냥 push
+//		if ('(' == c) stk.push(c);
+//		// 그게 아니면(')'일 때)
+//		else
+//		{
+//			// 만약 스택이 비어있지 않으면 pop
+//			// 즉 ')'인데 스택이 비어있지 않으면 '()'이 만들어지므로 pop
+//			if (false == stk.empty()) stk.pop();
+//			// 스택이 비어있다면 결과는 false
+//			// 즉 빈 공간에 ')'이면 뭘해도 빈 스택을 만들 수 없기 때문
+//			else return false;
+//		}
+//	}
+//
+//	return stk.empty();
+//}
+//
+//int main()
+//{
+//	cin >> n;
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		cin >> s;
+//		if (true == check(s)) cout << "YES\n";
+//		else cout << "NO\n";
+//	}
+//
+//	return 0;
+//}
 
-// 올바른 괄호인지 아닌지 확인해주는 불리언 함수
-bool check(string s)
-{
-	// 스택을 매번 정의해서 새로운 스택을 초기화한다고 생각하면 됨
-	stack<char> stk;
-	for (char c : s)
-	{
-		// '('이면 그냥 push
-		if ('(' == c) stk.push(c);
-		// 그게 아니면(')'일 때)
-		else
-		{
-			// 만약 스택이 비어있지 않으면 pop
-			// 즉 ')'인데 스택이 비어있지 않으면 '()'이 만들어지므로 pop
-			if (false == stk.empty()) stk.pop();
-			// 스택이 비어있다면 결과는 false
-			// 즉 빈 공간에 ')'이면 뭘해도 빈 스택을 만들 수 없기 때문
-			else return false;
-		}
-	}
-
-	return stk.empty();
-}
+// 15_균형잡힌 세상
+// https://www.acmicpc.net/problem/4949
+// 문자열에 포함되는 괄호는 소괄호("()") 와 대괄호("[]")로 2종류
+// - 모든 왼쪽 소괄호("(")는 오른쪽 소괄호(")")와만 짝
+// - 모든 왼쪽 대괄호("[")는 오른쪽 대괄호("]")와만 짝
+// - 모든 오른쪽 괄호들은 자신과 짝을 이룰 수 있는 왼쪽 괄호가 존재
+// - 모든 괄호들의 짝은 1:1 매칭만 가능 즉, 괄호 하나가 둘 이상의 괄호와 짝지어지지X
+// - 짝을 이루는 두 괄호가 있을 때, 그 사이에 있는 문자열도 균형
+// 입력의 종료조건으로 맨 마지막에 온점 하나(".")
+string str;
 
 int main()
 {
-	cin >> n;
-
-	for (int i = 0; i < n; ++i)
+	while (true)
 	{
-		cin >> s;
-		if (true == check(s)) cout << "YES\n";
-		else cout << "NO\n";
+		getline(cin, str);
+
+		stack<char> stk;
+
+		// "."이면 종료
+		if (0 == str.compare(".")) break;
+
+		for (int i = 0; i < str.size(); ++i)
+		{
+			// ( 혹은 [ 이면 스택에 넣기
+			if ('(' == str[i] || '[' == str[i]) stk.push(str[i]);
+			// ) 혹은 ] 일 때
+			else if (')' == str[i] || ']' == str[i])
+			{
+				// 스택이 비어있는데 들어오면 무조건 no
+				if (true == stk.empty())
+				{
+					stk.push(str[i]);
+					break;
+				}
+
+				// 짝맞춰서 파괴하기
+				if ('(' == stk.top() && ')' == str[i]) stk.pop();
+				else if ('[' == stk.top() && ']' == str[i]) stk.pop();
+				else break;
+			}
+		}
+
+		// 스택이 비어있다면 yes, 비어있지 않다면 no
+		string ret = true == stk.empty() ? "yes" : "no";
+		cout << ret << "\n";
 	}
 
 	return 0;
