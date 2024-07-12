@@ -1629,43 +1629,102 @@ using namespace std;
 // - 모든 괄호들의 짝은 1:1 매칭만 가능 즉, 괄호 하나가 둘 이상의 괄호와 짝지어지지X
 // - 짝을 이루는 두 괄호가 있을 때, 그 사이에 있는 문자열도 균형
 // 입력의 종료조건으로 맨 마지막에 온점 하나(".")
-string str;
+//string str;
+//
+//int main()
+//{
+//	while (true)
+//	{
+//		getline(cin, str);
+//
+//		stack<char> stk;
+//
+//		// "."이면 종료
+//		if (0 == str.compare(".")) break;
+//
+//		for (int i = 0; i < str.size(); ++i)
+//		{
+//			// ( 혹은 [ 이면 스택에 넣기
+//			if ('(' == str[i] || '[' == str[i]) stk.push(str[i]);
+//			// ) 혹은 ] 일 때
+//			else if (')' == str[i] || ']' == str[i])
+//			{
+//				// 스택이 비어있는데 들어오면 무조건 no
+//				if (true == stk.empty())
+//				{
+//					stk.push(str[i]);
+//					break;
+//				}
+//
+//				// 짝맞춰서 파괴하기
+//				if ('(' == stk.top() && ')' == str[i]) stk.pop();
+//				else if ('[' == stk.top() && ']' == str[i]) stk.pop();
+//				else break;
+//			}
+//		}
+//
+//		// 스택이 비어있다면 yes, 비어있지 않다면 no
+//		string ret = true == stk.empty() ? "yes" : "no";
+//		cout << ret << "\n";
+//	}
+//
+//	return 0;
+//}
 
+// 또 다른 풀이법(stack)
+// 괄호에 따른 판별해주는 프로그램 작성
+// 짝짓기 문제, 짝짓기는 스택 문제
+// 띄어쓰기가 포함된 문자 받기 => cin 사용X, getline 사용O
+// 왼쪽괄호는 스택에 쌓고 오른쪽괄호가 왔을 때 짝을 짓는 괄호가 되는지 판별 로직 설계
 int main()
 {
+	// 계속해서 문자열을 받아야하므로 while문 사용
 	while (true)
 	{
-		getline(cin, str);
+		string s;
+		// 문자열 받기
+		getline(cin, s);
+		
+		// .이 들어왔을 때 종료
+		if ("." == s) break;
 
-		stack<char> stk;
-
-		// "."이면 종료
-		if (0 == str.compare(".")) break;
-
-		for (int i = 0; i < str.size(); ++i)
+		// 매버 테케마다 스택으로 새로이 정의
+		stack<int> stk;
+		bool check = true;
+		// 문자열 탐색
+		for (int i = 0; i < s.length(); ++i)
 		{
-			// ( 혹은 [ 이면 스택에 넣기
-			if ('(' == str[i] || '[' == str[i]) stk.push(str[i]);
-			// ) 혹은 ] 일 때
-			else if (')' == str[i] || ']' == str[i])
+			// 오른쪽 괄호 짝짓기 판별 로직
+			if (')' == s[i])
 			{
-				// 스택이 비어있는데 들어오면 무조건 no
-				if (true == stk.empty())
+				// 스택 사이즈 확인 후 스택 탑 확인
+				if (0 == stk.size() || '[' == stk.top())
 				{
-					stk.push(str[i]);
+					check = false;
 					break;
 				}
-
-				// 짝맞춰서 파괴하기
-				if ('(' == stk.top() && ')' == str[i]) stk.pop();
-				else if ('[' == stk.top() && ']' == str[i]) stk.pop();
-				else break;
+				// ()
+				else stk.pop();
 			}
+			if (']' == s[i])
+			{
+				// 스택 사이즈 확인 후 스택 탑 확인
+				if (0 == stk.size() || '(' == stk.top())
+				{
+					check = false;
+					break;
+				}
+				// []
+				else stk.pop();
+			}
+
+			// 왼쪽 괄호 스택에 넣기
+			if ('(' == s[i]) stk.push(s[i]);
+			if ('[' == s[i]) stk.push(s[i]);
 		}
 
-		// 스택이 비어있다면 yes, 비어있지 않다면 no
-		string ret = true == stk.empty() ? "yes" : "no";
-		cout << ret << "\n";
+		if (true == check && 0 == stk.size()) cout << "yes\n";
+		else cout << "no\n";
 	}
 
 	return 0;
