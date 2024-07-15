@@ -1737,92 +1737,186 @@ using namespace std;
 // 현재 벽 정보와 바이러스 정보를 통해서 3개를 순차적으로 세워 체크하는 방식으로 우선 다 해보는 것은 어느 정도?
 // N: 세로, M: 가로
 // 0: 빈 칸, 1: 벽, 2: 바이러스 위치
-int N, M, ret;
-int lab[10][10], visited[10][10];
-int dy[] = { -1, 0, 1, 0 };
-int dx[] = { 0, 1, 0, -1 };
-vector<pair<int, int>> virvec, wallvec;
+//int N, M, ret;
+//int lab[10][10], visited[10][10];
+//int dy[] = { -1, 0, 1, 0 };
+//int dx[] = { 0, 1, 0, -1 };
+//vector<pair<int, int>> virvec, wallvec;
+//
+//void DFS(int y, int x)
+//{
+//	visited[y][x] = 1;
+//
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		int ny = y + dy[i];
+//		int nx = x + dx[i];
+//
+//		if (0 > ny || 0 > nx || N <= ny || M <= nx) continue;
+//		if (1 == lab[ny][nx] || 1 == visited[ny][nx]) continue;
+//
+//		DFS(ny, nx);
+//	}
+//}
+//
+//int spread()
+//{
+//	fill(&visited[0][0], &visited[0][0] + 10 * 10, 0);
+//
+//	// 바이러스 정보를 통해 탐색
+//	for (const auto& i : virvec)
+//	{
+//		DFS(i.first, i.second);
+//	}
+//
+//	int cnt = 0;
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		for (int j = 0; j < M; ++j)
+//		{
+//			// 안전 영역 크기 카운트
+//			if (0 == lab[i][j] && 0 == visited[i][j]) ++cnt;
+//		}
+//	}
+//
+//	// 최종 안전 영역 크기 반환
+//	return cnt;
+//}
+//
+//int main()
+//{
+//	cin >> N >> M;
+//
+//	// 연구실 구조 입력 받기
+//	for (int i = 0; i < N; ++i)
+//	{
+//		for (int j = 0; j < M; ++j)
+//		{
+//			cin >> lab[i][j];
+//
+//			// 벽 정보
+//			if (0 == lab[i][j]) wallvec.push_back({ i,j });
+//			// 바이러스 정보
+//			if (2 == lab[i][j]) virvec.push_back({ i,j });
+//		}
+//	}
+//
+//	for (int i = 0; i < wallvec.size(); ++i)
+//	{
+//		for (int j = 0; j < i; ++j)
+//		{
+//			for (int k = 0; k < j; ++k)
+//			{
+//				// 벽 3개 세우기
+//				lab[wallvec[i].first][wallvec[i].second] = 1;
+//				lab[wallvec[j].first][wallvec[j].second] = 1;
+//				lab[wallvec[k].first][wallvec[k].second] = 1;
+//				// 커넥티드 컴포넌트로 안전 구역 파악(최대 크기 판별)
+//				ret = max(ret, spread());
+//				// 벽 3개 허물기
+//				lab[wallvec[i].first][wallvec[i].second] = 0;
+//				lab[wallvec[j].first][wallvec[j].second] = 0;
+//				lab[wallvec[k].first][wallvec[k].second] = 0;
+//			}
+//		}
+//	}
+//
+//	cout << ret;
+//
+//	return 0;
+//}
 
-void DFS(int y, int x)
+// 또 다른 풀이법(?)
+// 내 풀이와 완전 유사
+// 1. 벽을 세운다 2. 바이러스가 퍼진다 3. 바이러스가 퍼진 영역, 안전 영역 카운팅 => max 값
+// 벽을 효율적으로 세운다 가 아닌 무식하게 벽을 세워볼까 해야 함
+// 먼저 모든 경우의 수를 고려하고 이후에 효율적으로 할 수 있을까를 생각해야함
+// 맵의 최대 범위는 8 * 8 => 64
+// 64에서 3개의 벽을 세운다? => 64C3
+int a[10][10], visited[10][10], n, m, ret;
+vector<pair<int, int>> virusList, wallList;
+const int dy[] = { -1, 0, 1, 0 };
+const int dx[] = { 0, 1, 0, -1 };
+
+void dfs(int y, int x)
 {
-	visited[y][x] = 1;
-
 	for (int i = 0; i < 4; ++i)
 	{
 		int ny = y + dy[i];
 		int nx = x + dx[i];
 
-		if (0 > ny || 0 > nx || N <= ny || M <= nx) continue;
-		if (1 == lab[ny][nx] || 1 == visited[ny][nx]) continue;
+		if (0 > ny || 0 > nx || n <= ny || m <= nx) continue;
+		if (0 != visited[ny][nx] || 1 == a[ny][nx]) continue;
 
-		DFS(ny, nx);
+		visited[ny][nx] = 1;
+
+		dfs(ny, nx);
 	}
 }
 
-int spread()
+int solve()
 {
+	// 경우의 수마다 방문 배열을 초기화
 	fill(&visited[0][0], &visited[0][0] + 10 * 10, 0);
 
-	// 바이러스 정보를 통해 탐색
-	for (const auto& i : virvec)
+	// 바이러스 퍼뜨리기
+	for (pair<int, int> b : virusList)
 	{
-		DFS(i.first, i.second);
+		visited[b.first][b.second] = 1;
+		dfs(b.first, b.second);
 	}
 
 	int cnt = 0;
-
-	for (int i = 0; i < N; ++i)
+	for (int i = 0; i < n; ++i)
 	{
-		for (int j = 0; j < M; ++j)
+		for (int j = 0; j < m; ++j)
 		{
-			// 안전 영역 크기 카운트
-			if (0 == lab[i][j] && 0 == visited[i][j]) ++cnt;
+			if (0 == a[i][j] && false == visited[i][j]) ++cnt;
 		}
 	}
 
-	// 최종 안전 영역 크기 반환
 	return cnt;
 }
 
 int main()
 {
-	cin >> N >> M;
+	// 입력 받기
+	cin >> n >> m;
 
-	// 연구실 구조 입력 받기
-	for (int i = 0; i < N; ++i)
+	for (int i = 0; i < n; ++i)
 	{
-		for (int j = 0; j < M; ++j)
+		for (int j = 0; j < m; ++j)
 		{
-			cin >> lab[i][j];
+			cin >> a[i][j];
 
-			// 벽 정보
-			if (0 == lab[i][j]) wallvec.push_back({ i,j });
-			// 바이러스 정보
-			if (2 == lab[i][j]) virvec.push_back({ i,j });
+			// 바이러스 퍼뜨릴 때 해당 지점 정보를 사용
+			if (2 == a[i][j]) virusList.push_back({ i,j });
+			// 벽은 바이러스 있는 지점에 세울 수 없음 따라서 벽을 세울 수 있는 지점을 담아 추후 벽 세울 때 사용
+			if (0 == a[i][j]) wallList.push_back({ i,j });
 		}
 	}
 
-	for (int i = 0; i < wallvec.size(); ++i)
+	for (int i = 0; i < wallList.size(); ++i)
 	{
 		for (int j = 0; j < i; ++j)
 		{
 			for (int k = 0; k < j; ++k)
 			{
-				// 벽 3개 세우기
-				lab[wallvec[i].first][wallvec[i].second] = 1;
-				lab[wallvec[j].first][wallvec[j].second] = 1;
-				lab[wallvec[k].first][wallvec[k].second] = 1;
-				// 커넥티드 컴포넌트로 안전 구역 파악(최대 크기 판별)
-				ret = max(ret, spread());
-				// 벽 3개 허물기
-				lab[wallvec[i].first][wallvec[i].second] = 0;
-				lab[wallvec[j].first][wallvec[j].second] = 0;
-				lab[wallvec[k].first][wallvec[k].second] = 0;
+				// 벽 놓을 수 있는 위치에 벽 세우기
+				a[wallList[i].first][wallList[i].second] = 1;
+				a[wallList[j].first][wallList[j].second] = 1;
+				a[wallList[k].first][wallList[k].second] = 1;
+				ret = max(ret, solve());
+				// 원복 작업
+				a[wallList[i].first][wallList[i].second] = 0;
+				a[wallList[j].first][wallList[j].second] = 0;
+				a[wallList[k].first][wallList[k].second] = 0;
 			}
 		}
 	}
 
-	cout << ret;
+	cout << ret << "\n";
 
 	return 0;
 }
