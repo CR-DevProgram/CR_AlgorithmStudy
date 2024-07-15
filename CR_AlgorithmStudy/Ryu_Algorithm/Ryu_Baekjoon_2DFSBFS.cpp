@@ -1676,56 +1676,153 @@ using namespace std;
 // 짝짓기 문제, 짝짓기는 스택 문제
 // 띄어쓰기가 포함된 문자 받기 => cin 사용X, getline 사용O
 // 왼쪽괄호는 스택에 쌓고 오른쪽괄호가 왔을 때 짝을 짓는 괄호가 되는지 판별 로직 설계
+//int main()
+//{
+//	// 계속해서 문자열을 받아야하므로 while문 사용
+//	while (true)
+//	{
+//		string s;
+//		// 문자열 받기
+//		getline(cin, s);
+//		
+//		// .이 들어왔을 때 종료
+//		if ("." == s) break;
+//
+//		// 매버 테케마다 스택으로 새로이 정의
+//		stack<int> stk;
+//		bool check = true;
+//		// 문자열 탐색
+//		for (int i = 0; i < s.length(); ++i)
+//		{
+//			// 오른쪽 괄호 짝짓기 판별 로직
+//			if (')' == s[i])
+//			{
+//				// 스택 사이즈 확인 후 스택 탑 확인
+//				if (0 == stk.size() || '[' == stk.top())
+//				{
+//					check = false;
+//					break;
+//				}
+//				// ()
+//				else stk.pop();
+//			}
+//			if (']' == s[i])
+//			{
+//				// 스택 사이즈 확인 후 스택 탑 확인
+//				if (0 == stk.size() || '(' == stk.top())
+//				{
+//					check = false;
+//					break;
+//				}
+//				// []
+//				else stk.pop();
+//			}
+//
+//			// 왼쪽 괄호 스택에 넣기
+//			if ('(' == s[i]) stk.push(s[i]);
+//			if ('[' == s[i]) stk.push(s[i]);
+//		}
+//
+//		if (true == check && 0 == stk.size()) cout << "yes\n";
+//		else cout << "no\n";
+//	}
+//
+//	return 0;
+//}
+
+// 16_연구소 
+// https://www.acmicpc.net/problem/14502
+// 인접한 빈칸으로 바이러스가 퍼져나간다 => 커넥티드 컴포넌트(DFS)
+// 벽 3개를 세워서 바이러스가 퍼지지 않은 최대 안전 영역 구하기
+// 현재 벽 정보와 바이러스 정보를 통해서 3개를 순차적으로 세워 체크하는 방식으로 우선 다 해보는 것은 어느 정도?
+// N: 세로, M: 가로
+// 0: 빈 칸, 1: 벽, 2: 바이러스 위치
+int N, M, ret;
+int lab[10][10], visited[10][10];
+int dy[] = { -1, 0, 1, 0 };
+int dx[] = { 0, 1, 0, -1 };
+vector<pair<int, int>> virvec, wallvec;
+
+void DFS(int y, int x)
+{
+	visited[y][x] = 1;
+
+	for (int i = 0; i < 4; ++i)
+	{
+		int ny = y + dy[i];
+		int nx = x + dx[i];
+
+		if (0 > ny || 0 > nx || N <= ny || M <= nx) continue;
+		if (1 == lab[ny][nx] || 1 == visited[ny][nx]) continue;
+
+		DFS(ny, nx);
+	}
+}
+
+int spread()
+{
+	fill(&visited[0][0], &visited[0][0] + 10 * 10, 0);
+
+	// 바이러스 정보를 통해 탐색
+	for (const auto& i : virvec)
+	{
+		DFS(i.first, i.second);
+	}
+
+	int cnt = 0;
+
+	for (int i = 0; i < N; ++i)
+	{
+		for (int j = 0; j < M; ++j)
+		{
+			// 안전 영역 크기 카운트
+			if (0 == lab[i][j] && 0 == visited[i][j]) ++cnt;
+		}
+	}
+
+	// 최종 안전 영역 크기 반환
+	return cnt;
+}
+
 int main()
 {
-	// 계속해서 문자열을 받아야하므로 while문 사용
-	while (true)
+	cin >> N >> M;
+
+	// 연구실 구조 입력 받기
+	for (int i = 0; i < N; ++i)
 	{
-		string s;
-		// 문자열 받기
-		getline(cin, s);
-		
-		// .이 들어왔을 때 종료
-		if ("." == s) break;
-
-		// 매버 테케마다 스택으로 새로이 정의
-		stack<int> stk;
-		bool check = true;
-		// 문자열 탐색
-		for (int i = 0; i < s.length(); ++i)
+		for (int j = 0; j < M; ++j)
 		{
-			// 오른쪽 괄호 짝짓기 판별 로직
-			if (')' == s[i])
-			{
-				// 스택 사이즈 확인 후 스택 탑 확인
-				if (0 == stk.size() || '[' == stk.top())
-				{
-					check = false;
-					break;
-				}
-				// ()
-				else stk.pop();
-			}
-			if (']' == s[i])
-			{
-				// 스택 사이즈 확인 후 스택 탑 확인
-				if (0 == stk.size() || '(' == stk.top())
-				{
-					check = false;
-					break;
-				}
-				// []
-				else stk.pop();
-			}
+			cin >> lab[i][j];
 
-			// 왼쪽 괄호 스택에 넣기
-			if ('(' == s[i]) stk.push(s[i]);
-			if ('[' == s[i]) stk.push(s[i]);
+			// 벽 정보
+			if (0 == lab[i][j]) wallvec.push_back({ i,j });
+			// 바이러스 정보
+			if (2 == lab[i][j]) virvec.push_back({ i,j });
 		}
-
-		if (true == check && 0 == stk.size()) cout << "yes\n";
-		else cout << "no\n";
 	}
+
+	for (int i = 0; i < wallvec.size(); ++i)
+	{
+		for (int j = 0; j < i; ++j)
+		{
+			for (int k = 0; k < j; ++k)
+			{
+				// 벽 3개 세우기
+				lab[wallvec[i].first][wallvec[i].second] = 1;
+				lab[wallvec[j].first][wallvec[j].second] = 1;
+				lab[wallvec[k].first][wallvec[k].second] = 1;
+				// 커넥티드 컴포넌트로 안전 구역 파악(최대 크기 판별)
+				ret = max(ret, spread());
+				// 벽 3개 허물기
+				lab[wallvec[i].first][wallvec[i].second] = 0;
+				lab[wallvec[j].first][wallvec[j].second] = 0;
+				lab[wallvec[k].first][wallvec[k].second] = 0;
+			}
+		}
+	}
+
+	cout << ret;
 
 	return 0;
 }
