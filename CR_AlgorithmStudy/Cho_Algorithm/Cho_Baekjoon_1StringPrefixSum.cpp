@@ -1,4 +1,4 @@
-// 
+// 01_일곱 난쟁이
 //#include <iostream>
 //#include <vector>
 //#include <algorithm>
@@ -44,5 +44,33 @@
 //                return 0;
 //            }
 //        }
+//    }
+//}
+
+// 02_알파벳 개수
+//#include <iostream>
+//#include <string>
+//#include <vector>
+//using namespace std;
+//
+//int main()
+//{
+//    // 첫째줄에 단어 s가 주어진다.
+//    string s;
+//    cin >> s;
+//
+//    // 단어의 개수를 저장할 배열을 만든다.
+//    vector<int> cnt(26);
+//
+//    // 단어가 나오면 cnt를 증가시킨다.
+//    for (const auto& i : s)
+//    {
+//        ++cnt[i - 'a'];
+//    }
+//
+//    // 출력한다.
+//    for (const auto& i : cnt)
+//    {
+//        cout << i << ' ';
 //    }
 //}
