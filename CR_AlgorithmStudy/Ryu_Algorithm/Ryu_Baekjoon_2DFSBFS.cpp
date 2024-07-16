@@ -1925,70 +1925,149 @@ using namespace std;
 // https://www.acmicpc.net/problem/2636
 // 공기에 닿아 있는 치즈만이 녹음
 // 1)모두 녹아서 사라지는 시간, 2)다 녹기 한시간 직전의 치즈 조각 구하기
-const int max_ch = 100;
-int m, n, melttime, piece, cheese[max_ch][max_ch], visited[max_ch][max_ch];
+//const int max_ch = 100;
+//int m, n, melttime, piece, cheese[max_ch][max_ch], visited[max_ch][max_ch];
+//const int dy[] = { -1, 0, 1, 0 };
+//const int dx[] = { 0, 1, 0, -1 };
+//
+//void DFS(int y, int x)
+//{
+//	visited[y][x] = 1;
+//
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		int ny = y + dy[i];
+//		int nx = x + dx[i];
+//
+//		if (0 > ny || 0 > nx || m <= ny || n <= nx) continue;
+//		if (0 == cheese[ny][nx] && 0 == visited[ny][nx]) DFS(ny, nx);
+//		if (1 == cheese[ny][nx] && 0 == visited[ny][nx])
+//		{
+//			++piece;					// 조각 파악하기
+//			cheese[ny][nx] = 0;			// 치즈 녹이기
+//			visited[ny][nx] = 1;		// 중복 및 다음 치즈 녹임을 방지하고자 방문 체크
+//		}
+//	}
+//}
+//
+//int main()
+//{
+//	// 치즈 입력 받기
+//	cin >> m >> n;
+//	for (int i = 0; i < m; ++i)
+//	{
+//		for (int j = 0; j < n; ++j)
+//		{
+//			cin >> cheese[i][j];
+//		}
+//	}
+//
+//	while (true)
+//	{
+//		// 방문기록 및 치즈 조각 초기화 
+//		fill(&visited[0][0], &visited[0][0] + max_ch * max_ch, 0);
+//		// 최종적으로 녹기 전 치즈 개수를 구하기 위한 코드 위치 및 초기화
+//		piece = 0;
+//
+//		++melttime;
+//		DFS(0, 0);
+//
+//		bool check = false;
+//		for (int i = 0; i < m; ++i)
+//		{
+//			for (int j = 0; j < n; ++j)
+//			{
+//				// 치즈가 하나라도 존재하면 반복
+//				if (1 == cheese[i][j]) check = true;
+//			}
+//		}
+//
+//		// 치즈가 하나도 없으면 check가 바뀔리X
+//		// 따라서 false이면 while문 탈출
+//		if (false == check) break;
+//	}
+//
+//	cout << melttime << "\n";
+//	cout << piece << "\n";
+//
+//	return 0;
+//}
+
+// 또 다른 풀이법(?)
+// 내 풀이와 유사
+// 판의 가장자리는 모두 0, 치즈 존재X
+// 판의 가장자리는 모두 0이라는 조건이 없었다면, 치즈가 없는 부분을 찾는 로직을 우선적으로 작성해야됨
+// 0 방문, 1 멈춤
+// 1로 닿아서 멈추는 부분을 특정 자료 구조에 담아둔 후 담은 것들을 모두 0으로 변경
+// 담아 놓은 자료구조의 사이즈가 치즈의 크기
+// 1) DFS(0 탐색, 1 자료구조 담기) 2) 시간 증가, 자료구조에 담긴 것들 0으로 변경
+int n, m, cnt, cnt2, a[104][104], visited[104][104];
 const int dy[] = { -1, 0, 1, 0 };
 const int dx[] = { 0, 1, 0, -1 };
+vector<pair<int, int>> v;
 
-void DFS(int y, int x)
+void go(int y, int x)
 {
 	visited[y][x] = 1;
+
+	// 치즈면 더이상 방문X
+	if (1 == a[y][x])
+	{
+		// 벡터로 치즈 위치 관리
+		v.push_back({ y,x });
+		return;
+	}
 
 	for (int i = 0; i < 4; ++i)
 	{
 		int ny = y + dy[i];
 		int nx = x + dx[i];
 
-		if (0 > ny || 0 > nx || m <= ny || n <= nx) continue;
-		if (0 == cheese[ny][nx] && 0 == visited[ny][nx]) DFS(ny, nx);
-		if (1 == cheese[ny][nx] && 0 == visited[ny][nx])
-		{
-			++piece;					// 조각 파악하기
-			cheese[ny][nx] = 0;			// 치즈 녹이기
-			visited[ny][nx] = 1;		// 중복 및 다음 치즈 녹임을 방지하고자 방문 체크
-		}
+		// 언더 오버 플로우 체크 + 방문 기록 체크
+		if (0 > ny || 0 > nx || n <= ny || m <= nx || 0 != visited[ny][nx]) continue;
+		go(ny, nx);
 	}
 }
 
 int main()
 {
-	// 치즈 입력 받기
-	cin >> m >> n;
-	for (int i = 0; i < m; ++i)
+	cin >> n >> m;
+	for (int i = 0; i < n; ++i)
 	{
-		for (int j = 0; j < n; ++j)
+		for (int j = 0; j < m; ++j)
 		{
-			cin >> cheese[i][j];
+			cin >> a[i][j];
 		}
 	}
 
 	while (true)
 	{
-		// 방문기록 및 치즈 조각 초기화 
-		fill(&visited[0][0], &visited[0][0] + max_ch * max_ch, 0);
-		// 최종적으로 녹기 전 치즈 개수를 구하기 위한 코드 위치 및 초기화
-		piece = 0;
+		// 초기화
+		fill(&visited[0][0], &visited[0][0] + 104 * 104, 0);
+		v.clear();
 
-		++melttime;
-		DFS(0, 0);
+		go(0, 0);
+		// 치즈 크기
+		cnt2 = v.size();
+		// 치즈 녹이기
+		for (pair<int, int> b : v) a[b.first][b.second] = 0;
 
-		bool check = false;
-		for (int i = 0; i < m; ++i)
+		// 치즈가 다 녹아있는지 확인
+		bool flag = false;
+		for (int i = 0; i < n; ++i)
 		{
-			for (int j = 0; j < n; ++j)
+			for (int j = 0; j < m; ++j)
 			{
-				// 치즈가 하나라도 존재하면 반복
-				if (1 == cheese[i][j]) check = true;
+				if (0 != a[i][j]) flag = true;
 			}
 		}
 
-		// 치즈가 하나도 없으면 check가 바뀔리X
-		// 따라서 false이면 while문 탈출
-		if (false == check) break;
+		++cnt;
+
+		if (true != flag) break;
 	}
 
-	cout << melttime << "\n";
-	cout << piece << "\n";
+	cout << cnt << "\n" << cnt2 << "\n";
 
 	return 0;
 }
