@@ -1834,89 +1834,161 @@ using namespace std;
 // 먼저 모든 경우의 수를 고려하고 이후에 효율적으로 할 수 있을까를 생각해야함
 // 맵의 최대 범위는 8 * 8 => 64
 // 64에서 3개의 벽을 세운다? => 64C3
-int a[10][10], visited[10][10], n, m, ret;
-vector<pair<int, int>> virusList, wallList;
+//int a[10][10], visited[10][10], n, m, ret;
+//vector<pair<int, int>> virusList, wallList;
+//const int dy[] = { -1, 0, 1, 0 };
+//const int dx[] = { 0, 1, 0, -1 };
+//
+//void dfs(int y, int x)
+//{
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		int ny = y + dy[i];
+//		int nx = x + dx[i];
+//
+//		if (0 > ny || 0 > nx || n <= ny || m <= nx) continue;
+//		if (0 != visited[ny][nx] || 1 == a[ny][nx]) continue;
+//
+//		visited[ny][nx] = 1;
+//
+//		dfs(ny, nx);
+//	}
+//}
+//
+//int solve()
+//{
+//	// 경우의 수마다 방문 배열을 초기화
+//	fill(&visited[0][0], &visited[0][0] + 10 * 10, 0);
+//
+//	// 바이러스 퍼뜨리기
+//	for (pair<int, int> b : virusList)
+//	{
+//		visited[b.first][b.second] = 1;
+//		dfs(b.first, b.second);
+//	}
+//
+//	int cnt = 0;
+//	for (int i = 0; i < n; ++i)
+//	{
+//		for (int j = 0; j < m; ++j)
+//		{
+//			if (0 == a[i][j] && false == visited[i][j]) ++cnt;
+//		}
+//	}
+//
+//	return cnt;
+//}
+//
+//int main()
+//{
+//	// 입력 받기
+//	cin >> n >> m;
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		for (int j = 0; j < m; ++j)
+//		{
+//			cin >> a[i][j];
+//
+//			// 바이러스 퍼뜨릴 때 해당 지점 정보를 사용
+//			if (2 == a[i][j]) virusList.push_back({ i,j });
+//			// 벽은 바이러스 있는 지점에 세울 수 없음 따라서 벽을 세울 수 있는 지점을 담아 추후 벽 세울 때 사용
+//			if (0 == a[i][j]) wallList.push_back({ i,j });
+//		}
+//	}
+//
+//	for (int i = 0; i < wallList.size(); ++i)
+//	{
+//		for (int j = 0; j < i; ++j)
+//		{
+//			for (int k = 0; k < j; ++k)
+//			{
+//				// 벽 놓을 수 있는 위치에 벽 세우기
+//				a[wallList[i].first][wallList[i].second] = 1;
+//				a[wallList[j].first][wallList[j].second] = 1;
+//				a[wallList[k].first][wallList[k].second] = 1;
+//				ret = max(ret, solve());
+//				// 원복 작업
+//				a[wallList[i].first][wallList[i].second] = 0;
+//				a[wallList[j].first][wallList[j].second] = 0;
+//				a[wallList[k].first][wallList[k].second] = 0;
+//			}
+//		}
+//	}
+//
+//	cout << ret << "\n";
+//
+//	return 0;
+//}
+
+// 17_치즈 
+// https://www.acmicpc.net/problem/2636
+// 공기에 닿아 있는 치즈만이 녹음
+// 1)모두 녹아서 사라지는 시간, 2)다 녹기 한시간 직전의 치즈 조각 구하기
+const int max_ch = 100;
+int m, n, melttime, piece, cheese[max_ch][max_ch], visited[max_ch][max_ch];
 const int dy[] = { -1, 0, 1, 0 };
 const int dx[] = { 0, 1, 0, -1 };
 
-void dfs(int y, int x)
+void DFS(int y, int x)
 {
+	visited[y][x] = 1;
+
 	for (int i = 0; i < 4; ++i)
 	{
 		int ny = y + dy[i];
 		int nx = x + dx[i];
 
-		if (0 > ny || 0 > nx || n <= ny || m <= nx) continue;
-		if (0 != visited[ny][nx] || 1 == a[ny][nx]) continue;
-
-		visited[ny][nx] = 1;
-
-		dfs(ny, nx);
-	}
-}
-
-int solve()
-{
-	// 경우의 수마다 방문 배열을 초기화
-	fill(&visited[0][0], &visited[0][0] + 10 * 10, 0);
-
-	// 바이러스 퍼뜨리기
-	for (pair<int, int> b : virusList)
-	{
-		visited[b.first][b.second] = 1;
-		dfs(b.first, b.second);
-	}
-
-	int cnt = 0;
-	for (int i = 0; i < n; ++i)
-	{
-		for (int j = 0; j < m; ++j)
+		if (0 > ny || 0 > nx || m <= ny || n <= nx) continue;
+		if (0 == cheese[ny][nx] && 0 == visited[ny][nx]) DFS(ny, nx);
+		if (1 == cheese[ny][nx] && 0 == visited[ny][nx])
 		{
-			if (0 == a[i][j] && false == visited[i][j]) ++cnt;
+			++piece;					// 조각 파악하기
+			cheese[ny][nx] = 0;			// 치즈 녹이기
+			visited[ny][nx] = 1;		// 중복 및 다음 치즈 녹임을 방지하고자 방문 체크
 		}
 	}
-
-	return cnt;
 }
 
 int main()
 {
-	// 입력 받기
-	cin >> n >> m;
-
-	for (int i = 0; i < n; ++i)
+	// 치즈 입력 받기
+	cin >> m >> n;
+	for (int i = 0; i < m; ++i)
 	{
-		for (int j = 0; j < m; ++j)
+		for (int j = 0; j < n; ++j)
 		{
-			cin >> a[i][j];
-
-			// 바이러스 퍼뜨릴 때 해당 지점 정보를 사용
-			if (2 == a[i][j]) virusList.push_back({ i,j });
-			// 벽은 바이러스 있는 지점에 세울 수 없음 따라서 벽을 세울 수 있는 지점을 담아 추후 벽 세울 때 사용
-			if (0 == a[i][j]) wallList.push_back({ i,j });
+			cin >> cheese[i][j];
 		}
 	}
 
-	for (int i = 0; i < wallList.size(); ++i)
+	while (true)
 	{
-		for (int j = 0; j < i; ++j)
+		// 방문기록 및 치즈 조각 초기화 
+		fill(&visited[0][0], &visited[0][0] + max_ch * max_ch, 0);
+		// 최종적으로 녹기 전 치즈 개수를 구하기 위한 코드 위치 및 초기화
+		piece = 0;
+
+		++melttime;
+		DFS(0, 0);
+
+		bool check = false;
+		for (int i = 0; i < m; ++i)
 		{
-			for (int k = 0; k < j; ++k)
+			for (int j = 0; j < n; ++j)
 			{
-				// 벽 놓을 수 있는 위치에 벽 세우기
-				a[wallList[i].first][wallList[i].second] = 1;
-				a[wallList[j].first][wallList[j].second] = 1;
-				a[wallList[k].first][wallList[k].second] = 1;
-				ret = max(ret, solve());
-				// 원복 작업
-				a[wallList[i].first][wallList[i].second] = 0;
-				a[wallList[j].first][wallList[j].second] = 0;
-				a[wallList[k].first][wallList[k].second] = 0;
+				// 치즈가 하나라도 존재하면 반복
+				if (1 == cheese[i][j]) check = true;
 			}
 		}
+
+		// 치즈가 하나도 없으면 check가 바뀔리X
+		// 따라서 false이면 while문 탈출
+		if (false == check) break;
 	}
 
-	cout << ret << "\n";
+	cout << melttime << "\n";
+	cout << piece << "\n";
 
 	return 0;
 }
