@@ -6,6 +6,7 @@
 1. <a href = "#1">문자열, 누적합</a>
 2. <a href = "#2">DFS, BFS</a>
 3. <a href = "#3">완전탐색, 백트래킹</a>
+4. <a href = "#4">비트마스킹</a>
 
 ### <a name = "1">문자열, 누적합</a>
 01_일곱 난쟁이 - https://www.acmicpc.net/problem/2309  
@@ -64,5 +65,23 @@
 15_사다리 조작 - https://www.acmicpc.net/problem/15684  
 16_꽃길 - https://www.acmicpc.net/problem/14620  
 17_컴백홈 - https://www.acmicpc.net/problem/1189  
+
+### <a name = "4">비트마스킹</a>
+01_다이어트 - https://www.acmicpc.net/problem/19942  
+02_동전 뒤집기 - https://www.acmicpc.net/problem/1285  
+03_게리맨더링 - https://www.acmicpc.net/problem/17471  
+04_알파벳 - https://www.acmicpc.net/problem/1987  
+05_경사로 - https://www.acmicpc.net/problem/14890  
+06_가르침 - https://www.acmicpc.net/problem/1062  
+07_막대기 - https://www.acmicpc.net/problem/1094  
+08_성곽 - https://www.acmicpc.net/problem/2234  
+09_집합 - https://www.acmicpc.net/problem/11723  
+10_종이 조각 - https://www.acmicpc.net/problem/14391  
+11_Tree - https://www.acmicpc.net/problem/13244  
+12_AC - https://www.acmicpc.net/problem/5430  
+13_피카츄 - https://www.acmicpc.net/problem/14405  
+14_큰 수 A+B (2) - https://www.acmicpc.net/problem/15353  
+15_현욱은 괄호왕이야!! - https://www.acmicpc.net/problem/15926  
+16_오아시스 재결합 - https://www.acmicpc.net/problem/3015  
 
 * __<span style="color:red">Git Push시 403 Error: Token 확인(제어판 -> 사용자 계정 -> 자격 증명 관리자에서 Github 관련 자격 확인 혹은 제거 후 등록)</span>__  
