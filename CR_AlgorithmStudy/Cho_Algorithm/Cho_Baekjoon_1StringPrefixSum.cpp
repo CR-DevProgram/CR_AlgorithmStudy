@@ -74,3 +74,57 @@
 //        cout << i << ' ';
 //    }
 //}
+
+// 03_트럭 주차
+//#include <iostream>
+//#include <vector>
+//
+//using namespace std;
+//
+//int main()
+//{
+//    // 상근이는 트럭을 총 세 대 가지고 있는 부자다.
+//    // 주차 요금 A, B, C가 주어진다.
+//
+//    int a, b, c;
+//    cin >> a >> b >> c;
+//
+//    // 주차한 대수를 저장할 배열을 만든다.
+//    vector<int> v(101, 0);
+//
+//    // 세 개 줄에는 두 정수가 주어진다.
+//    int cnt = 3;
+//    int maxIdx = 0;
+//    for (int i = 0; i < cnt; i++)
+//    {
+//        int t1, t2;
+//        cin >> t1 >> t2;
+//
+//        for (int j = t1; j < t2; j++)
+//        {
+//            ++v[j];
+//            maxIdx = max(maxIdx, j);
+//        }
+//    }
+//
+//    int sum = 0;
+//    for (int i = 1; i <= maxIdx; i++)
+//    {
+//        if (v[i] == 0) continue;
+//
+//        if (v[i] == 1)
+//        {
+//            sum += a;
+//        }
+//        else if (v[i] == 2)
+//        {
+//            sum += b * 2;
+//        }
+//        else
+//        {
+//            sum += c * 3;
+//        }
+//    }
+//
+//    cout << sum;
+//}
