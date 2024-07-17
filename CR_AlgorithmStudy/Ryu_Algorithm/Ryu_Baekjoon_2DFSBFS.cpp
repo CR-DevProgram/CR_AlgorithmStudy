@@ -2001,73 +2001,129 @@ using namespace std;
 // 1로 닿아서 멈추는 부분을 특정 자료 구조에 담아둔 후 담은 것들을 모두 0으로 변경
 // 담아 놓은 자료구조의 사이즈가 치즈의 크기
 // 1) DFS(0 탐색, 1 자료구조 담기) 2) 시간 증가, 자료구조에 담긴 것들 0으로 변경
-int n, m, cnt, cnt2, a[104][104], visited[104][104];
-const int dy[] = { -1, 0, 1, 0 };
-const int dx[] = { 0, 1, 0, -1 };
-vector<pair<int, int>> v;
+//int n, m, cnt, cnt2, a[104][104], visited[104][104];
+//const int dy[] = { -1, 0, 1, 0 };
+//const int dx[] = { 0, 1, 0, -1 };
+//vector<pair<int, int>> v;
+//
+//void go(int y, int x)
+//{
+//	visited[y][x] = 1;
+//
+//	// 치즈면 더이상 방문X
+//	if (1 == a[y][x])
+//	{
+//		// 벡터로 치즈 위치 관리
+//		v.push_back({ y,x });
+//		return;
+//	}
+//
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		int ny = y + dy[i];
+//		int nx = x + dx[i];
+//
+//		// 언더 오버 플로우 체크 + 방문 기록 체크
+//		if (0 > ny || 0 > nx || n <= ny || m <= nx || 0 != visited[ny][nx]) continue;
+//		go(ny, nx);
+//	}
+//}
+//
+//int main()
+//{
+//	cin >> n >> m;
+//	for (int i = 0; i < n; ++i)
+//	{
+//		for (int j = 0; j < m; ++j)
+//		{
+//			cin >> a[i][j];
+//		}
+//	}
+//
+//	while (true)
+//	{
+//		// 초기화
+//		fill(&visited[0][0], &visited[0][0] + 104 * 104, 0);
+//		v.clear();
+//
+//		go(0, 0);
+//		// 치즈 크기
+//		cnt2 = v.size();
+//		// 치즈 녹이기
+//		for (pair<int, int> b : v) a[b.first][b.second] = 0;
+//
+//		// 치즈가 다 녹아있는지 확인
+//		bool flag = false;
+//		for (int i = 0; i < n; ++i)
+//		{
+//			for (int j = 0; j < m; ++j)
+//			{
+//				if (0 != a[i][j]) flag = true;
+//			}
+//		}
+//
+//		++cnt;
+//
+//		if (true != flag) break;
+//	}
+//
+//	cout << cnt << "\n" << cnt2 << "\n";
+//
+//	return 0;
+//}
 
-void go(int y, int x)
+// 18_tree
+// https://www.acmicpc.net/problem/1068
+// 트리의 노드 끊기.. 큐를 이용하면 되려나 큐가 아니라 연결 리스트 형식으로 해야하나
+// 루트는 -1
+// 들어오는 수는 -1을 제외하고 본인의 부모 인덱스를 뜻함
+// N: 노드 개수
+int N, cnt, visited[50];
+vector<int> Tree[50];
+
+void leaf(int node, int deletenode)
 {
-	visited[y][x] = 1;
-
-	// 치즈면 더이상 방문X
-	if (1 == a[y][x])
+	for (int num : Tree[node])
 	{
-		// 벡터로 치즈 위치 관리
-		v.push_back({ y,x });
-		return;
+		// 탐색할 노드가 있다면 탐색
+		if (0 != Tree[num].size()) leaf(num, deletenode);
+		// 삭제된 노드 최상단 노드가 아니면 리프노드로 카운트 증가
+		else if (num != deletenode) ++cnt;
+		// 삭제된 노드 최상단 노드이고 해당 노드가 혼자 존재했다면 리프노드로 카운트 증가
+		else if (num == deletenode && 1 == Tree[node].size()) ++cnt;
 	}
+}
 
-	for (int i = 0; i < 4; ++i)
-	{
-		int ny = y + dy[i];
-		int nx = x + dx[i];
+void noderemove(int nodenum)
+{
+	// 지울 수 있는 노드 탐색
+	for (int num : Tree[nodenum]) noderemove(num);
 
-		// 언더 오버 플로우 체크 + 방문 기록 체크
-		if (0 > ny || 0 > nx || n <= ny || m <= nx || 0 != visited[ny][nx]) continue;
-		go(ny, nx);
-	}
+	// 노드 정리
+	Tree[nodenum].clear();
 }
 
 int main()
 {
-	cin >> n >> m;
-	for (int i = 0; i < n; ++i)
+	cin >> N;
+
+	int node, removenode, root = 0;
+	for (int i = 0; i < N; ++i)
 	{
-		for (int j = 0; j < m; ++j)
+		cin >> node;
+
+		if (-1 == node)
 		{
-			cin >> a[i][j];
+			root = i;
 		}
+		else Tree[node].push_back(i);
 	}
 
-	while (true)
-	{
-		// 초기화
-		fill(&visited[0][0], &visited[0][0] + 104 * 104, 0);
-		v.clear();
+	cin >> removenode;
+	noderemove(removenode);
+	leaf(root, removenode);
 
-		go(0, 0);
-		// 치즈 크기
-		cnt2 = v.size();
-		// 치즈 녹이기
-		for (pair<int, int> b : v) a[b.first][b.second] = 0;
-
-		// 치즈가 다 녹아있는지 확인
-		bool flag = false;
-		for (int i = 0; i < n; ++i)
-		{
-			for (int j = 0; j < m; ++j)
-			{
-				if (0 != a[i][j]) flag = true;
-			}
-		}
-
-		++cnt;
-
-		if (true != flag) break;
-	}
-
-	cout << cnt << "\n" << cnt2 << "\n";
+	cout << cnt << "\n";
 
 	return 0;
 }
