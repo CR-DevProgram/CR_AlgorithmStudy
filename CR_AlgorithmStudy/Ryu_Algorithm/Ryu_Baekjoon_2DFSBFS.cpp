@@ -2078,52 +2078,101 @@ using namespace std;
 // 루트는 -1
 // 들어오는 수는 -1을 제외하고 본인의 부모 인덱스를 뜻함
 // N: 노드 개수
-int N, cnt, visited[50];
-vector<int> Tree[50];
+//int N, cnt, visited[50];
+//vector<int> Tree[50];
+//
+//void leaf(int node, int deletenode)
+//{
+//	for (int num : Tree[node])
+//	{
+//		// 탐색할 노드가 있다면 탐색
+//		if (0 != Tree[num].size()) leaf(num, deletenode);
+//		// 삭제된 노드 최상단 노드가 아니면 리프노드로 카운트 증가
+//		else if (num != deletenode) ++cnt;
+//		// 삭제된 노드 최상단 노드이고 해당 노드가 혼자 존재했다면 리프노드로 카운트 증가
+//		else if (num == deletenode && 1 == Tree[node].size()) ++cnt;
+//	}
+//}
+//
+//void noderemove(int nodenum)
+//{
+//	// 지울 수 있는 노드 탐색
+//	for (int num : Tree[nodenum]) noderemove(num);
+//
+//	// 노드 정리
+//	Tree[nodenum].clear();
+//}
+//
+//int main()
+//{
+//	cin >> N;
+//
+//	int node, removenode, root = 0;
+//	for (int i = 0; i < N; ++i)
+//	{
+//		cin >> node;
+//
+//		if (-1 == node)
+//		{
+//			root = i;
+//		}
+//		else Tree[node].push_back(i);
+//	}
+//
+//	cin >> removenode;
+//	noderemove(removenode);
+//	leaf(root, removenode);
+//
+//	cout << cnt << "\n";
+//
+//	return 0;
+//}
 
-void leaf(int node, int deletenode)
+// 또 다른 풀이법(DFS 정수형 반환)
+// 루트노드부터 탐색
+// 리프노드: 자식노드가 없는 것
+int n, r, temp, root;
+vector<int> adj[54];
+
+// 리프노드 수를 구하는 함수
+int dfs(int here)
 {
-	for (int num : Tree[node])
+	// 리프노드 수
+	int ret = 0;
+	int child = 0;
+	for (int there : adj[here])
 	{
-		// 탐색할 노드가 있다면 탐색
-		if (0 != Tree[num].size()) leaf(num, deletenode);
-		// 삭제된 노드 최상단 노드가 아니면 리프노드로 카운트 증가
-		else if (num != deletenode) ++cnt;
-		// 삭제된 노드 최상단 노드이고 해당 노드가 혼자 존재했다면 리프노드로 카운트 증가
-		else if (num == deletenode && 1 == Tree[node].size()) ++cnt;
+		// 지운 노드는 탐색하지 않게 처리
+		if (r == there) continue;
+
+		// 리프노드 누적
+		ret += dfs(there);
+		// 자식노드가 있다면
+		++child;
 	}
-}
 
-void noderemove(int nodenum)
-{
-	// 지울 수 있는 노드 탐색
-	for (int num : Tree[nodenum]) noderemove(num);
+	// 자식노드가 하나도 없다면 1 반환
+	if (0 == child) return 1;
 
-	// 노드 정리
-	Tree[nodenum].clear();
+	return ret;
 }
 
 int main()
 {
-	cin >> N;
-
-	int node, removenode, root = 0;
-	for (int i = 0; i < N; ++i)
+	cin >> n;
+	for (int i = 0; i < n; ++i)
 	{
-		cin >> node;
+		cin >> temp;
 
-		if (-1 == node)
-		{
-			root = i;
-		}
-		else Tree[node].push_back(i);
+		if (-1 == temp) root = i;
+		else adj[temp].push_back(i);
 	}
 
-	cin >> removenode;
-	noderemove(removenode);
-	leaf(root, removenode);
-
-	cout << cnt << "\n";
+	cin >> r;
+	// 루트노드를 지웠다면 0 반환
+	// 현재 로직은 루트노드를 체크하지 않기 때문에 there만 확인하는 로직이라 해당 부분의 문제점을 위해 루트가 지워질 때 반례체크 차원으로 추가
+	if (root == r) cout << 0 << "\n";
+	else cout << dfs(root) << "\n";
 
 	return 0;
 }
