@@ -309,42 +309,83 @@
 //}
 
 // 05_농구 경기
+//#include <iostream>
+//#include <string>
+//#include <vector>
+//using namespace std;
+//
+//int main()
+//{
+//    // 선수 수를 입력 받는다.
+//    int n;
+//    cin >> n;
+//
+//    // 선수 이름 개수를 담을 배열을 만든다.
+//    vector<int> cnt(26);
+//
+//    // 선수 이름 첫 글자의 개수를 구한다.
+//    for (int i = 0; i < n; i++)
+//    {
+//        string s;
+//        cin >> s;
+//
+//        cnt[s[0] - 'a']++;
+//    }
+//
+//    bool isTrue = false;
+//    for (int i = 0; i < 26; i++)
+//    {
+//        if (cnt[i] >= 5)
+//        {
+//            char curWord = i + 'a';
+//            cout << curWord;
+//            isTrue = true;
+//        }
+//    }
+//
+//    if (!isTrue)
+//    {
+//        cout << "PREDAJA";
+//    }
+//}
+
+// 06_ROT13 
 #include <iostream>
 #include <string>
-#include <vector>
 using namespace std;
 
 int main()
 {
-    // 선수 수를 입력 받는다.
-    int n;
-    cin >> n;
+    // 문자열을 입력 받는다.
+    string s;
+    getline(cin, s);
 
-    // 선수 이름 개수를 담을 배열을 만든다.
-    vector<int> cnt(26);
+    // 13글자씩 민다
+    for (auto& i : s)
+	{
+		if (isdigit(i) || i == ' ') continue;
 
-    // 선수 이름 첫 글자의 개수를 구한다.
-    for (int i = 0; i < n; i++)
-    {
-        string s;
-        cin >> s;
+		// i를 숫자로 바꾼다
+		int temp = i + 13;
 
-        cnt[s[0] - 'a']++;
-    }
-
-    bool isTrue = false;
-    for (int i = 0; i < 26; i++)
-    {
-        if (cnt[i] >= 5)
-        {
-            char curWord = i + 'a';
-            cout << curWord;
-            isTrue = true;
+		if (i <= 'Z')
+		{
+			int standard = 'Z' + 1;
+			if (temp >= standard) i = 'A' + (temp % standard);
+			else {
+				i = temp;
+			}
+		}
+		else if (i <= 'z')
+		{
+			int standard = 'z' + 1;
+			if (temp >= standard) i = 'a' + (temp % standard);
+			else
+            {
+                i = temp;
+            }
         }
     }
 
-    if (!isTrue)
-    {
-        cout << "PREDAJA";
-    }
+    cout << s;
 }
