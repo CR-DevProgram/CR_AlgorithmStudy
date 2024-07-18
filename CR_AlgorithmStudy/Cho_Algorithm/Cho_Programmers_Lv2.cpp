@@ -263,26 +263,57 @@
 // 피보나치 수
 // https://school.programmers.co.kr/learn/courses/30/lessons/12945
 // 메모이제이션 안 하면 시간 초과 남
-#include <string>
-#include <vector>
+//#include <string>
+//#include <vector>
+//
+//using namespace std;
+//
+//vector<int> memo(100001, -1);
+//int divideNum = 1234567;
+//
+//int fibo(int n)
+//{
+//    if (n == 0) return 0;
+//    if (n == 1) return 1;
+//
+//    if (memo[n] != -1) return memo[n];
+//
+//    memo[n] = (fibo(n - 1) % divideNum + fibo(n - 2) % divideNum) % divideNum;
+//
+//    return memo[n];
+//}
+//
+//int solution(int n) {
+//    return fibo(n);
+//}
 
+// 짝지어 제거하기
+// https://school.programmers.co.kr/learn/courses/30/lessons/12973
+#include <iostream>
+#include <string>
+#include <stack>
 using namespace std;
 
-vector<int> memo(100001, -1);
-int divideNum = 1234567;
-
-int fibo(int n)
+int solution(string s)
 {
-    if (n == 0) return 0;
-    if (n == 1) return 1;
+    int size = s.size();
+    stack<char> st;
 
-    if (memo[n] != -1) return memo[n];
+    for (int i = 0; i < size; i++)
+    {
+        if (st.size() == 0)
+        {
+            st.push(s[i]);
+        }
+        else if (st.top() == s[i])
+        {
+            st.pop();
+        }
+        else
+        {
+            st.push(s[i]);
+        }
+    }
 
-    memo[n] = (fibo(n - 1) % divideNum + fibo(n - 2) % divideNum) % divideNum;
-
-    return memo[n];
-}
-
-int solution(int n) {
-    return fibo(n);
+    return st.size() > 0 ? 0 : 1;
 }
