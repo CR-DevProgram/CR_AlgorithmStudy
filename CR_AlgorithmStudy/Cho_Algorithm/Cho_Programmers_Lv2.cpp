@@ -44,38 +44,60 @@
 
 // 올바른 괄호
 // https://school.programmers.co.kr/learn/courses/30/lessons/12909
-#include <string>
-#include <iostream>
-#include <stack>
+//#include <string>
+//#include <iostream>
+//#include <stack>
+//
+//using namespace std;
+//
+//bool solution(string s)
+//{
+//    bool answer = true;
+//    stack<char> st;
+//
+//    int size = s.size();
+//
+//    for (int i = 0; i < size; i++)
+//    {
+//        if (s[i] == '(')
+//        {
+//            st.push(s[i]);
+//        }
+//        else
+//        {
+//            if (st.size() > 0)
+//            {
+//                st.pop();
+//            }
+//            else
+//            {
+//                answer = false;
+//                return answer;
+//            }
+//        }
+//    }
+//
+//    return st.size() == 0 ? answer : !answer;
+//}
 
+// 최솟값 만들기
+// https://school.programmers.co.kr/learn/courses/30/lessons/12941
+#include <iostream>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
-bool solution(string s)
+int solution(vector<int> A, vector<int> B)
 {
-    bool answer = true;
-    stack<char> st;
+    sort(A.begin(), A.end());
+    sort(B.begin(), B.end(), greater<>());
 
-    int size = s.size();
-
+    int size = A.size();
+    int answer = 0;
     for (int i = 0; i < size; i++)
     {
-        if (s[i] == '(')
-        {
-            st.push(s[i]);
-        }
-        else
-        {
-            if (st.size() > 0)
-            {
-                st.pop();
-            }
-            else
-            {
-                answer = false;
-                return answer;
-            }
-        }
+        answer += A[i] * B[i];
     }
 
-    return st.size() == 0 ? answer : !answer;
+    return answer;
 }
