@@ -194,30 +194,68 @@
 
 // 숫자의 표현
 // https://school.programmers.co.kr/learn/courses/30/lessons/12924
+//#include <string>
+//#include <vector>
+//
+//using namespace std;
+//
+//int solution(int n) {
+//    int answer = 1;
+//
+//    for (int i = 1; i <= n; i++)
+//    {
+//        int temp = i;
+//
+//        for (int j = i + 1; j <= n; j++)
+//        {
+//            temp += j;
+//
+//            if (temp > n) break;
+//            if (temp == n)
+//            {
+//                ++answer;
+//                break;
+//            }
+//        }
+//    }
+//
+//    return answer;
+//}
+
+// 다음 큰 숫자
+// https://school.programmers.co.kr/learn/courses/30/lessons/12911
 #include <string>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
-int solution(int n) {
-    int answer = 1;
-
-    for (int i = 1; i <= n; i++)
+int getCount(int n)
+{
+    string s = "";
+    while (true)
     {
-        int temp = i;
+        s.insert(0, to_string(n % 2));
+        n /= 2;
 
-        for (int j = i + 1; j <= n; j++)
+        if (n == 0)
         {
-            temp += j;
-
-            if (temp > n) break;
-            if (temp == n)
-            {
-                ++answer;
-                break;
-            }
+            break;
         }
     }
 
-    return answer;
+    return count(s.begin(), s.end(), '1');
+}
+
+int solution(int n) {
+    int originCnt = getCount(n);
+
+    while (true)
+    {
+        int cnt = getCount(++n);
+        if (originCnt == cnt)
+        {
+            return n;
+        }
+    }
 }
