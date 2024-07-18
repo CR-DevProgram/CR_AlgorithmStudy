@@ -380,29 +380,50 @@
 
 // 구명보트
 // https://school.programmers.co.kr/learn/courses/30/lessons/42885
+//#include <string>
+//#include <vector>
+//#include <algorithm>
+//
+//using namespace std;
+//
+//int solution(vector<int> people, int limit) {
+//    sort(people.begin(), people.end());
+//    int size = people.size();
+//
+//    int i = 0;
+//    int j = size - 1;
+//    int cnt = 0;
+//
+//    while (i <= j)
+//    {
+//        if (people[i] + people[j] <= limit)
+//        {
+//            ++i;
+//        }
+//        ++cnt;
+//        --j;
+//    }
+//
+//    return cnt;
+//}
+
+// 멀리뛰기
+// https://school.programmers.co.kr/learn/courses/30/lessons/12914
 #include <string>
 #include <vector>
-#include <algorithm>
 
 using namespace std;
 
-int solution(vector<int> people, int limit) {
-    sort(people.begin(), people.end());
-    int size = people.size();
+long long solution(int n) {
+    int value = 1234567;
+    vector<long long> v(2001, 0);
+    v[0] = 1;
+    v[1] = 1;
 
-    int i = 0;
-    int j = size - 1;
-    int cnt = 0;
-
-    while (i <= j)
+    for (int i = 2; i <= n; i++)
     {
-        if (people[i] + people[j] <= limit)
-        {
-            ++i;
-        }
-        ++cnt;
-        --j;
+        v[i] = ((v[i - 1] % value) + (v[i - 2] % value)) % value;
     }
 
-    return cnt;
+    return v[n];
 }
