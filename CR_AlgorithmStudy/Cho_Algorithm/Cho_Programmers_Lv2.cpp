@@ -462,61 +462,115 @@
 
 // 영어 끝말잇기
 // https://school.programmers.co.kr/learn/courses/30/lessons/12981
+//#include <string>
+//#include <vector>
+//#include <iostream>
+//#include <algorithm>
+//
+//using namespace std;
+//
+//vector<int> solution(int n, vector<string> words) {
+//    vector<int> answer;
+//    int size = words.size();
+//    vector<string> v;
+//
+//    for (int i = 0; i < size; i++)
+//    {
+//        // 중복 체크를 한다.
+//        int cnt = count(v.begin(), v.end(), words[i]);
+//        if (cnt == 0)
+//        {
+//            // 앞 사람의 끝 글자와 현재 첫 글자를 비교한다.
+//            if (v.size() > 0)
+//            {
+//                if (v[i - 1].back() != words[i].front())
+//                {
+//                    answer.push_back(i % n + 1);
+//                    answer.push_back(i / n + 1);
+//                    break;
+//                }
+//                else
+//                {
+//                    v.push_back(words[i]);
+//                }
+//            }
+//            else
+//            {
+//                v.push_back(words[i]);
+//            }
+//        }
+//        else
+//        {
+//            answer.push_back(i % n + 1);
+//            answer.push_back(i / n + 1);
+//            break;
+//        }
+//    }
+//
+//    if (answer.empty())
+//    {
+//        answer.push_back(0);
+//        answer.push_back(0);
+//    }
+//
+//    return answer;
+//}
+//
+//int main()
+//{
+//    solution(2, { "hello", "one", "even", "never", "now", "world", "draw" });
+//}
+
+// 예상 대진표
+// https://school.programmers.co.kr/learn/courses/30/lessons/12985
+//#include <iostream>
+//
+//using namespace std;
+//
+//int solution(int n, int a, int b)
+//{
+//    int cnt = 0;
+//    --a;
+//    --b;
+//
+//    while (a != b)
+//    {
+//        a /= 2;
+//        b /= 2;
+//        ++cnt;
+//    }
+//
+//    return cnt;
+//}
+
+// 귤 고르기
+// https://school.programmers.co.kr/learn/courses/30/lessons/138476
 #include <string>
 #include <vector>
-#include <iostream>
 #include <algorithm>
 
 using namespace std;
 
-vector<int> solution(int n, vector<string> words) {
-    vector<int> answer;
-    int size = words.size();
-    vector<string> v;
+int solution(int k, vector<int> tangerine) {
+    // 귤 배열의 개수를 구한다.
+    int size = tangerine.size();
 
+    // vector에 각 귤의 번호와 개수를 넣는다.
+    vector<int> v(10000001, 0);
     for (int i = 0; i < size; i++)
     {
-        // 중복 체크를 한다.
-        int cnt = count(v.begin(), v.end(), words[i]);
-        if (cnt == 0)
-        {
-            // 앞 사람의 끝 글자와 현재 첫 글자를 비교한다.
-            if (v.size() > 0)
-            {
-                if (v[i - 1].back() != words[i].front())
-                {
-                    answer.push_back(i % n + 1);
-                    answer.push_back(i / n + 1);
-                    break;
-                }
-                else
-                {
-                    v.push_back(words[i]);
-                }
-            }
-            else
-            {
-                v.push_back(words[i]);
-            }
-        }
-        else
-        {
-            answer.push_back(i % n + 1);
-            answer.push_back(i / n + 1);
-            break;
-        }
+        ++v[tangerine[i]];
     }
 
-    if (answer.empty())
+    // 정렬한다.
+    sort(v.begin(), v.end(), greater<>());
+
+    int cnt = 0;
+    for (int i = 0; i < size; i++)
     {
-        answer.push_back(0);
-        answer.push_back(0);
+        cnt += v[i];
+
+        if (cnt >= k)
+            return i + 1;
     }
-
-    return answer;
-}
-
-int main()
-{
-    solution(2, { "hello", "one", "even", "never", "now", "world", "draw" });
 }
