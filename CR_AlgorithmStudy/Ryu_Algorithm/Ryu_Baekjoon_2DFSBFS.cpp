@@ -2131,48 +2131,114 @@ using namespace std;
 // 또 다른 풀이법(DFS 정수형 반환)
 // 루트노드부터 탐색
 // 리프노드: 자식노드가 없는 것
-int n, r, temp, root;
-vector<int> adj[54];
+//int n, r, temp, root;
+//vector<int> adj[54];
+//
+//// 리프노드 수를 구하는 함수
+//int dfs(int here)
+//{
+//	// 리프노드 수
+//	int ret = 0;
+//	int child = 0;
+//	for (int there : adj[here])
+//	{
+//		// 지운 노드는 탐색하지 않게 처리
+//		if (r == there) continue;
+//
+//		// 리프노드 누적
+//		ret += dfs(there);
+//		// 자식노드가 있다면
+//		++child;
+//	}
+//
+//	// 자식노드가 하나도 없다면 1 반환
+//	if (0 == child) return 1;
+//
+//	return ret;
+//}
+//
+//int main()
+//{
+//	cin >> n;
+//	for (int i = 0; i < n; ++i)
+//	{
+//		cin >> temp;
+//
+//		if (-1 == temp) root = i;
+//		else adj[temp].push_back(i);
+//	}
+//
+//	cin >> r;
+//	// 루트노드를 지웠다면 0 반환
+//	// 현재 로직은 루트노드를 체크하지 않기 때문에 there만 확인하는 로직이라 해당 부분의 문제점을 위해 루트가 지워질 때 반례체크 차원으로 추가
+//	if (root == r) cout << 0 << "\n";
+//	else cout << dfs(root) << "\n";
+//
+//	return 0;
+//}
 
-// 리프노드 수를 구하는 함수
-int dfs(int here)
+// 19_효율적인 해킹
+// https://www.acmicpc.net/problem/1325
+// A가 B를 신뢰하면 B해킹 시 A도 해킹 가능
+// B->A로 되는 거니까 입력 받고 자료구조로 관리할 때 반대로 넣어서 탐색하기 편하게 관리할 것
+// 컴퓨터 번호가 1번부터 N번까지이므로 범위는 1 ~ 10001 (***초기화 및 접근 범위에 대해 잘 생각할 것 => 이거 때문에 자꾸 틀림)
+// N: 컴퓨터 개수
+// M: 신뢰관계 수
+int N, M, max_num, visited[10001];
+vector<int> Connect[10001], ret;
+
+// 연결 총 탐색 수 반환
+int Move(int com)
 {
-	// 리프노드 수
-	int ret = 0;
-	int child = 0;
-	for (int there : adj[here])
-	{
-		// 지운 노드는 탐색하지 않게 처리
-		if (r == there) continue;
+	int cnt = 0;
+	visited[com] = 1;
 
-		// 리프노드 누적
-		ret += dfs(there);
-		// 자식노드가 있다면
-		++child;
+	for (int next : Connect[com])
+	{
+		if (0 != visited[next]) continue;
+
+		cnt += Move(next);
 	}
 
-	// 자식노드가 하나도 없다면 1 반환
-	if (0 == child) return 1;
-
-	return ret;
+	return ++cnt;
 }
 
 int main()
 {
-	cin >> n;
-	for (int i = 0; i < n; ++i)
-	{
-		cin >> temp;
+	cin >> N >> M;
 
-		if (-1 == temp) root = i;
-		else adj[temp].push_back(i);
+	// 신뢰연결망 작업
+	int com_num, con_num;
+	for (int i = 0; i < M; ++i)
+	{
+		cin >> com_num >> con_num;
+
+		Connect[con_num].push_back(com_num);
 	}
 
-	cin >> r;
-	// 루트노드를 지웠다면 0 반환
-	// 현재 로직은 루트노드를 체크하지 않기 때문에 there만 확인하는 로직이라 해당 부분의 문제점을 위해 루트가 지워질 때 반례체크 차원으로 추가
-	if (root == r) cout << 0 << "\n";
-	else cout << dfs(root) << "\n";
+	for (int i = 1; i <= N; ++i)
+	{
+		// 방문기록 초기화
+		fill(&visited[0], &visited[0] + 10001, 0);
+		
+		int temp = Move(i);
+		// i번째 컴퓨터에서 연결 탐색 가능한 수가 최대 탐색 가능 수보다 크거나 같을 때
+		if (max_num <= temp)
+		{
+			// 큰 경우 기존 최대 탐색 컴퓨터 넘버 배열 정리, 최대 탐색 가능 수 업데이트
+			if (max_num < temp)
+			{
+				ret.clear();
+				max_num = temp;
+			}
+
+			// 최대 탐색 컴퓨터 넘버 배열에 추가
+			ret.push_back(i);
+		} // 최대 탐색 컴퓨터 넘버들만을 출력하기 위해 크거나 같은 경우를 확인하여 정보 업데이트
+	}
+
+	// 출력
+	for (int i : ret) cout << i << " ";
 
 	return 0;
 }
