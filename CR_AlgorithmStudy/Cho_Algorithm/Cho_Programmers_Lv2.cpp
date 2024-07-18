@@ -320,36 +320,60 @@
 
 // 카펫
 // https://school.programmers.co.kr/learn/courses/30/lessons/42842
-#include <string>
+//#include <string>
+//#include <vector>
+//
+//using namespace std;
+//
+//vector<int> solution(int brown, int yellow) {
+//    vector<int> answer;
+//
+//    // 가로 길이는 세로 길이와 같거나 길다
+//    for (int i = 1; i <= yellow; i++)
+//    {
+//        if (yellow % i == 0)
+//        {
+//            int h = i;
+//            int w = yellow / i + 2;
+//            if (brown == h * 2 + w * 2)
+//            {
+//                answer.push_back(w);
+//                answer.push_back(h + 2);
+//                return answer;
+//            }
+//        }
+//    }
+//
+//    return answer;
+//}
+//
+//int main()
+//{
+//    int brown = 8;
+//    int yellow = 1;
+//    solution(brown, yellow);
+//}
+
+// 점프와 순간 이동
+// https://school.programmers.co.kr/learn/courses/30/lessons/12980
+#include <iostream>
 #include <vector>
+#include <algorithm>
+#include <string>
 
 using namespace std;
 
-vector<int> solution(int brown, int yellow) {
-    vector<int> answer;
-
-    // 가로 길이는 세로 길이와 같거나 길다
-    for (int i = 1; i <= yellow; i++)
+int solution(int n)
+{
+    string s = "";
+    while (true)
     {
-        if (yellow % i == 0)
-        {
-            int h = i;
-            int w = yellow / i + 2;
-            if (brown == h * 2 + w * 2)
-            {
-                answer.push_back(w);
-                answer.push_back(h + 2);
-                return answer;
-            }
-        }
+        s.insert(0, to_string(n % 2));
+        n /= 2;
+
+        if (n == 0)
+            break;
     }
 
-    return answer;
-}
-
-int main()
-{
-    int brown = 8;
-    int yellow = 1;
-    solution(brown, yellow);
+    return count(s.begin(), s.end(), '1');
 }
