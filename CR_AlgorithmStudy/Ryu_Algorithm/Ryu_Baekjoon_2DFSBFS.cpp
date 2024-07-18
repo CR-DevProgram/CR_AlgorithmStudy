@@ -2184,61 +2184,110 @@ using namespace std;
 // 컴퓨터 번호가 1번부터 N번까지이므로 범위는 1 ~ 10001 (***초기화 및 접근 범위에 대해 잘 생각할 것 => 이거 때문에 자꾸 틀림)
 // N: 컴퓨터 개수
 // M: 신뢰관계 수
-int N, M, max_num, visited[10001];
-vector<int> Connect[10001], ret;
+//int N, M, max_num, visited[10001];
+//vector<int> Connect[10001], ret;
+//
+//// 연결 총 탐색 수 반환
+//int Move(int com)
+//{
+//	int cnt = 0;
+//	visited[com] = 1;
+//
+//	for (int next : Connect[com])
+//	{
+//		if (0 != visited[next]) continue;
+//
+//		cnt += Move(next);
+//	}
+//
+//	return ++cnt;
+//}
+//
+//int main()
+//{
+//	cin >> N >> M;
+//
+//	// 신뢰연결망 작업
+//	int com_num, con_num;
+//	for (int i = 0; i < M; ++i)
+//	{
+//		cin >> com_num >> con_num;
+//
+//		Connect[con_num].push_back(com_num);
+//	}
+//
+//	for (int i = 1; i <= N; ++i)
+//	{
+//		// 방문기록 초기화
+//		fill(&visited[0], &visited[0] + 10001, 0);
+//		
+//		int temp = Move(i);
+//		// i번째 컴퓨터에서 연결 탐색 가능한 수가 최대 탐색 가능 수보다 크거나 같을 때
+//		if (max_num <= temp)
+//		{
+//			// 큰 경우 기존 최대 탐색 컴퓨터 넘버 배열 정리, 최대 탐색 가능 수 업데이트
+//			if (max_num < temp)
+//			{
+//				ret.clear();
+//				max_num = temp;
+//			}
+//
+//			// 최대 탐색 컴퓨터 넘버 배열에 추가
+//			ret.push_back(i);
+//		} // 최대 탐색 컴퓨터 넘버들만을 출력하기 위해 크거나 같은 경우를 확인하여 정보 업데이트
+//	}
+//
+//	// 출력
+//	for (int i : ret) cout << i << " ";
+//
+//	return 0;
+//}
 
-// 연결 총 탐색 수 반환
-int Move(int com)
+// 또 다른 풀이법(DFS 정수형 반환)
+// 내 풀이와 약간 유사
+// DFS로 탐색한 수를 반환하여 로직 구성
+vector<int> v[10001];
+int dp[10001], visited[10001], mx, n, m, a, b;
+
+int DFS(int here) 
 {
-	int cnt = 0;
-	visited[com] = 1;
-
-	for (int next : Connect[com])
+	visited[here] = 1;
+	int ret = 1;
+	for (int there : v[here]) 
 	{
-		if (0 != visited[next]) continue;
+		if (0 != visited[there]) continue;
 
-		cnt += Move(next);
+		ret += DFS(there);
 	}
 
-	return ++cnt;
+	return ret;
 }
 
-int main()
+int main() 
 {
-	cin >> N >> M;
-
-	// 신뢰연결망 작업
-	int com_num, con_num;
-	for (int i = 0; i < M; ++i)
+	cin >> n >> m;
+	while (m--) 
 	{
-		cin >> com_num >> con_num;
-
-		Connect[con_num].push_back(com_num);
+		cin >> a >> b;
+		v[b].push_back(a);
 	}
 
-	for (int i = 1; i <= N; ++i)
+	for (int i = 1; i <= n; ++i) 
 	{
-		// 방문기록 초기화
-		fill(&visited[0], &visited[0] + 10001, 0);
-		
-		int temp = Move(i);
-		// i번째 컴퓨터에서 연결 탐색 가능한 수가 최대 탐색 가능 수보다 크거나 같을 때
-		if (max_num <= temp)
-		{
-			// 큰 경우 기존 최대 탐색 컴퓨터 넘버 배열 정리, 최대 탐색 가능 수 업데이트
-			if (max_num < temp)
-			{
-				ret.clear();
-				max_num = temp;
-			}
+		// 초기화
+		memset(visited, 0, sizeof(visited));
 
-			// 최대 탐색 컴퓨터 넘버 배열에 추가
-			ret.push_back(i);
-		} // 최대 탐색 컴퓨터 넘버들만을 출력하기 위해 크거나 같은 경우를 확인하여 정보 업데이트
+		// 반환되는 모든 탐색 카운트 저장
+		dp[i] = DFS(i);
+		mx = max(dp[i], mx);
 	}
 
-	// 출력
-	for (int i : ret) cout << i << " ";
+	for (int i = 1; i <= n; ++i)
+	{
+		// 최대 카운트인 mx와 dp[i]에 담긴 수가 같을 때만 출력
+		// 반환되는 모든 탐색 카운트 저장해서 사용하는 해당 방법 생각 못함 이렇게 하는게 오히려 깔끔하고 좋았을 듯 하다
+		if (mx == dp[i]) cout << i << " ";
+	}
 
 	return 0;
 }
