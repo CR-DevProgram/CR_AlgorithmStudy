@@ -224,38 +224,65 @@
 
 // 다음 큰 숫자
 // https://school.programmers.co.kr/learn/courses/30/lessons/12911
+//#include <string>
+//#include <vector>
+//#include <algorithm>
+//
+//using namespace std;
+//
+//int getCount(int n)
+//{
+//    string s = "";
+//    while (true)
+//    {
+//        s.insert(0, to_string(n % 2));
+//        n /= 2;
+//
+//        if (n == 0)
+//        {
+//            break;
+//        }
+//    }
+//
+//    return count(s.begin(), s.end(), '1');
+//}
+//
+//int solution(int n) {
+//    int originCnt = getCount(n);
+//
+//    while (true)
+//    {
+//        int cnt = getCount(++n);
+//        if (originCnt == cnt)
+//        {
+//            return n;
+//        }
+//    }
+//}
+
+// 피보나치 수
+// https://school.programmers.co.kr/learn/courses/30/lessons/12945
+// 메모이제이션 안 하면 시간 초과 남
 #include <string>
 #include <vector>
-#include <algorithm>
 
 using namespace std;
 
-int getCount(int n)
+vector<int> memo(100001, -1);
+int divideNum = 1234567;
+
+int fibo(int n)
 {
-    string s = "";
-    while (true)
-    {
-        s.insert(0, to_string(n % 2));
-        n /= 2;
+    if (n == 0) return 0;
+    if (n == 1) return 1;
 
-        if (n == 0)
-        {
-            break;
-        }
-    }
+    if (memo[n] != -1) return memo[n];
 
-    return count(s.begin(), s.end(), '1');
+    memo[n] = (fibo(n - 1) % divideNum + fibo(n - 2) % divideNum) % divideNum;
+
+    return memo[n];
 }
 
 int solution(int n) {
-    int originCnt = getCount(n);
-
-    while (true)
-    {
-        int cnt = getCount(++n);
-        if (originCnt == cnt)
-        {
-            return n;
-        }
-    }
+    return fibo(n);
 }
