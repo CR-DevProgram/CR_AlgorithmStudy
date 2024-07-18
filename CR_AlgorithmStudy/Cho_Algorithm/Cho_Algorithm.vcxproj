@@ -131,6 +131,7 @@
     <ClCompile Include="Cho_Baekjoon_2DFSBFS.cpp" />
     <ClCompile Include="Cho_Baekjoon_3ExhaustiveSearchBackTracking.cpp" />
     <ClCompile Include="Cho_Programmers.cpp" />
+    <ClCompile Include="Cho_Programmers_Lv2.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

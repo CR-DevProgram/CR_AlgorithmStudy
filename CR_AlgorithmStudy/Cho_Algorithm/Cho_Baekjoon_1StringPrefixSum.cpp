@@ -350,42 +350,42 @@
 //}
 
 // 06_ROT13 
-#include <iostream>
-#include <string>
-using namespace std;
-
-int main()
-{
-    // 문자열을 입력 받는다.
-    string s;
-    getline(cin, s);
-
-    // 13글자씩 민다
-    for (auto& i : s)
-	{
-		if (isdigit(i) || i == ' ') continue;
-
-		// i를 숫자로 바꾼다
-		int temp = i + 13;
-
-		if (i <= 'Z')
-		{
-			int standard = 'Z' + 1;
-			if (temp >= standard) i = 'A' + (temp % standard);
-			else {
-				i = temp;
-			}
-		}
-		else if (i <= 'z')
-		{
-			int standard = 'z' + 1;
-			if (temp >= standard) i = 'a' + (temp % standard);
-			else
-            {
-                i = temp;
-            }
-        }
-    }
-
-    cout << s;
-}
+//#include <iostream>
+//#include <string>
+//using namespace std;
+//
+//int main()
+//{
+//    // 문자열을 입력 받는다.
+//    string s;
+//    getline(cin, s);
+//
+//    // 13글자씩 민다
+//    for (auto& i : s)
+//	{
+//		if (isdigit(i) || i == ' ') continue;
+//
+//		// i를 숫자로 바꾼다
+//		int temp = i + 13;
+//
+//		if (i <= 'Z')
+//		{
+//			int standard = 'Z' + 1;
+//			if (temp >= standard) i = 'A' + (temp % standard);
+//			else {
+//				i = temp;
+//			}
+//		}
+//		else if (i <= 'z')
+//		{
+//			int standard = 'z' + 1;
+//			if (temp >= standard) i = 'a' + (temp % standard);
+//			else
+//            {
+//                i = temp;
+//            }
+//        }
+//    }
+//
+//    cout << s;
+//}
