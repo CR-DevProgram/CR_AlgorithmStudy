@@ -410,20 +410,52 @@
 // 멀리뛰기
 // https://school.programmers.co.kr/learn/courses/30/lessons/12914
 #include <string>
+//#include <vector>
+//
+//using namespace std;
+//
+//long long solution(int n) {
+//    int value = 1234567;
+//    vector<long long> v(2001, 0);
+//    v[0] = 1;
+//    v[1] = 1;
+//
+//    for (int i = 2; i <= n; i++)
+//    {
+//        v[i] = ((v[i - 1] % value) + (v[i - 2] % value)) % value;
+//    }
+//
+//    return v[n];
+//}
+
+// N개의 최소공배수
+// https://school.programmers.co.kr/learn/courses/30/lessons/12953
+#include <string>
 #include <vector>
+#include <math.h>
 
 using namespace std;
 
-long long solution(int n) {
-    int value = 1234567;
-    vector<long long> v(2001, 0);
-    v[0] = 1;
-    v[1] = 1;
+int gcd(int a, int b) {
+    while (b != 0) {
+        int temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
 
-    for (int i = 2; i <= n; i++)
+int lcm(int a, int b) {
+    return abs(a * b) / gcd(a, b);
+}
+
+int solution(vector<int> arr) {
+    int size = arr.size();
+    int value = arr[0];
+    for (int i = 1; i < size; i++)
     {
-        v[i] = ((v[i - 1] % value) + (v[i - 2] % value)) % value;
+        value = lcm(value, arr[i]);
     }
 
-    return v[n];
+    return value;
 }
