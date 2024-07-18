@@ -545,32 +545,61 @@
 
 // 귤 고르기
 // https://school.programmers.co.kr/learn/courses/30/lessons/138476
+//#include <string>
+//#include <vector>
+//#include <algorithm>
+//
+//using namespace std;
+//
+//int solution(int k, vector<int> tangerine) {
+//    // 귤 배열의 개수를 구한다.
+//    int size = tangerine.size();
+//
+//    // vector에 각 귤의 번호와 개수를 넣는다.
+//    vector<int> v(10000001, 0);
+//    for (int i = 0; i < size; i++)
+//    {
+//        ++v[tangerine[i]];
+//    }
+//
+//    // 정렬한다.
+//    sort(v.begin(), v.end(), greater<>());
+//
+//    int cnt = 0;
+//    for (int i = 0; i < size; i++)
+//    {
+//        cnt += v[i];
+//
+//        if (cnt >= k)
+//            return i + 1;
+//    }
+//}
+
+// 연속 부분 수열 합의 개수
+// https://school.programmers.co.kr/learn/courses/30/lessons/131701
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <set>
 
 using namespace std;
 
-int solution(int k, vector<int> tangerine) {
-    // 귤 배열의 개수를 구한다.
-    int size = tangerine.size();
+int solution(vector<int> elements) {
+    set<int> s;
+    int size = elements.size();
 
-    // vector에 각 귤의 번호와 개수를 넣는다.
-    vector<int> v(10000001, 0);
-    for (int i = 0; i < size; i++)
+    for (int j = 0; j < size; j++)
     {
-        ++v[tangerine[i]];
+        int value = 0;
+
+        for (int i = 0; i < size; i++)
+        {
+            value += elements[i];
+            s.insert(value);
+        }
+
+        rotate(elements.begin(), elements.begin() + 1, elements.end());
     }
 
-    // 정렬한다.
-    sort(v.begin(), v.end(), greater<>());
-
-    int cnt = 0;
-    for (int i = 0; i < size; i++)
-    {
-        cnt += v[i];
-
-        if (cnt >= k)
-            return i + 1;
-    }
+    return s.size();
 }
