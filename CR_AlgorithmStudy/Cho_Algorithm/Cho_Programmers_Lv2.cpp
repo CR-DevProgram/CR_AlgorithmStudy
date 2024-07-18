@@ -577,29 +577,72 @@
 
 // 연속 부분 수열 합의 개수
 // https://school.programmers.co.kr/learn/courses/30/lessons/131701
+//#include <string>
+//#include <vector>
+//#include <algorithm>
+//#include <set>
+//
+//using namespace std;
+//
+//int solution(vector<int> elements) {
+//    set<int> s;
+//    int size = elements.size();
+//
+//    for (int j = 0; j < size; j++)
+//    {
+//        int value = 0;
+//
+//        for (int i = 0; i < size; i++)
+//        {
+//            value += elements[i];
+//            s.insert(value);
+//        }
+//
+//        rotate(elements.begin(), elements.begin() + 1, elements.end());
+//    }
+//
+//    return s.size();
+//}
+
+// 괄호 회전하기
+// https://school.programmers.co.kr/learn/courses/30/lessons/76502
 #include <string>
-#include <vector>
 #include <algorithm>
-#include <set>
+#include <vector>
+#include <stack>
 
 using namespace std;
 
-int solution(vector<int> elements) {
-    set<int> s;
-    int size = elements.size();
-
-    for (int j = 0; j < size; j++)
+int solution(string s) {
+    int size = s.size();
+    int cnt = 0;
+    for (int i = 0; i < size; i++)
     {
-        int value = 0;
-
-        for (int i = 0; i < size; i++)
+        stack<char> st;
+        for (int j = 0; j < size; j++)
         {
-            value += elements[i];
-            s.insert(value);
+            if (st.empty())
+            {
+                st.push(s[j]);
+            }
+            else
+            {
+                if ((st.top() == '[' && s[j] == ']') ||
+                    (st.top() == '{' && s[j] == '}') ||
+                    (st.top() == '(' && s[j] == ')'))
+                {
+                    st.pop();
+                }
+                else
+                {
+                    st.push(s[j]);
+                }
+            }
         }
 
-        rotate(elements.begin(), elements.begin() + 1, elements.end());
-    }
+        if (st.empty()) ++cnt;
 
-    return s.size();
+        rotate(s.begin(), s.begin() + 1, s.end());
+    }
+    return cnt;
 }
