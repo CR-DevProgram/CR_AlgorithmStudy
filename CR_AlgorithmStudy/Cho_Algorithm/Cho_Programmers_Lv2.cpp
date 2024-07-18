@@ -606,43 +606,71 @@
 
 // 괄호 회전하기
 // https://school.programmers.co.kr/learn/courses/30/lessons/76502
+//#include <string>
+//#include <algorithm>
+//#include <vector>
+//#include <stack>
+//
+//using namespace std;
+//
+//int solution(string s) {
+//    int size = s.size();
+//    int cnt = 0;
+//    for (int i = 0; i < size; i++)
+//    {
+//        stack<char> st;
+//        for (int j = 0; j < size; j++)
+//        {
+//            if (st.empty())
+//            {
+//                st.push(s[j]);
+//            }
+//            else
+//            {
+//                if ((st.top() == '[' && s[j] == ']') ||
+//                    (st.top() == '{' && s[j] == '}') ||
+//                    (st.top() == '(' && s[j] == ')'))
+//                {
+//                    st.pop();
+//                }
+//                else
+//                {
+//                    st.push(s[j]);
+//                }
+//            }
+//        }
+//
+//        if (st.empty()) ++cnt;
+//
+//        rotate(s.begin(), s.begin() + 1, s.end());
+//    }
+//    return cnt;
+//}
+
+// n^2 배열 자르기
+// https://school.programmers.co.kr/learn/courses/30/lessons/87390
+
 #include <string>
-#include <algorithm>
 #include <vector>
-#include <stack>
 
 using namespace std;
 
-int solution(string s) {
-    int size = s.size();
-    int cnt = 0;
-    for (int i = 0; i < size; i++)
+vector<int> solution(int n, long long left, long long right) {
+    vector<int> v;    
+    vector<int> answer;
+
+    for (long long k = left; k <= right; ++k)
     {
-        stack<char> st;
-        for (int j = 0; j < size; j++)
-        {
-            if (st.empty())
-            {
-                st.push(s[j]);
-            }
-            else
-            {
-                if ((st.top() == '[' && s[j] == ']') ||
-                    (st.top() == '{' && s[j] == '}') ||
-                    (st.top() == '(' && s[j] == ')'))
-                {
-                    st.pop();
-                }
-                else
-                {
-                    st.push(s[j]);
-                }
-            }
-        }
+        int i = k / n;
+        int j = k % n;
 
-        if (st.empty()) ++cnt;
-
-        rotate(s.begin(), s.begin() + 1, s.end());
+        answer.push_back(max(i, j) + 1);
     }
-    return cnt;
+
+    return answer;
+}
+
+int main()
+{
+    solution(3, 2, 5);
 }
