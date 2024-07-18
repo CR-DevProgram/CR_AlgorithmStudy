@@ -141,3 +141,53 @@
 //
 //    return s;
 //}
+
+// 이진 변환 반복하기
+// https://school.programmers.co.kr/learn/courses/30/lessons/70129
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+vector<int> solution(string s) {
+	vector<int> answer;
+	int removeCnt = 0;
+	int playCnt = 0;
+
+	while (true)
+	{
+		// 1의 개수를 센다.
+		int cnt = count(s.begin(), s.end(), '1');
+		if (s.size() == 1)
+		{
+			answer.push_back(playCnt);
+			answer.push_back(removeCnt);
+			return answer;
+		}
+
+		++playCnt;
+		removeCnt += s.size() - cnt;
+
+		// cnt를 비트로 변환한다.
+		s = "";
+
+		while (true)
+		{
+			s.insert(0, to_string(cnt % 2));
+			cnt /= 2;
+
+			if (cnt == 0)
+			{
+				break;
+			}
+		}
+	}
+}
+
+int main()
+{
+	string s = "110010101001";
+	solution(s);
+}
