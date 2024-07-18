@@ -356,24 +356,53 @@
 
 // 점프와 순간 이동
 // https://school.programmers.co.kr/learn/courses/30/lessons/12980
-#include <iostream>
+//#include <iostream>
+//#include <vector>
+//#include <algorithm>
+//#include <string>
+//
+//using namespace std;
+//
+//int solution(int n)
+//{
+//    string s = "";
+//    while (true)
+//    {
+//        s.insert(0, to_string(n % 2));
+//        n /= 2;
+//
+//        if (n == 0)
+//            break;
+//    }
+//
+//    return count(s.begin(), s.end(), '1');
+//}
+
+// 구명보트
+// https://school.programmers.co.kr/learn/courses/30/lessons/42885
+#include <string>
 #include <vector>
 #include <algorithm>
-#include <string>
 
 using namespace std;
 
-int solution(int n)
-{
-    string s = "";
-    while (true)
-    {
-        s.insert(0, to_string(n % 2));
-        n /= 2;
+int solution(vector<int> people, int limit) {
+    sort(people.begin(), people.end());
+    int size = people.size();
 
-        if (n == 0)
-            break;
+    int i = 0;
+    int j = size - 1;
+    int cnt = 0;
+
+    while (i <= j)
+    {
+        if (people[i] + people[j] <= limit)
+        {
+            ++i;
+        }
+        ++cnt;
+        --j;
     }
 
-    return count(s.begin(), s.end(), '1');
+    return cnt;
 }
