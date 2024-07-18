@@ -486,7 +486,8 @@ vector<int> solution(int n, vector<string> words) {
                 if (v[i - 1].back() != words[i].front())
                 {
                     answer.push_back(i % n + 1);
-                    answer.push_back(i / n + 1);
+                    int temp = (i + 1) % n == 0 ? (i + 1) / n : (i + 1) / n + 1;            
+                    answer.push_back(temp);
                     break;
                 }
                 else
@@ -502,7 +503,8 @@ vector<int> solution(int n, vector<string> words) {
         else
         {
             answer.push_back(i % n + 1);
-            answer.push_back(i / n + 1);
+            int temp = (i + 1) % n == 0 ? (i + 1) / n : (i + 1) / n + 1;
+            answer.push_back(temp);
             break;
         }
     }
