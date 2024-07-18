@@ -289,31 +289,67 @@
 
 // 짝지어 제거하기
 // https://school.programmers.co.kr/learn/courses/30/lessons/12973
-#include <iostream>
+//#include <iostream>
+//#include <string>
+//#include <stack>
+//using namespace std;
+//
+//int solution(string s)
+//{
+//    int size = s.size();
+//    stack<char> st;
+//
+//    for (int i = 0; i < size; i++)
+//    {
+//        if (st.size() == 0)
+//        {
+//            st.push(s[i]);
+//        }
+//        else if (st.top() == s[i])
+//        {
+//            st.pop();
+//        }
+//        else
+//        {
+//            st.push(s[i]);
+//        }
+//    }
+//
+//    return st.size() > 0 ? 0 : 1;
+//}
+
+// 카펫
+// https://school.programmers.co.kr/learn/courses/30/lessons/42842
 #include <string>
-#include <stack>
+#include <vector>
+
 using namespace std;
 
-int solution(string s)
-{
-    int size = s.size();
-    stack<char> st;
+vector<int> solution(int brown, int yellow) {
+    vector<int> answer;
 
-    for (int i = 0; i < size; i++)
+    // 가로 길이는 세로 길이와 같거나 길다
+    for (int i = 1; i <= yellow; i++)
     {
-        if (st.size() == 0)
+        if (yellow % i == 0)
         {
-            st.push(s[i]);
-        }
-        else if (st.top() == s[i])
-        {
-            st.pop();
-        }
-        else
-        {
-            st.push(s[i]);
+            int h = i;
+            int w = yellow / i + 2;
+            if (brown == h * 2 + w * 2)
+            {
+                answer.push_back(w);
+                answer.push_back(h + 2);
+                return answer;
+            }
         }
     }
 
-    return st.size() > 0 ? 0 : 1;
+    return answer;
+}
+
+int main()
+{
+    int brown = 8;
+    int yellow = 1;
+    solution(brown, yellow);
 }
