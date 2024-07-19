@@ -676,58 +676,91 @@
 
 // ÇÒÀÎ Çà»ç
 // https://school.programmers.co.kr/learn/courses/30/lessons/131127
+//#include <string>
+//#include <vector>
+//#include <map>
+//#include <iostream>
+//
+//using namespace std;
+//
+//int solution(vector<string> want, vector<int> number, vector<string> discount) {
+//
+//    map<string, int> m;
+//    int size = want.size();
+//
+//    for (int i = 0; i < size; i++)
+//    {
+//        m.insert(make_pair(want[i], number[i]));
+//    }
+//
+//    size = discount.size();
+//
+//    int cnt = 0;
+//    int answer = 0;
+//    for (int i = 0; i < size; i++)
+//    {
+//        ++cnt;
+//        if (m.find(discount[i]) != m.end())
+//        {
+//            --m[discount[i]];
+//        }
+//        if(cnt >= 10)
+//        {
+//            bool isTrue = true;
+//            for (auto& j : m)
+//            {
+//                if (j.second > 0)
+//                {
+//                    isTrue = false;
+//                    break;
+//                }
+//            }
+//
+//            if (isTrue) ++answer;
+//            if (m.find(discount[i - 9]) != m.end())
+//            {
+//                ++m[discount[i - 9]];
+//            }
+//        }
+//    }
+//
+//    return answer;
+//}
+//
+//int main()
+//{
+//    solution({ "banana", "apple", "rice", "pork", "pot" }, { 3, 2, 2, 2, 1 }, { "chicken", "apple", "apple", "banana", "rice", "apple", "pork", "banana", "pork", "rice", "pot", "banana", "apple", "banana" });
+//}
+
+// Çà·ÄÀÇ °ö¼À
+// https://school.programmers.co.kr/learn/courses/30/lessons/12949
 #include <string>
 #include <vector>
-#include <map>
-#include <iostream>
 
 using namespace std;
 
-int solution(vector<string> want, vector<int> number, vector<string> discount) {
+vector<vector<int>> solution(vector<vector<int>> arr1, vector<vector<int>> arr2) {
+    int arr1Row = arr1.size();
+    int arr1Col = arr1[0].size();
+    int arr2Row = arr2.size();
+    int arr2Col = arr2[0].size();
+    vector<vector<int>> arr3(arr1Row, vector<int>(arr2Col));
 
-    map<string, int> m;
-    int size = want.size();
-
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < arr1Row; i++)
     {
-        m.insert(make_pair(want[i], number[i]));
-    }
-
-    size = discount.size();
-
-    int cnt = 0;
-    int answer = 0;
-    for (int i = 0; i < size; i++)
-    {
-        ++cnt;
-        if (m.find(discount[i]) != m.end())
+        for (int j = 0; j < arr2Col; j++)
         {
-            --m[discount[i]];
-        }
-        if(cnt >= 10)
-        {
-            bool isTrue = true;
-            for (auto& j : m)
+            for (int k = 0; k < arr1Col; k++)
             {
-                if (j.second > 0)
-                {
-                    isTrue = false;
-                    break;
-                }
-            }
-
-            if (isTrue) ++answer;
-            if (m.find(discount[i - 9]) != m.end())
-            {
-                ++m[discount[i - 9]];
+                arr3[i][j] += arr1[i][k] * arr2[k][j];
             }
         }
     }
 
-    return answer;
+    return arr3;
 }
 
 int main()
 {
-    solution({ "banana", "apple", "rice", "pork", "pot" }, { 3, 2, 2, 2, 1 }, { "chicken", "apple", "apple", "banana", "rice", "apple", "pork", "banana", "pork", "rice", "pot", "banana", "apple", "banana" });
+    solution({ {1, 4} ,{3, 2},{4, 1} }, { {3, 3}, {3, 3} });
 }
