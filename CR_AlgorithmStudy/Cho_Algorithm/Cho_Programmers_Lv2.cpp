@@ -819,59 +819,104 @@
 
 // 캐시
 // https://school.programmers.co.kr/learn/courses/30/lessons/17680
+//#include <string>
+//#include <vector>
+//#include <algorithm>
+//#include <iostream>
+//
+//using namespace std;
+//
+//int solution(int cacheSize, vector<string> cities) {
+//    int size = cities.size();
+//    vector<string> v;
+//    int answer = 0;
+//
+//    if (cacheSize == 0)
+//    {
+//        return size * 5;
+//    }
+//
+//    for (int i = 0; i < size; i++)
+//    {
+//        string city = "";
+//
+//        for (int j = 0; j < cities[i].size(); j++)
+//        {
+//            city += tolower(cities[i][j]);
+//        }
+//
+//        if (v.size() < cacheSize)
+//        {
+//            if (v.end() == find(v.begin(), v.end(), city))
+//            {
+//                v.push_back(city);
+//                answer += 5;
+//            }
+//            else
+//            {
+//                v.erase(remove(v.begin(), v.end(), city), v.end());
+//                v.push_back(city);
+//                answer += 1;
+//            }
+//        }
+//        else
+//        {
+//            if (v.end() == find(v.begin(), v.end(), city))
+//            {
+//                v.erase(v.begin(), v.begin() + 1);
+//                v.push_back(city);
+//                answer += 5;
+//            }
+//            else
+//            {
+//                v.erase(remove(v.begin(), v.end(), city), v.end());
+//                v.push_back(city);
+//                answer += 1;
+//            }
+//        }
+//    }
+//
+//    return answer;
+//}
+//
+//int main()
+//{
+//    cout << solution(3, { "a", "b", "c", "b"});
+//}
+
+// 기능개발
+// https://school.programmers.co.kr/learn/courses/30/lessons/42586
 #include <string>
 #include <vector>
-#include <algorithm>
-#include <iostream>
 
 using namespace std;
 
-int solution(int cacheSize, vector<string> cities) {
-    int size = cities.size();
-    vector<string> v;
-    int answer = 0;
-
-    if (cacheSize == 0)
-    {
-        return size * 5;
-    }
-
+vector<int> solution(vector<int> progresses, vector<int> speeds) {
+    vector<vector<int>> v;
+    int size = progresses.size();
     for (int i = 0; i < size; i++)
     {
-        string city = "";
+        v.push_back({ progresses[i], speeds[i] });
+    }
 
-        for (int j = 0; j < cities[i].size(); j++)
+    vector<int> answer;
+    while (!v.empty())
+    {
+        int cnt = 0;
+        while (!v.empty() && v[0][0] >= 100)
         {
-            city += tolower(cities[i][j]);
+            v.erase(v.begin());
+            ++cnt;
         }
 
-        if (v.size() < cacheSize)
+        if (cnt > 0)
+            answer.push_back(cnt);
+
+        if (!v.empty())
         {
-            if (v.end() == find(v.begin(), v.end(), city))
+            for (int i = 0; i < v.size(); i++)
             {
-                v.push_back(city);
-                answer += 5;
-            }
-            else
-            {
-                v.erase(remove(v.begin(), v.end(), city), v.end());
-                v.push_back(city);
-                answer += 1;
-            }
-        }
-        else
-        {
-            if (v.end() == find(v.begin(), v.end(), city))
-            {
-                v.erase(v.begin(), v.begin() + 1);
-                v.push_back(city);
-                answer += 5;
-            }
-            else
-            {
-                v.erase(remove(v.begin(), v.end(), city), v.end());
-                v.push_back(city);
-                answer += 1;
+                v[i][0] += v[i][1];
             }
         }
     }
@@ -881,5 +926,5 @@ int solution(int cacheSize, vector<string> cities) {
 
 int main()
 {
-    cout << solution(3, { "a", "b", "c", "b"});
+    solution({ 93, 30, 55 }, { 1, 30, 5 });
 }
