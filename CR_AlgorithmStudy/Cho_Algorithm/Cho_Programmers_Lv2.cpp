@@ -649,22 +649,79 @@
 
 // n^2 배열 자르기
 // https://school.programmers.co.kr/learn/courses/30/lessons/87390
+//#include <string>
+//#include <vector>
+//
+//using namespace std;
+//
+//vector<int> solution(int n, long long left, long long right) {
+//    vector<int> v;    
+//    vector<int> answer;
+//
+//    for (long long k = left; k <= right; ++k)
+//    {
+//        int i = k / n;
+//        int j = k % n;
+//
+//        answer.push_back(max(i, j) + 1);
+//    }
+//
+//    return answer;
+//}
+//
+//int main()
+//{
+//    solution(3, 2, 5);
+//}
 
+// 할인 행사
+// https://school.programmers.co.kr/learn/courses/30/lessons/131127
 #include <string>
 #include <vector>
+#include <map>
+#include <iostream>
 
 using namespace std;
 
-vector<int> solution(int n, long long left, long long right) {
-    vector<int> v;    
-    vector<int> answer;
+int solution(vector<string> want, vector<int> number, vector<string> discount) {
 
-    for (long long k = left; k <= right; ++k)
+    map<string, int> m;
+    int size = want.size();
+
+    for (int i = 0; i < size; i++)
     {
-        int i = k / n;
-        int j = k % n;
+        m.insert(make_pair(want[i], number[i]));
+    }
 
-        answer.push_back(max(i, j) + 1);
+    size = discount.size();
+
+    int cnt = 0;
+    int answer = 0;
+    for (int i = 0; i < size; i++)
+    {
+        ++cnt;
+        if (m.find(discount[i]) != m.end())
+        {
+            --m[discount[i]];
+        }
+        if(cnt >= 10)
+        {
+            bool isTrue = true;
+            for (auto& j : m)
+            {
+                if (j.second > 0)
+                {
+                    isTrue = false;
+                    break;
+                }
+            }
+
+            if (isTrue) ++answer;
+            if (m.find(discount[i - 9]) != m.end())
+            {
+                ++m[discount[i - 9]];
+            }
+        }
     }
 
     return answer;
@@ -672,5 +729,5 @@ vector<int> solution(int n, long long left, long long right) {
 
 int main()
 {
-    solution(3, 2, 5);
+    solution({ "banana", "apple", "rice", "pork", "pot" }, { 3, 2, 2, 2, 1 }, { "chicken", "apple", "apple", "banana", "rice", "apple", "pork", "banana", "pork", "rice", "pot", "banana", "apple", "banana" });
 }
