@@ -734,33 +734,61 @@
 
 // Çà·ÄÀÇ °ö¼À
 // https://school.programmers.co.kr/learn/courses/30/lessons/12949
+//#include <string>
+//#include <vector>
+//
+//using namespace std;
+//
+//vector<vector<int>> solution(vector<vector<int>> arr1, vector<vector<int>> arr2) {
+//    int arr1Row = arr1.size();
+//    int arr1Col = arr1[0].size();
+//    int arr2Row = arr2.size();
+//    int arr2Col = arr2[0].size();
+//    vector<vector<int>> arr3(arr1Row, vector<int>(arr2Col));
+//
+//    for (int i = 0; i < arr1Row; i++)
+//    {
+//        for (int j = 0; j < arr2Col; j++)
+//        {
+//            for (int k = 0; k < arr1Col; k++)
+//            {
+//                arr3[i][j] += arr1[i][k] * arr2[k][j];
+//            }
+//        }
+//    }
+//
+//    return arr3;
+//}
+//
+//int main()
+//{
+//    solution({ {1, 4} ,{3, 2},{4, 1} }, { {3, 3}, {3, 3} });
+//}
+
+// ÀÇ»ó
+// https://school.programmers.co.kr/learn/courses/30/lessons/42578
 #include <string>
 #include <vector>
+#include <map>
 
 using namespace std;
 
-vector<vector<int>> solution(vector<vector<int>> arr1, vector<vector<int>> arr2) {
-    int arr1Row = arr1.size();
-    int arr1Col = arr1[0].size();
-    int arr2Row = arr2.size();
-    int arr2Col = arr2[0].size();
-    vector<vector<int>> arr3(arr1Row, vector<int>(arr2Col));
+int solution(vector<vector<string>> clothes)
+{
+    map<string, int> m;
+    int size = clothes.size();
+    int answer = 1;
 
-    for (int i = 0; i < arr1Row; i++)
+    for (int i = 0; i < size; i++)
     {
-        for (int j = 0; j < arr2Col; j++)
-        {
-            for (int k = 0; k < arr1Col; k++)
-            {
-                arr3[i][j] += arr1[i][k] * arr2[k][j];
-            }
-        }
+        ++m[clothes[i][1]];
     }
 
-    return arr3;
-}
+    for (auto it = m.begin(); it != m.end(); it++)
+    {
+        answer *= (it->second + 1);
+    }
 
-int main()
-{
-    solution({ {1, 4} ,{3, 2},{4, 1} }, { {3, 3}, {3, 3} });
+
+    return answer - 1;
 }
