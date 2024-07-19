@@ -886,45 +886,97 @@
 
 // 기능개발
 // https://school.programmers.co.kr/learn/courses/30/lessons/42586
+//#include <string>
+//#include <vector>
+//
+//using namespace std;
+//
+//vector<int> solution(vector<int> progresses, vector<int> speeds) {
+//    vector<vector<int>> v;
+//    int size = progresses.size();
+//    for (int i = 0; i < size; i++)
+//    {
+//        v.push_back({ progresses[i], speeds[i] });
+//    }
+//
+//    vector<int> answer;
+//    while (!v.empty())
+//    {
+//        int cnt = 0;
+//        while (!v.empty() && v[0][0] >= 100)
+//        {
+//            v.erase(v.begin());
+//            ++cnt;
+//        }
+//
+//        if (cnt > 0)
+//            answer.push_back(cnt);
+//
+//        if (!v.empty())
+//        {
+//            for (int i = 0; i < v.size(); i++)
+//            {
+//                v[i][0] += v[i][1];
+//            }
+//        }
+//    }
+//
+//    return answer;
+//}
+//
+//int main()
+//{
+//    solution({ 93, 30, 55 }, { 1, 30, 5 });
+//}
+
+// 프로세스
+// https://school.programmers.co.kr/learn/courses/30/lessons/42587
 #include <string>
 #include <vector>
+#include <queue>
+#include <iostream>
 
 using namespace std;
 
-vector<int> solution(vector<int> progresses, vector<int> speeds) {
-    vector<vector<int>> v;
-    int size = progresses.size();
+int solution(vector<int> priorities, int location) {
+    queue<pair<int, int>> q;
+    priority_queue<int> pq;
+    int size = priorities.size();
+
     for (int i = 0; i < size; i++)
     {
-        v.push_back({ progresses[i], speeds[i] });
+        q.push({ priorities[i], i });
+        pq.push(priorities[i]);
     }
 
-    vector<int> answer;
-    while (!v.empty())
+    int cnt = 0;
+    while (true)
     {
-        int cnt = 0;
-        while (!v.empty() && v[0][0] >= 100)
+        if (pq.top() != q.front().first)
         {
-            v.erase(v.begin());
-            ++cnt;
+            int f = q.front().first;
+            int s = q.front().second;
+            q.pop();
+            q.push({f, s});
         }
-
-        if (cnt > 0)
-            answer.push_back(cnt);
-
-        if (!v.empty())
+        else
         {
-            for (int i = 0; i < v.size(); i++)
+            ++cnt;
+            // location이 일치하는지 확인한다.
+            if (q.front().second == location)
             {
-                v[i][0] += v[i][1];
+                return cnt;
+            }
+            else
+            {
+                pq.pop();
+                q.pop();
             }
         }
     }
-
-    return answer;
 }
 
 int main()
 {
-    solution({ 93, 30, 55 }, { 1, 30, 5 });
+    cout << solution({ 1,1,9,1,1,1 },0);
 }
