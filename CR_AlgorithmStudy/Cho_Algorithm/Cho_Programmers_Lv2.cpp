@@ -931,52 +931,76 @@
 
 // 프로세스
 // https://school.programmers.co.kr/learn/courses/30/lessons/42587
+//#include <string>
+//#include <vector>
+//#include <queue>
+//#include <iostream>
+//
+//using namespace std;
+//
+//int solution(vector<int> priorities, int location) {
+//    queue<pair<int, int>> q;
+//    priority_queue<int> pq;
+//    int size = priorities.size();
+//
+//    for (int i = 0; i < size; i++)
+//    {
+//        q.push({ priorities[i], i });
+//        pq.push(priorities[i]);
+//    }
+//
+//    int cnt = 0;
+//    while (true)
+//    {
+//        if (pq.top() != q.front().first)
+//        {
+//            int f = q.front().first;
+//            int s = q.front().second;
+//            q.pop();
+//            q.push({f, s});
+//        }
+//        else
+//        {
+//            ++cnt;
+//            // location이 일치하는지 확인한다.
+//            if (q.front().second == location)
+//            {
+//                return cnt;
+//            }
+//            else
+//            {
+//                pq.pop();
+//                q.pop();
+//            }
+//        }
+//    }
+//}
+//
+//int main()
+//{
+//    cout << solution({ 1,1,9,1,1,1 },0);
+//}
+
+// 전화번호 목록
+// https://school.programmers.co.kr/learn/courses/30/lessons/42577
 #include <string>
 #include <vector>
-#include <queue>
-#include <iostream>
+#include <algorithm>
 
 using namespace std;
 
-int solution(vector<int> priorities, int location) {
-    queue<pair<int, int>> q;
-    priority_queue<int> pq;
-    int size = priorities.size();
+bool solution(vector<string> phone_book) {
+    int size = phone_book.size();
 
-    for (int i = 0; i < size; i++)
-    {
-        q.push({ priorities[i], i });
-        pq.push(priorities[i]);
-    }
+    sort(phone_book.begin(), phone_book.end());
 
-    int cnt = 0;
-    while (true)
+    for (int i = 0; i < size - 1; i++)
     {
-        if (pq.top() != q.front().first)
+        if (phone_book[i + 1].find(phone_book[i]) == 0)
         {
-            int f = q.front().first;
-            int s = q.front().second;
-            q.pop();
-            q.push({f, s});
-        }
-        else
-        {
-            ++cnt;
-            // location이 일치하는지 확인한다.
-            if (q.front().second == location)
-            {
-                return cnt;
-            }
-            else
-            {
-                pq.pop();
-                q.pop();
-            }
+            return false;
         }
     }
-}
 
-int main()
-{
-    cout << solution({ 1,1,9,1,1,1 },0);
+    return true;
 }
