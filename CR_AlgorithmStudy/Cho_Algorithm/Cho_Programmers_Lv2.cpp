@@ -767,28 +767,52 @@
 
 // ÀÇ»ó
 // https://school.programmers.co.kr/learn/courses/30/lessons/42578
+//#include <string>
+//#include <vector>
+//#include <map>
+//
+//using namespace std;
+//
+//int solution(vector<vector<string>> clothes)
+//{
+//    map<string, int> m;
+//    int size = clothes.size();
+//    int answer = 1;
+//
+//    for (int i = 0; i < size; i++)
+//    {
+//        ++m[clothes[i][1]];
+//    }
+//
+//    for (auto it = m.begin(); it != m.end(); it++)
+//    {
+//        answer *= (it->second + 1);
+//    }
+//
+//
+//    return answer - 1;
+//}
+
+// H-Index
+// https://school.programmers.co.kr/learn/courses/30/lessons/42747
 #include <string>
 #include <vector>
-#include <map>
+#include <algorithm>
+#include <iostream>
 
 using namespace std;
 
-int solution(vector<vector<string>> clothes)
+int solution(vector<int> citations) {
+    sort(citations.begin(), citations.end(), greater<>());
+
+    for (int i = 0; i < citations.size(); ++i) {
+        if (citations[i] < i + 1) {
+            return i;
+        }
+    }
+}
+
+int main()
 {
-    map<string, int> m;
-    int size = clothes.size();
-    int answer = 1;
-
-    for (int i = 0; i < size; i++)
-    {
-        ++m[clothes[i][1]];
-    }
-
-    for (auto it = m.begin(); it != m.end(); it++)
-    {
-        answer *= (it->second + 1);
-    }
-
-
-    return answer - 1;
+    cout << solution({ 3,0,6,1,5 });
 }
