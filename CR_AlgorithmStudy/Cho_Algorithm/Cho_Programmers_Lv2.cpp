@@ -795,6 +795,30 @@
 
 // H-Index
 // https://school.programmers.co.kr/learn/courses/30/lessons/42747
+//#include <string>
+//#include <vector>
+//#include <algorithm>
+//#include <iostream>
+//
+//using namespace std;
+//
+//int solution(vector<int> citations) {
+//    sort(citations.begin(), citations.end(), greater<>());
+//
+//    for (int i = 0; i < citations.size(); ++i) {
+//        if (citations[i] < i + 1) {
+//            return i;
+//        }
+//    }
+//}
+//
+//int main()
+//{
+//    cout << solution({ 3,0,6,1,5 });
+//}
+
+// Ä³½Ã
+// https://school.programmers.co.kr/learn/courses/30/lessons/17680
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -802,17 +826,60 @@
 
 using namespace std;
 
-int solution(vector<int> citations) {
-    sort(citations.begin(), citations.end(), greater<>());
+int solution(int cacheSize, vector<string> cities) {
+    int size = cities.size();
+    vector<string> v;
+    int answer = 0;
 
-    for (int i = 0; i < citations.size(); ++i) {
-        if (citations[i] < i + 1) {
-            return i;
+    if (cacheSize == 0)
+    {
+        return size * 5;
+    }
+
+    for (int i = 0; i < size; i++)
+    {
+        string city = "";
+
+        for (int j = 0; j < cities[i].size(); j++)
+        {
+            city += tolower(cities[i][j]);
+        }
+
+        if (v.size() < cacheSize)
+        {
+            if (v.end() == find(v.begin(), v.end(), city))
+            {
+                v.push_back(city);
+                answer += 5;
+            }
+            else
+            {
+                v.erase(remove(v.begin(), v.end(), city), v.end());
+                v.push_back(city);
+                answer += 1;
+            }
+        }
+        else
+        {
+            if (v.end() == find(v.begin(), v.end(), city))
+            {
+                v.erase(v.begin(), v.begin() + 1);
+                v.push_back(city);
+                answer += 5;
+            }
+            else
+            {
+                v.erase(remove(v.begin(), v.end(), city), v.end());
+                v.push_back(city);
+                answer += 1;
+            }
         }
     }
+
+    return answer;
 }
 
 int main()
 {
-    cout << solution({ 3,0,6,1,5 });
+    cout << solution(3, { "a", "b", "c", "b"});
 }
