@@ -2295,69 +2295,108 @@ using namespace std;
 // 20_오큰수
 // https://www.acmicpc.net/problem/17298
 // N: 수열의 크기
-int N, maxnum;
-vector<int> Vec, retVec;
+//int N, maxnum;
+//vector<int> Vec, retVec;
+//
+//int NGE(int index)
+//{
+//	if (maxnum == Vec[index]) return -1;
+//	for (int i = index + 1; i < N; ++i)
+//	{
+//		if (Vec[index] < Vec[i]) return Vec[i];
+//	}
+//
+//	return -1;
+//}
+//
+//int main()
+//{
+//	cin >> N;
+//	
+//	// 시간 초과
+//	/*Vec.resize(N);
+//	for (int i = 0; i < N; ++i)
+//	{
+//		cin >> Vec[i];
+//		maxnum = max(maxnum, Vec[i]);
+//	}
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		cout << NGE(i) << " ";
+//	}*/
+//
+//	// 오답
+//	/*Vec.resize(N);
+//	retVec.resize(N);
+//	bool check = false;
+//	int idx = 0;
+//	cin >> Vec[idx];
+//	for (int i = 1; i < N; ++i)
+//	{
+//		cin >> Vec[i];
+//
+//		if (Vec[i - 1] < Vec[i])
+//		{
+//			check = false;
+//			for (int j = idx; j < i; ++j)
+//			{
+//				retVec[j] = Vec[i];
+//			}
+//		}
+//		else if (false == check && Vec[i - 1] > Vec[i])
+//		{
+//			check = true;
+//			idx = 1 == i ? 1 : i - 1;
+//		}
+//	}
+//
+//	retVec[0] = 0 == retVec[0] ? -1 : retVec[0];
+//	retVec[N - 1] = -1;
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		cout << retVec[i] << " ";
+//	}*/
+//
+//	return 0;
+//}
 
-int NGE(int index)
-{
-	if (maxnum == Vec[index]) return -1;
-	for (int i = index + 1; i < N; ++i)
-	{
-		if (Vec[index] < Vec[i]) return Vec[i];
-	}
-
-	return -1;
-}
+// 풀이법(Stack 활용)
+// 짝짓기 문제 => 스택을 생각해라
+// 무식하게가 가능한가 파악할 것
+// 최대범위: 1000000 => O(n^2) : 1000000 * 1000000이 됨 따라서 불가
+// 왼쪽에서 오른쪽으로 탐색, 담아놓고(stack) 확인
+int n, a[1000004], ret[1000004];
+stack<int> s;
 
 int main()
 {
-	cin >> N;
-	
-	// 시간 초과
-	/*Vec.resize(N);
-	for (int i = 0; i < N; ++i)
+	// 입력받기
+	cin >> n;
+	// 초기화 작업
+	memset(ret, -1, sizeof(ret));
+	//fill(&ret[0], &ret[0] + 1000004, -1);
+
+	for (int i = 0; i < n; ++i)
 	{
-		cin >> Vec[i];
-		maxnum = max(maxnum, Vec[i]);
+		cin >> a[i];
+
+		// 스택 사이즈가 존재하고 오큰수가 되는 순간
+		while (0 != s.size() && a[s.top()] < a[i])
+		{
+			// 스택에 담긴 인덱스 수를 ret 배열 활용하여 오큰수 배열 관리
+			ret[s.top()] = a[i];
+			// 넣어주면 스택에서 제거
+			s.pop();
+		}
+
+		// 스택에 쌓을 인덱스
+		s.push(i);
 	}
 
-	for (int i = 0; i < N; ++i)
-	{
-		cout << NGE(i) << " ";
-	}*/
-
-	// 오답
-	/*Vec.resize(N);
-	retVec.resize(N);
-	bool check = false;
-	int idx = 0;
-	cin >> Vec[idx];
-	for (int i = 1; i < N; ++i)
-	{
-		cin >> Vec[i];
-
-		if (Vec[i - 1] < Vec[i])
-		{
-			check = false;
-			for (int j = idx; j < i; ++j)
-			{
-				retVec[j] = Vec[i];
-			}
-		}
-		else if (false == check && Vec[i - 1] > Vec[i])
-		{
-			check = true;
-			idx = 1 == i ? 1 : i - 1;
-		}
-	}
-
-	retVec[0] = 0 == retVec[0] ? -1 : retVec[0];
-	retVec[N - 1] = -1;
-
-	for (int i = 0; i < N; ++i)
-	{
-		cout << retVec[i] << " ";
-	}*/
+	// 출력
+	for (int i : ret) cout << i << " ";
 
 	return 0;
 }
