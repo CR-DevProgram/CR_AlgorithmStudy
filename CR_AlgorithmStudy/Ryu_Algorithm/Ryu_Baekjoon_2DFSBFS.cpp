@@ -2246,48 +2246,118 @@ using namespace std;
 // 또 다른 풀이법(DFS 정수형 반환)
 // 내 풀이와 약간 유사
 // DFS로 탐색한 수를 반환하여 로직 구성
-vector<int> v[10001];
-int dp[10001], visited[10001], mx, n, m, a, b;
+//vector<int> v[10001];
+//int dp[10001], visited[10001], mx, n, m, a, b;
+//
+//int DFS(int here) 
+//{
+//	visited[here] = 1;
+//	int ret = 1;
+//	for (int there : v[here]) 
+//	{
+//		if (0 != visited[there]) continue;
+//
+//		ret += DFS(there);
+//	}
+//
+//	return ret;
+//}
+//
+//int main() 
+//{
+//	cin >> n >> m;
+//	while (m--) 
+//	{
+//		cin >> a >> b;
+//		v[b].push_back(a);
+//	}
+//
+//	for (int i = 1; i <= n; ++i) 
+//	{
+//		// 초기화
+//		memset(visited, 0, sizeof(visited));
+//
+//		// 반환되는 모든 탐색 카운트 저장
+//		dp[i] = DFS(i);
+//		mx = max(dp[i], mx);
+//	}
+//
+//	for (int i = 1; i <= n; ++i)
+//	{
+//		// 최대 카운트인 mx와 dp[i]에 담긴 수가 같을 때만 출력
+//		// 반환되는 모든 탐색 카운트 저장해서 사용하는 해당 방법 생각 못함 이렇게 하는게 오히려 깔끔하고 좋았을 듯 하다
+//		if (mx == dp[i]) cout << i << " ";
+//	}
+//
+//	return 0;
+//}
 
-int DFS(int here) 
+// 20_오큰수
+// https://www.acmicpc.net/problem/17298
+// N: 수열의 크기
+int N, maxnum;
+vector<int> Vec, retVec;
+
+int NGE(int index)
 {
-	visited[here] = 1;
-	int ret = 1;
-	for (int there : v[here]) 
+	if (maxnum == Vec[index]) return -1;
+	for (int i = index + 1; i < N; ++i)
 	{
-		if (0 != visited[there]) continue;
-
-		ret += DFS(there);
+		if (Vec[index] < Vec[i]) return Vec[i];
 	}
 
-	return ret;
+	return -1;
 }
 
-int main() 
+int main()
 {
-	cin >> n >> m;
-	while (m--) 
+	cin >> N;
+	
+	// 시간 초과
+	/*Vec.resize(N);
+	for (int i = 0; i < N; ++i)
 	{
-		cin >> a >> b;
-		v[b].push_back(a);
+		cin >> Vec[i];
+		maxnum = max(maxnum, Vec[i]);
 	}
 
-	for (int i = 1; i <= n; ++i) 
+	for (int i = 0; i < N; ++i)
 	{
-		// 초기화
-		memset(visited, 0, sizeof(visited));
+		cout << NGE(i) << " ";
+	}*/
 
-		// 반환되는 모든 탐색 카운트 저장
-		dp[i] = DFS(i);
-		mx = max(dp[i], mx);
+	// 오답
+	/*Vec.resize(N);
+	retVec.resize(N);
+	bool check = false;
+	int idx = 0;
+	cin >> Vec[idx];
+	for (int i = 1; i < N; ++i)
+	{
+		cin >> Vec[i];
+
+		if (Vec[i - 1] < Vec[i])
+		{
+			check = false;
+			for (int j = idx; j < i; ++j)
+			{
+				retVec[j] = Vec[i];
+			}
+		}
+		else if (false == check && Vec[i - 1] > Vec[i])
+		{
+			check = true;
+			idx = 1 == i ? 1 : i - 1;
+		}
 	}
 
-	for (int i = 1; i <= n; ++i)
+	retVec[0] = 0 == retVec[0] ? -1 : retVec[0];
+	retVec[N - 1] = -1;
+
+	for (int i = 0; i < N; ++i)
 	{
-		// 최대 카운트인 mx와 dp[i]에 담긴 수가 같을 때만 출력
-		// 반환되는 모든 탐색 카운트 저장해서 사용하는 해당 방법 생각 못함 이렇게 하는게 오히려 깔끔하고 좋았을 듯 하다
-		if (mx == dp[i]) cout << i << " ";
-	}
+		cout << retVec[i] << " ";
+	}*/
 
 	return 0;
 }
