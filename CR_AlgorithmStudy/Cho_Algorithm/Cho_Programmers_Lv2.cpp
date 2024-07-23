@@ -983,24 +983,78 @@
 
 // 전화번호 목록
 // https://school.programmers.co.kr/learn/courses/30/lessons/42577
-#include <string>
-#include <vector>
-#include <algorithm>
+//#include <string>
+//#include <vector>
+//#include <algorithm>
+//
+//using namespace std;
+//
+//bool solution(vector<string> phone_book) {
+//    int size = phone_book.size();
+//
+//    sort(phone_book.begin(), phone_book.end());
+//
+//    for (int i = 0; i < size - 1; i++)
+//    {
+//        if (phone_book[i + 1].find(phone_book[i]) == 0)
+//        {
+//            return false;
+//        }
+//    }
+//
+//    return true;
+//}
 
-using namespace std;
-
-bool solution(vector<string> phone_book) {
-    int size = phone_book.size();
-
-    sort(phone_book.begin(), phone_book.end());
-
-    for (int i = 0; i < size - 1; i++)
-    {
-        if (phone_book[i + 1].find(phone_book[i]) == 0)
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
+//메뉴 리뉴얼
+// https://school.programmers.co.kr/learn/courses/30/lessons/72411
+//#include <string>
+//#include <vector>
+//#include <map>
+//#include <algorithm>
+//
+//using namespace std;
+//
+//map<string, int> newCourse;
+//vector<int> maxCnt(11, 0);
+//
+//void combination(string src, string dst, int depth)
+//{
+//    if (dst.size() == depth)
+//    {
+//        newCourse[dst]++;
+//        maxCnt[depth] = max(maxCnt[depth], newCourse[dst]);
+//    }
+//    else
+//    {
+//        for (int i = 0; i < src.size(); i++)
+//        {
+//            combination(src.substr(i + 1), dst + src[i], depth);
+//        }
+//    }
+//}
+//
+//vector<string> solution(vector<string> orders, vector<int> course) {
+//    for (auto& s : orders)
+//    {
+//        sort(s.begin(), s.end());
+//    }
+//
+//    for (auto& i : course)
+//    {
+//        for (auto& s : orders)
+//        {
+//            combination(s, "", i);
+//        }
+//    }
+//
+//    vector<string> answer;
+//    for (auto& [course, cnt] : newCourse)
+//    {
+//        if (maxCnt[course.size()] >= 2 && maxCnt[course.size()] == cnt)
+//        {
+//            answer.push_back(course);
+//        }
+//    }
+//
+//    return answer;
+//}
