@@ -1058,3 +1058,53 @@
 //
 //    return answer;
 //}
+
+// 오픈채팅방
+// https://school.programmers.co.kr/learn/courses/30/lessons/42888
+#include <string>
+#include <vector>
+#include <sstream>
+#include <map>
+
+using namespace std;
+
+vector<string> solution(vector<string> record) {
+    map<string/*id*/, string/*name*/> m;
+
+    vector<string> answer;
+    vector<string> ids;
+    for (auto& r : record)
+    {
+        stringstream s(r);
+        string cmd, id, name;
+        s >> cmd;
+
+        if (cmd == "Enter" || cmd == "Change")
+        {
+            s >> id >> name;
+            m[id] = name;
+            if (cmd == "Enter")
+            {
+                answer.push_back("님이 들어왔습니다.");
+                ids.push_back(id);
+            }
+        }
+        else
+        {
+            s >> id;
+            answer.push_back("님이 나갔습니다.");
+            ids.push_back(id);
+        }
+    }
+
+    int size = ids.size();
+
+    for (int i = 0; i < size; i++)
+    {
+        string name = m[ids[i]];
+
+        answer[i] = name + answer[i];
+    }
+
+    return answer;
+}
