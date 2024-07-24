@@ -1061,50 +1061,113 @@
 
 // 오픈채팅방
 // https://school.programmers.co.kr/learn/courses/30/lessons/42888
-#include <string>
-#include <vector>
-#include <sstream>
-#include <map>
+//#include <string>
+//#include <vector>
+//#include <sstream>
+//#include <map>
+//
+//using namespace std;
+//
+//vector<string> solution(vector<string> record) {
+//    map<string/*id*/, string/*name*/> m;
+//
+//    vector<string> answer;
+//    vector<string> ids;
+//    for (auto& r : record)
+//    {
+//        stringstream s(r);
+//        string cmd, id, name;
+//        s >> cmd;
+//
+//        if (cmd == "Enter" || cmd == "Change")
+//        {
+//            s >> id >> name;
+//            m[id] = name;
+//            if (cmd == "Enter")
+//            {
+//                answer.push_back("님이 들어왔습니다.");
+//                ids.push_back(id);
+//            }
+//        }
+//        else
+//        {
+//            s >> id;
+//            answer.push_back("님이 나갔습니다.");
+//            ids.push_back(id);
+//        }
+//    }
+//
+//    int size = ids.size();
+//
+//    for (int i = 0; i < size; i++)
+//    {
+//        string name = m[ids[i]];
+//
+//        answer[i] = name + answer[i];
+//    }
+//
+//    return answer;
+//}
 
+// 게임 맵 최단거리
+// https://school.programmers.co.kr/learn/courses/30/lessons/1844
+#include <vector>
+#include <queue>
 using namespace std;
 
-vector<string> solution(vector<string> record) {
-    map<string/*id*/, string/*name*/> m;
+int dx[] = { -1, 1, 0, 0 };
+int dy[] = { 0, 0, -1, 1 };
 
-    vector<string> answer;
-    vector<string> ids;
-    for (auto& r : record)
+int bfs(vector<vector<int>>& maps, int x, int y)
+{
+    int h = maps[0].size();
+    int w = maps.size();
+
+    vector<vector<bool>> isVisited(w, vector<bool>(h, false));
+    vector<vector<int>> visitedCnt(w, vector<int>(h, 0));
+    isVisited[0][0] = true;
+    visitedCnt[0][0] = 1;
+
+    queue<pair<int, int>> q;
+
+    q.push({ x, y });
+
+    while (!q.empty())
     {
-        stringstream s(r);
-        string cmd, id, name;
-        s >> cmd;
+        int cx = q.front().first;
+        int cy = q.front().second;
+        q.pop();
 
-        if (cmd == "Enter" || cmd == "Change")
+        for (int i = 0; i < 4; i++)
         {
-            s >> id >> name;
-            m[id] = name;
-            if (cmd == "Enter")
+            int nx = cx + dx[i];
+            int ny = cy + dy[i];
+
+            if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+            if (isVisited[nx][ny]) continue;
+            if (maps[nx][ny] == 0) continue;
+
+            isVisited[nx][ny] = true;
+            visitedCnt[nx][ny] = visitedCnt[cx][cy] + 1;
+
+            if (nx == w - 1 && ny == h - 1)
             {
-                answer.push_back("님이 들어왔습니다.");
-                ids.push_back(id);
+                return visitedCnt[nx][ny];
             }
-        }
-        else
-        {
-            s >> id;
-            answer.push_back("님이 나갔습니다.");
-            ids.push_back(id);
+
+            q.push({ nx, ny });
         }
     }
 
-    int size = ids.size();
+    return -1;
+}
 
-    for (int i = 0; i < size; i++)
-    {
-        string name = m[ids[i]];
+int solution(vector<vector<int> > maps)
+{
+    return bfs(maps, 0, 0);
+}
 
-        answer[i] = name + answer[i];
-    }
-
-    return answer;
+int main()
+{
+    solution({ { 1, 1 } });
 }
