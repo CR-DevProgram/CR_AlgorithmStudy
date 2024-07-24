@@ -2367,36 +2367,36 @@ using namespace std;
 // 무식하게가 가능한가 파악할 것
 // 최대범위: 1000000 => O(n^2) : 1000000 * 1000000이 됨 따라서 불가
 // 왼쪽에서 오른쪽으로 탐색, 담아놓고(stack) 확인
-int n, a[1000004], ret[1000004];
-stack<int> s;
-
-int main()
-{
-	// 입력받기
-	cin >> n;
-	// 초기화 작업
-	memset(ret, -1, sizeof(ret));
-	//fill(&ret[0], &ret[0] + 1000004, -1);
-
-	for (int i = 0; i < n; ++i)
-	{
-		cin >> a[i];
-
-		// 스택 사이즈가 존재하고 오큰수가 되는 순간
-		while (0 != s.size() && a[s.top()] < a[i])
-		{
-			// 스택에 담긴 인덱스 수를 ret 배열 활용하여 오큰수 배열 관리
-			ret[s.top()] = a[i];
-			// 넣어주면 스택에서 제거
-			s.pop();
-		}
-
-		// 스택에 쌓을 인덱스
-		s.push(i);
-	}
-
-	// 출력
-	for (int i : ret) cout << i << " ";
-
-	return 0;
-}
+//int n, a[1000004], ret[1000004];
+//stack<int> s;
+//
+//int main()
+//{
+//	// 입력받기
+//	cin >> n;
+//	// 초기화 작업
+//	memset(ret, -1, sizeof(ret));
+//	//fill(&ret[0], &ret[0] + 1000004, -1);
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		cin >> a[i];
+//
+//		// 스택 사이즈가 존재하고 오큰수가 되는 순간
+//		while (0 != s.size() && a[s.top()] < a[i])
+//		{
+//			// 스택에 담긴 인덱스 수를 ret 배열 활용하여 오큰수 배열 관리
+//			ret[s.top()] = a[i];
+//			// 넣어주면 스택에서 제거
+//			s.pop();
+//		}
+//
+//		// 스택에 쌓을 인덱스
+//		s.push(i);
+//	}
+//
+//	// 출력
+//	for (int i : ret) cout << i << " ";
+//
+//	return 0;
+//}
