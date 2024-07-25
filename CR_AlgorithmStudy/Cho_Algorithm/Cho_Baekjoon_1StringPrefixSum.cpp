@@ -389,3 +389,57 @@
 //
 //    cout << s;
 //}
+
+// 한국이 그리울 땐 서버에 접속하지
+// https://www.acmicpc.net/problem/9996
+#include <iostream>
+#include <vector>
+#include <sstream>
+using namespace std;
+
+vector<string> splitString(string& s, char d)
+{
+    istringstream iss(s);
+    string token;
+    vector<string> tokens;
+
+    while (getline(iss, token, d))
+    {
+        tokens.push_back(token);
+    }
+
+    return tokens;
+}
+
+int main()
+{
+    int cnt;
+    cin >> cnt;
+
+    string s;
+    cin >> s;
+    vector<string> v = splitString(s, '*');
+
+    for (int i = 0; i < cnt; i++)
+    {
+        string temp;
+        cin >> temp;
+
+        if (temp.size() < v[0].size() + v[1].size())
+        {
+            cout << "NE" << '\n';
+            continue;
+        }
+
+        string start = temp.substr(0, v[0].size());
+        string end = temp.substr(temp.size() - v[1].size(), temp.size());
+        if (start == v[0] && end == v[1])
+        {
+            cout << "DA" << '\n';
+        }
+        else
+        {
+            cout << "NE" << '\n';
+        }
+    }
+}
