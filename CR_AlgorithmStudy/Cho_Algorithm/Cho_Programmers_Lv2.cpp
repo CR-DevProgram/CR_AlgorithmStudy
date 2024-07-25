@@ -1111,63 +1111,91 @@
 
 // 게임 맵 최단거리
 // https://school.programmers.co.kr/learn/courses/30/lessons/1844
+//#include <vector>
+//#include <queue>
+//using namespace std;
+//
+//int dx[] = { -1, 1, 0, 0 };
+//int dy[] = { 0, 0, -1, 1 };
+//
+//int bfs(vector<vector<int>>& maps, int x, int y)
+//{
+//    int h = maps[0].size();
+//    int w = maps.size();
+//
+//    vector<vector<bool>> isVisited(w, vector<bool>(h, false));
+//    vector<vector<int>> visitedCnt(w, vector<int>(h, 0));
+//    isVisited[0][0] = true;
+//    visitedCnt[0][0] = 1;
+//
+//    queue<pair<int, int>> q;
+//
+//    q.push({ x, y });
+//
+//    while (!q.empty())
+//    {
+//        int cx = q.front().first;
+//        int cy = q.front().second;
+//        q.pop();
+//
+//        for (int i = 0; i < 4; i++)
+//        {
+//            int nx = cx + dx[i];
+//            int ny = cy + dy[i];
+//
+//            if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+//            if (isVisited[nx][ny]) continue;
+//            if (maps[nx][ny] == 0) continue;
+//
+//            isVisited[nx][ny] = true;
+//            visitedCnt[nx][ny] = visitedCnt[cx][cy] + 1;
+//
+//            if (nx == w - 1 && ny == h - 1)
+//            {
+//                return visitedCnt[nx][ny];
+//            }
+//
+//            q.push({ nx, ny });
+//        }
+//    }
+//
+//    return -1;
+//}
+//
+//int solution(vector<vector<int> > maps)
+//{
+//    return bfs(maps, 0, 0);
+//}
+//
+//int main()
+//{
+//    solution({ { 1, 1 } });
+//}
+
+// 124 나라의 숫자
+// https://school.programmers.co.kr/learn/courses/30/lessons/12899
+#include <string>
 #include <vector>
-#include <queue>
+
 using namespace std;
 
-int dx[] = { -1, 1, 0, 0 };
-int dy[] = { 0, 0, -1, 1 };
+string solution(int n) {
 
-int bfs(vector<vector<int>>& maps, int x, int y)
-{
-    int h = maps[0].size();
-    int w = maps.size();
-
-    vector<vector<bool>> isVisited(w, vector<bool>(h, false));
-    vector<vector<int>> visitedCnt(w, vector<int>(h, 0));
-    isVisited[0][0] = true;
-    visitedCnt[0][0] = 1;
-
-    queue<pair<int, int>> q;
-
-    q.push({ x, y });
-
-    while (!q.empty())
+    string answer = "";
+    int t = 0;
+    while (n != 0) // 숫자가 0이 아니면
     {
-        int cx = q.front().first;
-        int cy = q.front().second;
-        q.pop();
+        t = n % 3; // 숫자를 3으로 나눈 나머지를 구한다. 나머지로 올 수 있는 숫자는 0 ~ 2 이므로 0이 나오는 경우 4로 변환한다.
+        n /= 3;    // 숫자를 3으로 나눈 몫을 구한다.
 
-        for (int i = 0; i < 4; i++)
+        if (t == 0) // 만약 나머지가 0이면 4로 변환하고, 숫자에 1을 줄인다.
         {
-            int nx = cx + dx[i];
-            int ny = cy + dy[i];
-
-            if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
-            if (isVisited[nx][ny]) continue;
-            if (maps[nx][ny] == 0) continue;
-
-            isVisited[nx][ny] = true;
-            visitedCnt[nx][ny] = visitedCnt[cx][cy] + 1;
-
-            if (nx == w - 1 && ny == h - 1)
-            {
-                return visitedCnt[nx][ny];
-            }
-
-            q.push({ nx, ny });
+            t = 4;
+            --n;
         }
+
+        answer = to_string(t) + answer;
     }
 
-    return -1;
-}
-
-int solution(vector<vector<int> > maps)
-{
-    return bfs(maps, 0, 0);
-}
-
-int main()
-{
-    solution({ { 1, 1 } });
+    return answer;
 }
