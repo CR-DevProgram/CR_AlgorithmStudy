@@ -151,14 +151,91 @@ using namespace std;
 // 2_보물섬
 // https://www.acmicpc.net/problem/2589
 // 각 이동 가능한 땅의 크기와 해당 땅에서의 BFS를 활용하여 경로 구하기
-int n, m, ret, visited[50][50], island[50][50];
+//int n, m, ret, visited[50][50], island[50][50];
+//int dy[] = { -1, 0, 1, 0 };
+//int dx[] = { 0, 1, 0, -1 };
+//queue<pair<int, int>> q;
+//
+//void BFS(int y, int x)
+//{
+//	visited[y][x] = 1;
+//
+//	while (true != q.empty())
+//	{
+//		tie(y, x) = q.front();
+//		q.pop();
+//
+//		for (int i = 0; i < 4; ++i)
+//		{
+//			int ny = y + dy[i];
+//			int nx = x + dx[i];
+//
+//			if (0 > ny || 0 > nx || n <= ny || m <= nx) continue;
+//			if (0 == island[ny][nx] || 0 != visited[ny][nx]) continue;
+//
+//			// 경로 수치를 구하기 위함
+//			visited[ny][nx] = visited[y][x] + 1;
+//			ret = max(ret, visited[ny][nx] - 1);
+//			q.push({ ny, nx });
+//		}
+//	}
+//}
+//
+//int main()
+//{
+//	cin >> n >> m;
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		string LandInfo = "";
+//		cin >> LandInfo;
+//
+//		for (int j = 0; j < LandInfo.size(); ++j)
+//		{
+//			// 바다는 0 육지는 1
+//			island[i][j] = 'W' == LandInfo[j] ? 0 : 1;
+//		}
+//	}
+//
+//	// 모든 경우 탐색
+//	for (int i = 0; i < n; ++i)
+//	{
+//		for (int j = 0; j < m; ++j)
+//		{
+//			// 탐색전 방문 기록 초기화
+//			fill(&visited[0][0], &visited[0][0] + 50 * 50, 0);
+//			// 육지이고 방문하지 않았을 때 BFS 돌리기 
+//			if (1 == island[i][j] && 0 == visited[i][j])
+//			{
+//				q.push({ i,j });
+//				BFS(i, j);
+//			}
+//		}
+//	}
+//
+//	// 결과 출력
+//	cout << ret;
+//
+//	return 0;
+//}
+
+// 또 다른 풀이법(?)
+// 내 풀이와 유사?
+// 육지 -> 육지로 간다 했을 때 최단거리, 보물은 가장 긴 최단거리에 묻혀있음
+// 최단 거리 중 가장 Max 값
+// 모든 경우의 BFS를 활용하여 최단거리 구하면 됨
+int n, m, mx, visited[54][54];
 int dy[] = { -1, 0, 1, 0 };
 int dx[] = { 0, 1, 0, -1 };
-queue<pair<int, int>> q;
+char a[54][54];
 
 void BFS(int y, int x)
 {
+	// 방문 초기화
+	fill(&visited[0][0], &visited[0][0] + 54 * 54, 0);
 	visited[y][x] = 1;
+	queue<pair<int, int>> q;
+	q.push({ y,x });
 
 	while (true != q.empty())
 	{
@@ -171,50 +248,40 @@ void BFS(int y, int x)
 			int nx = x + dx[i];
 
 			if (0 > ny || 0 > nx || n <= ny || m <= nx) continue;
-			if (0 == island[ny][nx] || 0 != visited[ny][nx]) continue;
+			if (0 != visited[ny][nx] || 'W' == a[ny][nx]) continue;
 
-			// 경로 수치를 구하기 위함
+			// 최단 거리 배열
 			visited[ny][nx] = visited[y][x] + 1;
-			ret = max(ret, visited[ny][nx] - 1);
 			q.push({ ny, nx });
+			// 최대 값을 구하기 위한 max 활용
+			mx = max(mx, visited[ny][nx]);
 		}
 	}
 }
 
 int main()
 {
+	// 입력 받기
 	cin >> n >> m;
 
 	for (int i = 0; i < n; ++i)
 	{
-		string LandInfo = "";
-		cin >> LandInfo;
-
-		for (int j = 0; j < LandInfo.size(); ++j)
+		for (int j = 0; j < m; ++j)
 		{
-			// 바다는 0 육지는 1
-			island[i][j] = 'W' == LandInfo[j] ? 0 : 1;
+			cin >> a[i][j];
 		}
 	}
 
-	// 모든 경우 탐색
 	for (int i = 0; i < n; ++i)
 	{
 		for (int j = 0; j < m; ++j)
 		{
-			// 탐색전 방문 기록 초기화
-			fill(&visited[0][0], &visited[0][0] + 50 * 50, 0);
-			// 육지이고 방문하지 않았을 때 BFS 돌리기 
-			if (1 == island[i][j] && 0 == visited[i][j])
-			{
-				q.push({ i,j });
-				BFS(i, j);
-			}
+			// 'L'일 때만 BFS 돌리기('W'일 때는 돌릴 필요X)
+			if ('L' == a[i][j]) BFS(i, j);
 		}
 	}
 
-	// 결과 출력
-	cout << ret;
+	cout << mx - 1;
 
 	return 0;
 }
