@@ -76,27 +76,108 @@ using namespace std;
 // 또 다른 풀이법(Combi완전탐색 및 인덱스 활용)
 // 무식하게 풀 수 있는가? -> 로직 -> 시간복잡도 계산 -> 가능하다?(무식 GO), 불가능하다?(다른 알고리즘)
 // 치킨집을 선별하고 모든 집과의 거리를 비교해서 집 거리 중 가장 최소값을 더하면 됨
-int n, m, a[54][54], result = 987654321;
-vector<vector<int>> ChickenList;		// 치킨 위치가 담겨 있는 Chicken의 인덱스를 담아 놓은 리스트
-vector<pair<int, int>> Home, Chicken;
+//int n, m, a[54][54], result = 987654321;
+//vector<vector<int>> ChickenList;		// 치킨 위치가 담겨 있는 Chicken의 인덱스를 담아 놓은 리스트
+//vector<pair<int, int>> Home, Chicken;
+//
+//void Combi(int Start, vector<int> v)
+//{
+//	// 최대 치킨집 개수와 v 사이즈가 같을 때
+//	if (m == v.size())
+//	{
+//		// 로직
+//		// 조합들 저장
+//		ChickenList.push_back(v);
+//		return;
+//	}
+//
+//	// 조합
+//	for (int i = Start + 1; i < Chicken.size(); ++i)
+//	{
+//		v.push_back(i);
+//		Combi(i, v);
+//		v.pop_back();
+//	}
+//}
+//
+//int main()
+//{
+//	cin >> n >> m;
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		for (int j = 0; j < n; ++j)
+//		{
+//			cin >> a[i][j];
+//
+//			if (1 == a[i][j]) Home.push_back({ i,j });
+//			if (2 == a[i][j]) Chicken.push_back({ i,j });
+//		}
+//	}
+//
+//	vector<int> v;
+//	Combi(-1, v);
+//
+//	// 치킨집 뽑기
+//	for (vector<int> cList : ChickenList)
+//	{
+//		int ret = 0;
+//		for (pair<int, int> _Home : Home)
+//		{
+//			int _Min = 987654321;
+//
+//			// 치킨 리스트 중에서 집과의 거리
+//			for (int ch : cList)
+//			{
+//				int _Dist = abs(_Home.first - Chicken[ch].first) + abs(_Home.second - Chicken[ch].second);
+//				// 거리 비교해서 최소값 구하기(집과 치킨집들 중에서 최소 치킨 거리)
+//				_Min = min(_Min, _Dist);
+//			}
+//			
+//			// 최소 값들 합
+//			ret += _Min;
+//		}
+//
+//		// 전체적 최소 값
+//		result = min(result, ret);
+//	}
+//
+//	// 출력
+//	cout << result;
+//
+//	return 0;
+//}
 
-void Combi(int Start, vector<int> v)
+// 2_보물섬
+// https://www.acmicpc.net/problem/2589
+// 각 이동 가능한 땅의 크기와 해당 땅에서의 BFS를 활용하여 경로 구하기
+int n, m, ret, visited[50][50], island[50][50];
+int dy[] = { -1, 0, 1, 0 };
+int dx[] = { 0, 1, 0, -1 };
+queue<pair<int, int>> q;
+
+void BFS(int y, int x)
 {
-	// 최대 치킨집 개수와 v 사이즈가 같을 때
-	if (m == v.size())
-	{
-		// 로직
-		// 조합들 저장
-		ChickenList.push_back(v);
-		return;
-	}
+	visited[y][x] = 1;
 
-	// 조합
-	for (int i = Start + 1; i < Chicken.size(); ++i)
+	while (true != q.empty())
 	{
-		v.push_back(i);
-		Combi(i, v);
-		v.pop_back();
+		tie(y, x) = q.front();
+		q.pop();
+
+		for (int i = 0; i < 4; ++i)
+		{
+			int ny = y + dy[i];
+			int nx = x + dx[i];
+
+			if (0 > ny || 0 > nx || n <= ny || m <= nx) continue;
+			if (0 == island[ny][nx] || 0 != visited[ny][nx]) continue;
+
+			// 경로 수치를 구하기 위함
+			visited[ny][nx] = visited[y][x] + 1;
+			ret = max(ret, visited[ny][nx] - 1);
+			q.push({ ny, nx });
+		}
 	}
 }
 
@@ -106,44 +187,34 @@ int main()
 
 	for (int i = 0; i < n; ++i)
 	{
-		for (int j = 0; j < n; ++j)
-		{
-			cin >> a[i][j];
+		string LandInfo = "";
+		cin >> LandInfo;
 
-			if (1 == a[i][j]) Home.push_back({ i,j });
-			if (2 == a[i][j]) Chicken.push_back({ i,j });
+		for (int j = 0; j < LandInfo.size(); ++j)
+		{
+			// 바다는 0 육지는 1
+			island[i][j] = 'W' == LandInfo[j] ? 0 : 1;
 		}
 	}
 
-	vector<int> v;
-	Combi(-1, v);
-
-	// 치킨집 뽑기
-	for (vector<int> cList : ChickenList)
+	// 모든 경우 탐색
+	for (int i = 0; i < n; ++i)
 	{
-		int ret = 0;
-		for (pair<int, int> _Home : Home)
+		for (int j = 0; j < m; ++j)
 		{
-			int _Min = 987654321;
-
-			// 치킨 리스트 중에서 집과의 거리
-			for (int ch : cList)
+			// 탐색전 방문 기록 초기화
+			fill(&visited[0][0], &visited[0][0] + 50 * 50, 0);
+			// 육지이고 방문하지 않았을 때 BFS 돌리기 
+			if (1 == island[i][j] && 0 == visited[i][j])
 			{
-				int _Dist = abs(_Home.first - Chicken[ch].first) + abs(_Home.second - Chicken[ch].second);
-				// 거리 비교해서 최소값 구하기(집과 치킨집들 중에서 최소 치킨 거리)
-				_Min = min(_Min, _Dist);
+				q.push({ i,j });
+				BFS(i, j);
 			}
-			
-			// 최소 값들 합
-			ret += _Min;
 		}
-
-		// 전체적 최소 값
-		result = min(result, ret);
 	}
 
-	// 출력
-	cout << result;
+	// 결과 출력
+	cout << ret;
 
 	return 0;
 }
