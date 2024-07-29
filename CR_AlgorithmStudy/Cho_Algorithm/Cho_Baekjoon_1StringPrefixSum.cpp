@@ -446,34 +446,78 @@
 
 // 수열
 // https://www.acmicpc.net/problem/2559
+//#include <iostream>
+//#include <queue>
+//#include <math.h>
+//using namespace std;
+//
+//int main()
+//{
+//    int n, m;
+//    cin >> n >> m;
+//
+//    queue<int> q;
+//    int sum = 0;
+//    int maxValue = -100 * n;
+//    for (int i = 0; i < n; i++)
+//    {
+//        int temp;
+//        cin >> temp;
+//
+//        q.push(temp);
+//        sum += temp;
+//
+//        if (q.size() == m)
+//        {
+//            maxValue = max(maxValue, sum);
+//            sum -= q.front();
+//            q.pop();
+//        }
+//    }
+//
+//    cout << maxValue;
+//}
+
+// 나는야 포켓몬 마스터 이다솜
+// https://www.acmicpc.net/problem/1620
 #include <iostream>
-#include <queue>
-#include <math.h>
+#include <map>
+#include <string>
 using namespace std;
 
 int main()
 {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    // 도감에 수록되어 있는 포켓몬의 개수 N
+    // 맞춰야 하는 문제의 개수 M
     int n, m;
     cin >> n >> m;
 
-    queue<int> q;
-    int sum = 0;
-    int maxValue = -100 * n;
-    for (int i = 0; i < n; i++)
+    map<int, string> m1;
+    map<string, int> m2;
+
+    for (int i = 1; i <= n; i++)
     {
-        int temp;
+        string temp;
         cin >> temp;
-
-        q.push(temp);
-        sum += temp;
-
-        if (q.size() == m)
-        {
-            maxValue = max(maxValue, sum);
-            sum -= q.front();
-            q.pop();
-        }
+        m1[i] = temp;
+        m2[temp] = i;
     }
 
-    cout << maxValue;
+    for (int i = 0; i < m; i++)
+    {
+        string temp;
+        cin >> temp;
+
+        if (isdigit(temp[0]))
+        {
+            cout << m1[stoi(temp)] << '\n';
+        }
+        else
+        {
+            cout << m2[temp] << '\n';
+        }
+    }
 }
