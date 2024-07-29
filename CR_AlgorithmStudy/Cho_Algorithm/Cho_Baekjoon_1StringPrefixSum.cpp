@@ -524,35 +524,96 @@
 
 // ÆÐ¼Ç¿Õ ½ÅÇØºó
 // https://www.acmicpc.net/problem/9375
-#include <iostream>
-#include <map>
-#include <vector>
-#include <string>
+//#include <iostream>
+//#include <map>
+//#include <vector>
+//#include <string>
+//
+//using namespace std;
+//
+//int main()
+//{
+//    int n;
+//    cin >> n;
+//    for (int i = 0; i < n; i++)
+//    {
+//        int c;
+//        cin >> c;
+//        map<string, vector<string>> m;
+//        for (int j = 0; j < c; j++)
+//        {
+//            string temp1, temp2;
+//            cin >> temp1 >> temp2;
+//            m[temp2].push_back(temp1);
+//        }
+//
+//        int sum = 1;
+//        for (auto& j : m)
+//        {
+//            sum *= (j.second.size() + 1);
+//        }
+//
+//        cout << sum - 1 << '\n';
+//    }
+//}
 
+// ÆÓ¸°µå·Ò ¸¸µé±â
+// https://www.acmicpc.net/problem/1213
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
 using namespace std;
 
 int main()
 {
-    int n;
-    cin >> n;
-    for (int i = 0; i < n; i++)
+    string s;
+    cin >> s;
+
+    vector<int> v(26, 0);
+
+    int size = s.size();
+
+    for (int i = 0; i < size; i++)
     {
-        int c;
-        cin >> c;
-        map<string, vector<string>> m;
-        for (int j = 0; j < c; j++)
-        {
-            string temp1, temp2;
-            cin >> temp1 >> temp2;
-            m[temp2].push_back(temp1);
-        }
-
-        int sum = 1;
-        for (auto& j : m)
-        {
-            sum *= (j.second.size() + 1);
-        }
-
-        cout << sum - 1 << '\n';
+        ++v[s[i] - 'A'];
     }
+
+    bool isOdd = false;
+    char oddAlpha;
+    string answer = "";
+    for (int i = 0; i < 26; i++)
+    {
+        if (v[i] % 2 != 0)
+        {
+            if (isOdd)
+            {
+                cout << "I'm Sorry Hansoo";
+                return 0;
+            }
+            else
+            {
+                isOdd = true;
+                oddAlpha = i + 'A';
+            }
+        }
+
+        int cnt = v[i] / 2;
+        while (cnt > 0)
+        {
+            answer += i + 'A';
+            cnt--;
+        }
+    }
+
+    string temp = answer;
+
+    reverse(answer.begin(), answer.end());
+
+    if (isOdd)
+    {
+        answer = oddAlpha + answer;
+    }
+
+    cout << temp + answer;
 }
