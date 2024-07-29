@@ -480,44 +480,79 @@
 
 // 나는야 포켓몬 마스터 이다솜
 // https://www.acmicpc.net/problem/1620
+//#include <iostream>
+//#include <map>
+//#include <string>
+//using namespace std;
+//
+//int main()
+//{
+//    ios::sync_with_stdio(false);
+//    cin.tie(NULL);
+//
+//    // 도감에 수록되어 있는 포켓몬의 개수 N
+//    // 맞춰야 하는 문제의 개수 M
+//    int n, m;
+//    cin >> n >> m;
+//
+//    map<int, string> m1;
+//    map<string, int> m2;
+//
+//    for (int i = 1; i <= n; i++)
+//    {
+//        string temp;
+//        cin >> temp;
+//        m1[i] = temp;
+//        m2[temp] = i;
+//    }
+//
+//    for (int i = 0; i < m; i++)
+//    {
+//        string temp;
+//        cin >> temp;
+//
+//        if (isdigit(temp[0]))
+//        {
+//            cout << m1[stoi(temp)] << '\n';
+//        }
+//        else
+//        {
+//            cout << m2[temp] << '\n';
+//        }
+//    }
+//}
+
+// 패션왕 신해빈
+// https://www.acmicpc.net/problem/9375
 #include <iostream>
 #include <map>
+#include <vector>
 #include <string>
+
 using namespace std;
 
 int main()
 {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    // 도감에 수록되어 있는 포켓몬의 개수 N
-    // 맞춰야 하는 문제의 개수 M
-    int n, m;
-    cin >> n >> m;
-
-    map<int, string> m1;
-    map<string, int> m2;
-
-    for (int i = 1; i <= n; i++)
+    int n;
+    cin >> n;
+    for (int i = 0; i < n; i++)
     {
-        string temp;
-        cin >> temp;
-        m1[i] = temp;
-        m2[temp] = i;
-    }
-
-    for (int i = 0; i < m; i++)
-    {
-        string temp;
-        cin >> temp;
-
-        if (isdigit(temp[0]))
+        int c;
+        cin >> c;
+        map<string, vector<string>> m;
+        for (int j = 0; j < c; j++)
         {
-            cout << m1[stoi(temp)] << '\n';
+            string temp1, temp2;
+            cin >> temp1 >> temp2;
+            m[temp2].push_back(temp1);
         }
-        else
+
+        int sum = 1;
+        for (auto& j : m)
         {
-            cout << m2[temp] << '\n';
+            sum *= (j.second.size() + 1);
         }
+
+        cout << sum - 1 << '\n';
     }
 }
