@@ -1174,27 +1174,93 @@
 
 // 124 나라의 숫자
 // https://school.programmers.co.kr/learn/courses/30/lessons/12899
-#include <string>
-#include <vector>
+//#include <string>
+//#include <vector>
+//
+//using namespace std;
+//
+//string solution(int n) {
+//
+//    string answer = "";
+//    int t = 0;
+//    while (n != 0) // 숫자가 0이 아니면
+//    {
+//        t = n % 3; // 숫자를 3으로 나눈 나머지를 구한다. 나머지로 올 수 있는 숫자는 0 ~ 2 이므로 0이 나오는 경우 4로 변환한다.
+//        n /= 3;    // 숫자를 3으로 나눈 몫을 구한다.
+//
+//        if (t == 0) // 만약 나머지가 0이면 4로 변환하고, 숫자에 1을 줄인다.
+//        {
+//            t = 4;
+//            --n;
+//        }
+//
+//        answer = to_string(t) + answer;
+//    }
+//
+//    return answer;
+//}
 
+// 배달
+// https://school.programmers.co.kr/learn/courses/30/lessons/12978
+#include <iostream>
+#include <vector>
+#include <queue>
 using namespace std;
 
-string solution(int n) {
+const int INF = 10000001;
 
-    string answer = "";
-    int t = 0;
-    while (n != 0) // 숫자가 0이 아니면
-    {
-        t = n % 3; // 숫자를 3으로 나눈 나머지를 구한다. 나머지로 올 수 있는 숫자는 0 ~ 2 이므로 0이 나오는 경우 4로 변환한다.
-        n /= 3;    // 숫자를 3으로 나눈 몫을 구한다.
+vector<int> dijkstra(const vector<vector<int>>& graph, int start)
+{
+    int size = graph.size();
+    vector<int> distances(size, INF);
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
 
-        if (t == 0) // 만약 나머지가 0이면 4로 변환하고, 숫자에 1을 줄인다.
-        {
-            t = 4;
-            --n;
+    distances[start] = 0;
+    pq.push({ 0, start });
+
+    while (!pq.empty()) {
+        int current_dist = pq.top().first;
+        int u = pq.top().second;
+        pq.pop();
+
+        if (current_dist > distances[u]) continue;
+
+        for (int v = 0; v < size; ++v) {
+            if (graph[u][v] != INF) {
+                int weight = graph[u][v];
+                if (distances[u] + weight < distances[v]) {
+                    distances[v] = distances[u] + weight;
+                    pq.push({ distances[v], v });
+                }
+            }
         }
+    }
 
-        answer = to_string(t) + answer;
+    return distances;
+}
+
+int solution(int N, vector<vector<int> > road, int K) {
+    vector<vector<int>> v(N + 1, vector<int>(N + 1, INF));
+
+    for (int i = 0; i < road.size(); i++)
+    {
+        int from = road[i][0];
+        int to = road[i][1];
+        int time = road[i][2];
+
+        v[from][to] = min(v[from][to], time);
+        v[to][from] = min(v[from][to], time);
+    }
+
+    vector<int> distances = dijkstra(v, 1); // 1번 마을에서 가는 거리 계산
+
+    int answer = 0;
+    for (int i = 1; i < distances.size(); i++)
+    {
+        if (distances[i] <= K)
+        {
+            ++answer;
+        }
     }
 
     return answer;
