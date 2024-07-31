@@ -224,64 +224,158 @@ using namespace std;
 // 육지 -> 육지로 간다 했을 때 최단거리, 보물은 가장 긴 최단거리에 묻혀있음
 // 최단 거리 중 가장 Max 값
 // 모든 경우의 BFS를 활용하여 최단거리 구하면 됨
-int n, m, mx, visited[54][54];
+//int n, m, mx, visited[54][54];
+//int dy[] = { -1, 0, 1, 0 };
+//int dx[] = { 0, 1, 0, -1 };
+//char a[54][54];
+//
+//void BFS(int y, int x)
+//{
+//	// 방문 초기화
+//	fill(&visited[0][0], &visited[0][0] + 54 * 54, 0);
+//	visited[y][x] = 1;
+//	queue<pair<int, int>> q;
+//	q.push({ y,x });
+//
+//	while (true != q.empty())
+//	{
+//		tie(y, x) = q.front();
+//		q.pop();
+//
+//		for (int i = 0; i < 4; ++i)
+//		{
+//			int ny = y + dy[i];
+//			int nx = x + dx[i];
+//
+//			if (0 > ny || 0 > nx || n <= ny || m <= nx) continue;
+//			if (0 != visited[ny][nx] || 'W' == a[ny][nx]) continue;
+//
+//			// 최단 거리 배열
+//			visited[ny][nx] = visited[y][x] + 1;
+//			q.push({ ny, nx });
+//			// 최대 값을 구하기 위한 max 활용
+//			mx = max(mx, visited[ny][nx]);
+//		}
+//	}
+//}
+//
+//int main()
+//{
+//	// 입력 받기
+//	cin >> n >> m;
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		for (int j = 0; j < m; ++j)
+//		{
+//			cin >> a[i][j];
+//		}
+//	}
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		for (int j = 0; j < m; ++j)
+//		{
+//			// 'L'일 때만 BFS 돌리기('W'일 때는 돌릴 필요X)
+//			if ('L' == a[i][j]) BFS(i, j);
+//		}
+//	}
+//
+//	cout << mx - 1;
+//
+//	return 0;
+//}
+
+// 3_인구 이동
+// https://www.acmicpc.net/problem/16234
+// 모든 경우를 탐색하며 해당 되는 나라 위치를 담아서 관리
+// DFS로 탐색하며 L과 R범위에 해당하는 나라 관리(윗 문장과 동일한 말) => 해당 정보를 토대로 인구 합산 및 나라 수를 파악해 연산하여 인구 변동
+// 반복 처리 후 더이상 이동이 이뤄질 수 없다면 무한루프 탈출
+// ***** ㅠ참고하여 풀이ㅠ *****
+// N: 땅 크기
+int N, L, R, Count, sum, A[51][51], Border[51][51];
 int dy[] = { -1, 0, 1, 0 };
 int dx[] = { 0, 1, 0, -1 };
-char a[54][54];
+vector<pair<int, int>> VecLocations;
 
-void BFS(int y, int x)
+// 두 지역 사이의 차가 L과 R 사이에 있는지 파악
+void DFS(int y, int x)
 {
-	// 방문 초기화
-	fill(&visited[0][0], &visited[0][0] + 54 * 54, 0);
-	visited[y][x] = 1;
-	queue<pair<int, int>> q;
-	q.push({ y,x });
-
-	while (true != q.empty())
+	for (int i = 0; i < 4; ++i)
 	{
-		tie(y, x) = q.front();
-		q.pop();
+		int ny = y + dy[i];
+		int nx = x + dx[i];
 
-		for (int i = 0; i < 4; ++i)
+		if (0 > ny || 0 > nx || N <= ny || N <= nx || 0 != Border[ny][nx]) continue;
+
+		// 국경선을 공유하는 두 나라의 인구 차이가 L명 이상 R명 이하라면, 두 나라가 공유하는 국경선을 오늘 하루 동안 엶(DFS 탐색)
+		// 열려야하는 국경선이 모두 열렸다면 인구 이동
+		// 국경선이 열려있어 인접한 칸만 이용해 이동할 수 있으면, 그 나라를 오늘 하루 동안 연합
+		if (L <= abs(A[ny][nx] - A[y][x]) && R >= abs(A[ny][nx] - A[y][x]))
 		{
-			int ny = y + dy[i];
-			int nx = x + dx[i];
-
-			if (0 > ny || 0 > nx || n <= ny || m <= nx) continue;
-			if (0 != visited[ny][nx] || 'W' == a[ny][nx]) continue;
-
-			// 최단 거리 배열
-			visited[ny][nx] = visited[y][x] + 1;
-			q.push({ ny, nx });
-			// 최대 값을 구하기 위한 max 활용
-			mx = max(mx, visited[ny][nx]);
+			Border[ny][nx] = 1;
+			// 국경선이 열려서 이동 가능한 나라들 모음
+			VecLocations.push_back({ ny,nx });
+			// 연합 인구수 구하기(누적)
+			sum += A[ny][nx];
+			DFS(ny, nx);
 		}
 	}
 }
 
 int main()
 {
-	// 입력 받기
-	cin >> n >> m;
+	cin >> N >> L >> R;
 
-	for (int i = 0; i < n; ++i)
+	for (int i = 0; i < N; ++i)
 	{
-		for (int j = 0; j < m; ++j)
+		for (int j = 0; j < N; ++j)
 		{
-			cin >> a[i][j];
+			cin >> A[i][j];
 		}
 	}
 
-	for (int i = 0; i < n; ++i)
+	while (true)
 	{
-		for (int j = 0; j < m; ++j)
+		bool IsMove = false;
+		fill(&Border[0][0], &Border[0][0] + 51 * 51, 0);
+
+		// 모든 정점에 대한 탐색
+		for (int i = 0; i < N; ++i)
 		{
-			// 'L'일 때만 BFS 돌리기('W'일 때는 돌릴 필요X)
-			if ('L' == a[i][j]) BFS(i, j);
+			for (int j = 0; j < N; ++j)
+			{
+				// 방문하지 않았다면? 해당 위치로부터 탐색 시작
+				if (0 == Border[i][j])
+				{
+					// 인구 이동가능 나라를 파악하기 위한 자료구조 초기화
+					VecLocations.clear();
+					Border[i][j] = 1;
+					VecLocations.push_back({ i,j });
+					sum = A[i][j];
+					DFS(i, j);
+
+					// 사이즈가 1이면 국경선 열린 곳X, 해당 조건 안해주면 끝없이 체크해서 시간초과 나옴
+					if (1 == VecLocations.size()) continue;
+
+					// 국경선이 열려서 이동 가능한 나라들 모음 확인해서 변화 적용
+					for (pair<int, int> Location : VecLocations)
+					{
+						// 연합을 이루고 있는 칸의 인구수는 연합의 인구수 / 연합을 이루고 있는 칸의 수
+						A[Location.first][Location.second] = sum / VecLocations.size();
+						// 인구 이동 일어남
+						IsMove = true;
+					}
+				}
+			}
 		}
+
+		// 연합을 해체하고 모든 국경선 닫음
+		if (false == IsMove) break;
+		++Count;
 	}
 
-	cout << mx - 1;
+	cout << Count;
 
 	return 0;
 }
