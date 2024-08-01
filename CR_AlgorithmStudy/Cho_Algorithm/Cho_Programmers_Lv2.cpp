@@ -1202,66 +1202,165 @@
 
 // 배달
 // https://school.programmers.co.kr/learn/courses/30/lessons/12978
-#include <iostream>
+//#include <iostream>
+//#include <vector>
+//#include <queue>
+//using namespace std;
+//
+//const int INF = 10000001;
+//
+//vector<int> dijkstra(const vector<vector<int>>& graph, int start)
+//{
+//    int size = graph.size();
+//    vector<int> distances(size, INF);
+//    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
+//
+//    distances[start] = 0;
+//    pq.push({ 0, start });
+//
+//    while (!pq.empty()) {
+//        int current_dist = pq.top().first;
+//        int u = pq.top().second;
+//        pq.pop();
+//
+//        if (current_dist > distances[u]) continue;
+//
+//        for (int v = 0; v < size; ++v) {
+//            if (graph[u][v] != INF) {
+//                int weight = graph[u][v];
+//                if (distances[u] + weight < distances[v]) {
+//                    distances[v] = distances[u] + weight;
+//                    pq.push({ distances[v], v });
+//                }
+//            }
+//        }
+//    }
+//
+//    return distances;
+//}
+//
+//int solution(int N, vector<vector<int> > road, int K) {
+//    vector<vector<int>> v(N + 1, vector<int>(N + 1, INF));
+//
+//    for (int i = 0; i < road.size(); i++)
+//    {
+//        int from = road[i][0];
+//        int to = road[i][1];
+//        int time = road[i][2];
+//
+//        v[from][to] = min(v[from][to], time);
+//        v[to][from] = min(v[from][to], time);
+//    }
+//
+//    vector<int> distances = dijkstra(v, 1); // 1번 마을에서 가는 거리 계산
+//
+//    int answer = 0;
+//    for (int i = 1; i < distances.size(); i++)
+//    {
+//        if (distances[i] <= K)
+//        {
+//            ++answer;
+//        }
+//    }
+//
+//    return answer;
+//}
+
+// 리코쳇 로봇
+// https://school.programmers.co.kr/learn/courses/30/lessons/169199
+#include <string>
 #include <vector>
 #include <queue>
+
 using namespace std;
 
-const int INF = 10000001;
+// 오 왼 아래 위
+int dx[4] = { 1,-1,0,0 };
+int dy[4] = { 0,0,1,-1 };
 
-vector<int> dijkstra(const vector<vector<int>>& graph, int start)
+int bfs(vector<vector<char>>& v, int x, int y)
 {
-    int size = graph.size();
-    vector<int> distances(size, INF);
-    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
+    int w = v.size();
+    int h = v[0].size();
+    vector<vector<bool>> isVisited(w, vector<bool>(h));
+    vector<vector<int>> visitedCnt(w, vector<int>(h));
+    queue<pair<int, int>> q;
+    q.push({ x, y });
+    isVisited[x][y] = true;
 
-    distances[start] = 0;
-    pq.push({ 0, start });
+    while (!q.empty())
+    {
+        int cx = q.front().first;
+        int cy = q.front().second;
 
-    while (!pq.empty()) {
-        int current_dist = pq.top().first;
-        int u = pq.top().second;
-        pq.pop();
+        q.pop();
 
-        if (current_dist > distances[u]) continue;
+        int idx = 0;
+        for (int i = 0; i < 4; i++)
+        {
+            int nx = cx;
+            int ny = cy;
+            while (true)
+            {
+                nx += dx[i];
+                ny += dy[i];
 
-        for (int v = 0; v < size; ++v) {
-            if (graph[u][v] != INF) {
-                int weight = graph[u][v];
-                if (distances[u] + weight < distances[v]) {
-                    distances[v] = distances[u] + weight;
-                    pq.push({ distances[v], v });
+                // 장애물에 닿거나 바깥으로 나가면 이전 위치를 방문했는지 확인한다.
+                if (nx < 0 || ny < 0 ||
+                    nx >= w || ny >= h ||
+                    v[nx][ny] == 'D')
+                {
+                    // 방문하지 않았으면 이전 위치를 방문했다고 하고
+                    int px = nx - dx[i];
+                    int py = ny - dy[i];
+                    if (!isVisited[px][py])
+                    {
+                        // q에 넣는다.
+                        isVisited[px][py] = true;
+                        visitedCnt[px][py] = visitedCnt[cx][cy] + 1;
+                        q.push({ px, py });
+
+                        if (v[px][py] == 'G')
+                        {
+                            return visitedCnt[px][py];
+                        }
+                    }
+
+                    break;
                 }
             }
         }
     }
 
-    return distances;
+    return -1;
 }
 
-int solution(int N, vector<vector<int> > road, int K) {
-    vector<vector<int>> v(N + 1, vector<int>(N + 1, INF));
-
-    for (int i = 0; i < road.size(); i++)
+int solution(vector<string> board) {
+    // 끝까지 이동해야 한 번이다.
+    int w = board.size();
+    int h = board[0].size();
+    vector<vector<char>> v(w, vector<char>(h));
+    int x = 0;
+    int y = 0;
+    for (int i = 0; i < w; i++)
     {
-        int from = road[i][0];
-        int to = road[i][1];
-        int time = road[i][2];
-
-        v[from][to] = min(v[from][to], time);
-        v[to][from] = min(v[from][to], time);
-    }
-
-    vector<int> distances = dijkstra(v, 1); // 1번 마을에서 가는 거리 계산
-
-    int answer = 0;
-    for (int i = 1; i < distances.size(); i++)
-    {
-        if (distances[i] <= K)
+        for (int j = 0; j < h; j++)
         {
-            ++answer;
+            if (board[i][j] == 'R')
+            {
+                x = i;
+                y = j;
+            }
+
+            v[i][j] = board[i][j];
         }
     }
 
+    int answer = bfs(v, x, y);
     return answer;
+}
+
+int main()
+{
+    solution({ "...D..R", ".D.G...", "....D.D", "D....D.", "..D...." });
 }
