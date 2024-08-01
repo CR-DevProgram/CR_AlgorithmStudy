@@ -293,89 +293,187 @@ using namespace std;
 // 반복 처리 후 더이상 이동이 이뤄질 수 없다면 무한루프 탈출
 // ***** ㅠ참고하여 풀이ㅠ *****
 // N: 땅 크기
-int N, L, R, Count, sum, A[51][51], Border[51][51];
+//int N, L, R, Count, sum, A[51][51], Border[51][51];
+//int dy[] = { -1, 0, 1, 0 };
+//int dx[] = { 0, 1, 0, -1 };
+//vector<pair<int, int>> VecLocations;
+//
+//// 두 지역 사이의 차가 L과 R 사이에 있는지 파악
+//void DFS(int y, int x)
+//{
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		int ny = y + dy[i];
+//		int nx = x + dx[i];
+//
+//		if (0 > ny || 0 > nx || N <= ny || N <= nx || 0 != Border[ny][nx]) continue;
+//
+//		// 국경선을 공유하는 두 나라의 인구 차이가 L명 이상 R명 이하라면, 두 나라가 공유하는 국경선을 오늘 하루 동안 엶(DFS 탐색)
+//		// 열려야하는 국경선이 모두 열렸다면 인구 이동
+//		// 국경선이 열려있어 인접한 칸만 이용해 이동할 수 있으면, 그 나라를 오늘 하루 동안 연합
+//		if (L <= abs(A[ny][nx] - A[y][x]) && R >= abs(A[ny][nx] - A[y][x]))
+//		{
+//			Border[ny][nx] = 1;
+//			// 국경선이 열려서 이동 가능한 나라들 모음
+//			VecLocations.push_back({ ny,nx });
+//			// 연합 인구수 구하기(누적)
+//			sum += A[ny][nx];
+//			DFS(ny, nx);
+//		}
+//	}
+//}
+//
+//int main()
+//{
+//	cin >> N >> L >> R;
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		for (int j = 0; j < N; ++j)
+//		{
+//			cin >> A[i][j];
+//		}
+//	}
+//
+//	while (true)
+//	{
+//		bool IsMove = false;
+//		fill(&Border[0][0], &Border[0][0] + 51 * 51, 0);
+//
+//		// 모든 정점에 대한 탐색
+//		for (int i = 0; i < N; ++i)
+//		{
+//			for (int j = 0; j < N; ++j)
+//			{
+//				// 방문하지 않았다면? 해당 위치로부터 탐색 시작
+//				if (0 == Border[i][j])
+//				{
+//					// 인구 이동가능 나라를 파악하기 위한 자료구조 초기화
+//					VecLocations.clear();
+//					Border[i][j] = 1;
+//					VecLocations.push_back({ i,j });
+//					sum = A[i][j];
+//					DFS(i, j);
+//
+//					// 사이즈가 1이면 국경선 열린 곳X, 해당 조건 안해주면 끝없이 체크해서 시간초과 나옴
+//					if (1 == VecLocations.size()) continue;
+//
+//					// 국경선이 열려서 이동 가능한 나라들 모음 확인해서 변화 적용
+//					for (pair<int, int> Location : VecLocations)
+//					{
+//						// 연합을 이루고 있는 칸의 인구수는 연합의 인구수 / 연합을 이루고 있는 칸의 수
+//						A[Location.first][Location.second] = sum / VecLocations.size();
+//						// 인구 이동 일어남
+//						IsMove = true;
+//					}
+//				}
+//			}
+//		}
+//
+//		// 연합을 해체하고 모든 국경선 닫음
+//		if (false == IsMove) break;
+//		++Count;
+//	}
+//
+//	cout << Count;
+//
+//	return 0;
+//}
+
+// 4_불!
+// https://www.acmicpc.net/problem/4179
+// 분당 지훈의 1칸 움직임, 불 4방향 확산
+// J- 시작 위치 F- 불난 공간 #- 벽 .- 이동 가능
+// R: 미로 행 개수, C: 미로 열 개수
+int R, C, cnt, FirePos[1000][1000], visited[1000][1000];
+char Maze[1000][1000];
+pair<int, int> JihoonPos;
+queue<pair<int, int>> qPosInfo;
 int dy[] = { -1, 0, 1, 0 };
 int dx[] = { 0, 1, 0, -1 };
-vector<pair<int, int>> VecLocations;
-
-// 두 지역 사이의 차가 L과 R 사이에 있는지 파악
-void DFS(int y, int x)
-{
-	for (int i = 0; i < 4; ++i)
-	{
-		int ny = y + dy[i];
-		int nx = x + dx[i];
-
-		if (0 > ny || 0 > nx || N <= ny || N <= nx || 0 != Border[ny][nx]) continue;
-
-		// 국경선을 공유하는 두 나라의 인구 차이가 L명 이상 R명 이하라면, 두 나라가 공유하는 국경선을 오늘 하루 동안 엶(DFS 탐색)
-		// 열려야하는 국경선이 모두 열렸다면 인구 이동
-		// 국경선이 열려있어 인접한 칸만 이용해 이동할 수 있으면, 그 나라를 오늘 하루 동안 연합
-		if (L <= abs(A[ny][nx] - A[y][x]) && R >= abs(A[ny][nx] - A[y][x]))
-		{
-			Border[ny][nx] = 1;
-			// 국경선이 열려서 이동 가능한 나라들 모음
-			VecLocations.push_back({ ny,nx });
-			// 연합 인구수 구하기(누적)
-			sum += A[ny][nx];
-			DFS(ny, nx);
-		}
-	}
-}
 
 int main()
 {
-	cin >> N >> L >> R;
+	cin >> R >> C;
 
-	for (int i = 0; i < N; ++i)
+	for (int i = 0; i < R; ++i)
 	{
-		for (int j = 0; j < N; ++j)
+		string str = "";
+		cin >> str;
+		for (int j = 0; j < C; ++j)
 		{
-			cin >> A[i][j];
-		}
-	}
+			Maze[i][j] = str[j];
 
-	while (true)
-	{
-		bool IsMove = false;
-		fill(&Border[0][0], &Border[0][0] + 51 * 51, 0);
-
-		// 모든 정점에 대한 탐색
-		for (int i = 0; i < N; ++i)
-		{
-			for (int j = 0; j < N; ++j)
+			if ('J' == Maze[i][j])
 			{
-				// 방문하지 않았다면? 해당 위치로부터 탐색 시작
-				if (0 == Border[i][j])
-				{
-					// 인구 이동가능 나라를 파악하기 위한 자료구조 초기화
-					VecLocations.clear();
-					Border[i][j] = 1;
-					VecLocations.push_back({ i,j });
-					sum = A[i][j];
-					DFS(i, j);
-
-					// 사이즈가 1이면 국경선 열린 곳X, 해당 조건 안해주면 끝없이 체크해서 시간초과 나옴
-					if (1 == VecLocations.size()) continue;
-
-					// 국경선이 열려서 이동 가능한 나라들 모음 확인해서 변화 적용
-					for (pair<int, int> Location : VecLocations)
-					{
-						// 연합을 이루고 있는 칸의 인구수는 연합의 인구수 / 연합을 이루고 있는 칸의 수
-						A[Location.first][Location.second] = sum / VecLocations.size();
-						// 인구 이동 일어남
-						IsMove = true;
-					}
-				}
+				visited[i][j] = 1;
+				JihoonPos = make_pair(i, j);
+			}
+			if ('F' == Maze[i][j])
+			{
+				FirePos[i][j] = 1;
+				qPosInfo.push({ i,j });
 			}
 		}
+	}
+	
+	// Fire: 불 확산 시간 범위 표를 미리 작성하기 위해 Fire 먼저 한 후 Jihoon 이동 확인
+	while (false == qPosInfo.empty())
+	{
+		pair<int, int> Fire = qPosInfo.front();
+		qPosInfo.pop();
 
-		// 연합을 해체하고 모든 국경선 닫음
-		if (false == IsMove) break;
-		++Count;
+		for (int i = 0; i < 4; ++i)
+		{
+			int ny = Fire.first + dy[i];
+			int nx = Fire.second + dx[i];
+
+			if (0 > ny || 0 > nx || R <= ny || C <= nx) continue;
+			// 벽이거나 불 확산이 가능한 곳이 아닌 경우 건너뛰기
+			if ('#' == Maze[ny][nx] || 0 != FirePos[ny][nx]) continue;
+
+			// 확산 범위 연산 표시
+			FirePos[ny][nx] = FirePos[Fire.first][Fire.second] + 1;
+			qPosInfo.push({ ny,nx });
+		}
 	}
 
-	cout << Count;
+	qPosInfo.push(JihoonPos);
+	// Jihoon
+	while (false == qPosInfo.empty())
+	{
+		JihoonPos = qPosInfo.front();
+		qPosInfo.pop();
+
+		// 탈출 인정 범위 도달시 시간 결과를 받아두고 while문 탈출
+		if (0 == JihoonPos.first || 0 == JihoonPos.second || R - 1 == JihoonPos.first || C - 1 == JihoonPos.second)
+		{
+			cnt = visited[JihoonPos.first][JihoonPos.second];
+			break;
+		}
+
+		for (int i = 0; i < 4; ++i)
+		{
+			int ny = JihoonPos.first + dy[i];
+			int nx = JihoonPos.second + dx[i];
+
+			if (0 > ny || 0 > nx || R <= ny || C <= nx) continue;
+			// 벽이거나 이동 가능한 곳이 아닌 경우 건너뛰기
+			if ('#' == Maze[ny][nx] || 0 != visited[ny][nx]) continue;
+			// 미리 계산한 불길 시간(0이외, 0은 불길 퍼진 곳이 아님)과 현재 이동 시점의 시간과 비교해서 지나갈 수 없으면 건너뛰기
+			if (0 != FirePos[ny][nx] && FirePos[ny][nx] <= visited[JihoonPos.first][JihoonPos.second] + 1) continue;
+
+			// 이동 시간 연산 표시
+			visited[ny][nx] = visited[JihoonPos.first][JihoonPos.second] + 1;
+			
+			// 탈출 인점 범위 도달 못했을 시 반복을 위한 다음 위치 push
+			qPosInfo.push({ ny,nx });
+		}
+	}
+
+	// 탈출 실패(0)면 IMPOSSIBLE, 탈출 성공하면(cnt) 탈출 시간
+	string ret = 0 == cnt ? "IMPOSSIBLE" : to_string(cnt);
+	cout << ret;
 
 	return 0;
 }
