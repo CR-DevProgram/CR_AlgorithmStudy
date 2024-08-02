@@ -620,42 +620,78 @@
 
 // 주몽
 // https://www.acmicpc.net/problem/1940
+//#include <iostream>
+//#include <vector>
+//#include <algorithm>
+//using namespace std;
+//
+//int main()
+//{
+//    int n, m;
+//    cin >> n >> m;
+//
+//    vector<int> ingredients(n);
+//
+//    for (int i = 0; i < n; i++)
+//    {
+//        cin >> ingredients[i];
+//    }
+//
+//    sort(ingredients.begin(), ingredients.end());
+//
+//    int s = 0;
+//    int l = n - 1;
+//    int cnt = 0;
+//
+//    while (s < l)
+//    {
+//        int value = ingredients[s] + ingredients[l];
+//        if (value == m)
+//        {
+//            ++cnt;
+//            ++s;
+//            --l;
+//        }
+//        else if (value < m)
+//            ++s;
+//        else if (value > m)
+//            --l;
+//    }
+//
+//    cout << cnt;
+//}
+
+// 좋은 단어
+// https://www.acmicpc.net/problem/3986
 #include <iostream>
-#include <vector>
-#include <algorithm>
+#include <stack>
 using namespace std;
 
 int main()
 {
-    int n, m;
-    cin >> n >> m;
-
-    vector<int> ingredients(n);
-
+    int n;
+    cin >> n;
+    int cnt = 0;
     for (int i = 0; i < n; i++)
     {
-        cin >> ingredients[i];
-    }
+        string temp;
+        cin >> temp;
 
-    sort(ingredients.begin(), ingredients.end());
-
-    int s = 0;
-    int l = n - 1;
-    int cnt = 0;
-
-    while (s < l)
-    {
-        int value = ingredients[s] + ingredients[l];
-        if (value == m)
+        int size = temp.size();
+        stack<char> s;
+        for (int j = 0; j < size; j++)
         {
-            ++cnt;
-            ++s;
-            --l;
+            if (!s.empty() && s.top() == temp[j])
+            {
+                s.pop();
+            }
+            else
+            {
+                s.push(temp[j]);
+            }
         }
-        else if (value < m)
-            ++s;
-        else if (value > m)
-            --l;
+
+        if (s.empty()) ++cnt;
     }
 
     cout << cnt;
