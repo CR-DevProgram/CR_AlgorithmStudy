@@ -1268,99 +1268,99 @@
 
 // 리코쳇 로봇
 // https://school.programmers.co.kr/learn/courses/30/lessons/169199
-#include <string>
-#include <vector>
-#include <queue>
-
-using namespace std;
-
-// 오 왼 아래 위
-int dx[4] = { 1,-1,0,0 };
-int dy[4] = { 0,0,1,-1 };
-
-int bfs(vector<vector<char>>& v, int x, int y)
-{
-    int w = v.size();
-    int h = v[0].size();
-    vector<vector<bool>> isVisited(w, vector<bool>(h));
-    vector<vector<int>> visitedCnt(w, vector<int>(h));
-    queue<pair<int, int>> q;
-    q.push({ x, y });
-    isVisited[x][y] = true;
-
-    while (!q.empty())
-    {
-        int cx = q.front().first;
-        int cy = q.front().second;
-
-        q.pop();
-
-        int idx = 0;
-        for (int i = 0; i < 4; i++)
-        {
-            int nx = cx;
-            int ny = cy;
-            while (true)
-            {
-                nx += dx[i];
-                ny += dy[i];
-
-                // 장애물에 닿거나 바깥으로 나가면 이전 위치를 방문했는지 확인한다.
-                if (nx < 0 || ny < 0 ||
-                    nx >= w || ny >= h ||
-                    v[nx][ny] == 'D')
-                {
-                    // 방문하지 않았으면 이전 위치를 방문했다고 하고
-                    int px = nx - dx[i];
-                    int py = ny - dy[i];
-                    if (!isVisited[px][py])
-                    {
-                        // q에 넣는다.
-                        isVisited[px][py] = true;
-                        visitedCnt[px][py] = visitedCnt[cx][cy] + 1;
-                        q.push({ px, py });
-
-                        if (v[px][py] == 'G')
-                        {
-                            return visitedCnt[px][py];
-                        }
-                    }
-
-                    break;
-                }
-            }
-        }
-    }
-
-    return -1;
-}
-
-int solution(vector<string> board) {
-    // 끝까지 이동해야 한 번이다.
-    int w = board.size();
-    int h = board[0].size();
-    vector<vector<char>> v(w, vector<char>(h));
-    int x = 0;
-    int y = 0;
-    for (int i = 0; i < w; i++)
-    {
-        for (int j = 0; j < h; j++)
-        {
-            if (board[i][j] == 'R')
-            {
-                x = i;
-                y = j;
-            }
-
-            v[i][j] = board[i][j];
-        }
-    }
-
-    int answer = bfs(v, x, y);
-    return answer;
-}
-
-int main()
-{
-    solution({ "...D..R", ".D.G...", "....D.D", "D....D.", "..D...." });
-}
+//#include <string>
+//#include <vector>
+//#include <queue>
+//
+//using namespace std;
+//
+//// 오 왼 아래 위
+//int dx[4] = { 1,-1,0,0 };
+//int dy[4] = { 0,0,1,-1 };
+//
+//int bfs(vector<vector<char>>& v, int x, int y)
+//{
+//    int w = v.size();
+//    int h = v[0].size();
+//    vector<vector<bool>> isVisited(w, vector<bool>(h));
+//    vector<vector<int>> visitedCnt(w, vector<int>(h));
+//    queue<pair<int, int>> q;
+//    q.push({ x, y });
+//    isVisited[x][y] = true;
+//
+//    while (!q.empty())
+//    {
+//        int cx = q.front().first;
+//        int cy = q.front().second;
+//
+//        q.pop();
+//
+//        int idx = 0;
+//        for (int i = 0; i < 4; i++)
+//        {
+//            int nx = cx;
+//            int ny = cy;
+//            while (true)
+//            {
+//                nx += dx[i];
+//                ny += dy[i];
+//
+//                // 장애물에 닿거나 바깥으로 나가면 이전 위치를 방문했는지 확인한다.
+//                if (nx < 0 || ny < 0 ||
+//                    nx >= w || ny >= h ||
+//                    v[nx][ny] == 'D')
+//                {
+//                    // 방문하지 않았으면 이전 위치를 방문했다고 하고
+//                    int px = nx - dx[i];
+//                    int py = ny - dy[i];
+//                    if (!isVisited[px][py])
+//                    {
+//                        // q에 넣는다.
+//                        isVisited[px][py] = true;
+//                        visitedCnt[px][py] = visitedCnt[cx][cy] + 1;
+//                        q.push({ px, py });
+//
+//                        if (v[px][py] == 'G')
+//                        {
+//                            return visitedCnt[px][py];
+//                        }
+//                    }
+//
+//                    break;
+//                }
+//            }
+//        }
+//    }
+//
+//    return -1;
+//}
+//
+//int solution(vector<string> board) {
+//    // 끝까지 이동해야 한 번이다.
+//    int w = board.size();
+//    int h = board[0].size();
+//    vector<vector<char>> v(w, vector<char>(h));
+//    int x = 0;
+//    int y = 0;
+//    for (int i = 0; i < w; i++)
+//    {
+//        for (int j = 0; j < h; j++)
+//        {
+//            if (board[i][j] == 'R')
+//            {
+//                x = i;
+//                y = j;
+//            }
+//
+//            v[i][j] = board[i][j];
+//        }
+//    }
+//
+//    int answer = bfs(v, x, y);
+//    return answer;
+//}
+//
+//int main()
+//{
+//    solution({ "...D..R", ".D.G...", "....D.D", "D....D.", "..D...." });
+//}

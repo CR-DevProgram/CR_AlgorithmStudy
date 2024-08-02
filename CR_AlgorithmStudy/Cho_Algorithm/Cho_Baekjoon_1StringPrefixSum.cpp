@@ -617,3 +617,46 @@
 //
 //    cout << temp + answer;
 //}
+
+// аж╦Ы
+// https://www.acmicpc.net/problem/1940
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main()
+{
+    int n, m;
+    cin >> n >> m;
+
+    vector<int> ingredients(n);
+
+    for (int i = 0; i < n; i++)
+    {
+        cin >> ingredients[i];
+    }
+
+    sort(ingredients.begin(), ingredients.end());
+
+    int s = 0;
+    int l = n - 1;
+    int cnt = 0;
+
+    while (s < l)
+    {
+        int value = ingredients[s] + ingredients[l];
+        if (value == m)
+        {
+            ++cnt;
+            ++s;
+            --l;
+        }
+        else if (value < m)
+            ++s;
+        else if (value > m)
+            --l;
+    }
+
+    cout << cnt;
+}
