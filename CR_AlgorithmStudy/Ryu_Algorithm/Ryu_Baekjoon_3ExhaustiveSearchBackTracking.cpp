@@ -385,95 +385,166 @@ using namespace std;
 // 분당 지훈의 1칸 움직임, 불 4방향 확산
 // J- 시작 위치 F- 불난 공간 #- 벽 .- 이동 가능
 // R: 미로 행 개수, C: 미로 열 개수
-int R, C, cnt, FirePos[1000][1000], visited[1000][1000];
-char Maze[1000][1000];
-pair<int, int> JihoonPos;
-queue<pair<int, int>> qPosInfo;
-int dy[] = { -1, 0, 1, 0 };
-int dx[] = { 0, 1, 0, -1 };
+//int R, C, cnt, FirePos[1000][1000], visited[1000][1000];
+//char Maze[1000][1000];
+//pair<int, int> JihoonPos;
+//queue<pair<int, int>> qPosInfo;
+//int dy[] = { -1, 0, 1, 0 };
+//int dx[] = { 0, 1, 0, -1 };
+//
+//int main()
+//{
+//	cin >> R >> C;
+//
+//	for (int i = 0; i < R; ++i)
+//	{
+//		string str = "";
+//		cin >> str;
+//		for (int j = 0; j < C; ++j)
+//		{
+//			Maze[i][j] = str[j];
+//
+//			if ('J' == Maze[i][j])
+//			{
+//				visited[i][j] = 1;
+//				JihoonPos = make_pair(i, j);
+//			}
+//			if ('F' == Maze[i][j])
+//			{
+//				FirePos[i][j] = 1;
+//				qPosInfo.push({ i,j });
+//			}
+//		}
+//	}
+//	
+//	// Fire: 불 확산 시간 범위 표를 미리 작성하기 위해 Fire 먼저 한 후 Jihoon 이동 확인
+//	while (false == qPosInfo.empty())
+//	{
+//		pair<int, int> Fire = qPosInfo.front();
+//		qPosInfo.pop();
+//
+//		for (int i = 0; i < 4; ++i)
+//		{
+//			int ny = Fire.first + dy[i];
+//			int nx = Fire.second + dx[i];
+//
+//			if (0 > ny || 0 > nx || R <= ny || C <= nx) continue;
+//			// 벽이거나 불 확산이 가능한 곳이 아닌 경우 건너뛰기
+//			if ('#' == Maze[ny][nx] || 0 != FirePos[ny][nx]) continue;
+//
+//			// 확산 범위 연산 표시
+//			FirePos[ny][nx] = FirePos[Fire.first][Fire.second] + 1;
+//			qPosInfo.push({ ny,nx });
+//		}
+//	}
+//
+//	qPosInfo.push(JihoonPos);
+//	// Jihoon
+//	while (false == qPosInfo.empty())
+//	{
+//		JihoonPos = qPosInfo.front();
+//		qPosInfo.pop();
+//
+//		// 탈출 인정 범위 도달시 시간 결과를 받아두고 while문 탈출
+//		if (0 == JihoonPos.first || 0 == JihoonPos.second || R - 1 == JihoonPos.first || C - 1 == JihoonPos.second)
+//		{
+//			cnt = visited[JihoonPos.first][JihoonPos.second];
+//			break;
+//		}
+//
+//		for (int i = 0; i < 4; ++i)
+//		{
+//			int ny = JihoonPos.first + dy[i];
+//			int nx = JihoonPos.second + dx[i];
+//
+//			if (0 > ny || 0 > nx || R <= ny || C <= nx) continue;
+//			// 벽이거나 이동 가능한 곳이 아닌 경우 건너뛰기
+//			if ('#' == Maze[ny][nx] || 0 != visited[ny][nx]) continue;
+//			// 미리 계산한 불길 시간(0이외, 0은 불길 퍼진 곳이 아님)과 현재 이동 시점의 시간과 비교해서 지나갈 수 없으면 건너뛰기
+//			if (0 != FirePos[ny][nx] && FirePos[ny][nx] <= visited[JihoonPos.first][JihoonPos.second] + 1) continue;
+//
+//			// 이동 시간 연산 표시
+//			visited[ny][nx] = visited[JihoonPos.first][JihoonPos.second] + 1;
+//			
+//			// 탈출 인점 범위 도달 못했을 시 반복을 위한 다음 위치 push
+//			qPosInfo.push({ ny,nx });
+//		}
+//	}
+//
+//	// 탈출 실패(0)면 IMPOSSIBLE, 탈출 성공하면(cnt) 탈출 시간
+//	string ret = 0 == cnt ? "IMPOSSIBLE" : to_string(cnt);
+//	cout << ret;
+//
+//	return 0;
+//}
+
+// 5_뮤탈리스크
+// https://www.acmicpc.net/problem/12869
+// BFS 문제 => 경우의 수를 통해 최소한의 횟수로 SCV를 0으로 만들기 위함(가중치 동일)
+// ***** SCVVisited[61][61][61]: 각 SCV의 체력을 나타내는 상태를 방문했는지 여부를 기록하는 배열 ***** 메모이제이션 처리 위함
+// N: SCV의 수
+int N, SCV[3], SCVVisited[61][61][61];
+int Damage[6][3] =
+{
+	{9, 3, 1},
+	{9, 1, 3},
+	{3, 1, 9},
+	{3, 9 ,1},
+	{1, 3, 9},
+	{1, 9 ,3},
+};
+
+struct Attack
+{
+	int Attack1;
+	int Attack2;
+	int Attack3;
+};
+
+int BFS()
+{
+	queue<Attack> q;
+	q.push({ SCV[0], SCV[1], SCV[2] });
+	SCVVisited[SCV[0]][SCV[1]][SCV[2]] = 1;
+
+	while (false == q.empty())
+	{
+		Attack atk = q.front();
+		q.pop();
+
+		// 모든 체력이 0이 되어 최소한의 공격 횟수가 존재한다면 BFS While문 탈출
+		if (0 != SCVVisited[0][0][0]) break;
+
+		// 공격 대미지 패턴에 대한 반복
+		for (int i = 0; i < 6; ++i)
+		{
+			// 배열이 음수가 될 수 없으므로 값이 음수로 떨어진다면 0으로 설정
+			int na1 = max(0, atk.Attack1 - Damage[i][0]);
+			int na2 = max(0, atk.Attack2 - Damage[i][1]);
+			int na3 = max(0, atk.Attack3 - Damage[i][2]);
+			// 해당 체력 상태에 대한 정보가 있다면 건너뛰기
+			if (0 != SCVVisited[na1][na2][na3]) continue;
+
+			// 공격 횟수 파악을 위한 누적 연산
+			SCVVisited[na1][na2][na3] = SCVVisited[atk.Attack1][atk.Attack2][atk.Attack3] + 1;
+			// 다음 탐색을 위해 큐에 저장
+			q.push({ na1,na2,na3 });
+		}
+	}
+
+	return SCVVisited[0][0][0] - 1;
+}
 
 int main()
 {
-	cin >> R >> C;
+	cin >> N;
 
-	for (int i = 0; i < R; ++i)
+	for (int i = 0; i < N; ++i)
 	{
-		string str = "";
-		cin >> str;
-		for (int j = 0; j < C; ++j)
-		{
-			Maze[i][j] = str[j];
-
-			if ('J' == Maze[i][j])
-			{
-				visited[i][j] = 1;
-				JihoonPos = make_pair(i, j);
-			}
-			if ('F' == Maze[i][j])
-			{
-				FirePos[i][j] = 1;
-				qPosInfo.push({ i,j });
-			}
-		}
-	}
-	
-	// Fire: 불 확산 시간 범위 표를 미리 작성하기 위해 Fire 먼저 한 후 Jihoon 이동 확인
-	while (false == qPosInfo.empty())
-	{
-		pair<int, int> Fire = qPosInfo.front();
-		qPosInfo.pop();
-
-		for (int i = 0; i < 4; ++i)
-		{
-			int ny = Fire.first + dy[i];
-			int nx = Fire.second + dx[i];
-
-			if (0 > ny || 0 > nx || R <= ny || C <= nx) continue;
-			// 벽이거나 불 확산이 가능한 곳이 아닌 경우 건너뛰기
-			if ('#' == Maze[ny][nx] || 0 != FirePos[ny][nx]) continue;
-
-			// 확산 범위 연산 표시
-			FirePos[ny][nx] = FirePos[Fire.first][Fire.second] + 1;
-			qPosInfo.push({ ny,nx });
-		}
+		cin >> SCV[i];
 	}
 
-	qPosInfo.push(JihoonPos);
-	// Jihoon
-	while (false == qPosInfo.empty())
-	{
-		JihoonPos = qPosInfo.front();
-		qPosInfo.pop();
-
-		// 탈출 인정 범위 도달시 시간 결과를 받아두고 while문 탈출
-		if (0 == JihoonPos.first || 0 == JihoonPos.second || R - 1 == JihoonPos.first || C - 1 == JihoonPos.second)
-		{
-			cnt = visited[JihoonPos.first][JihoonPos.second];
-			break;
-		}
-
-		for (int i = 0; i < 4; ++i)
-		{
-			int ny = JihoonPos.first + dy[i];
-			int nx = JihoonPos.second + dx[i];
-
-			if (0 > ny || 0 > nx || R <= ny || C <= nx) continue;
-			// 벽이거나 이동 가능한 곳이 아닌 경우 건너뛰기
-			if ('#' == Maze[ny][nx] || 0 != visited[ny][nx]) continue;
-			// 미리 계산한 불길 시간(0이외, 0은 불길 퍼진 곳이 아님)과 현재 이동 시점의 시간과 비교해서 지나갈 수 없으면 건너뛰기
-			if (0 != FirePos[ny][nx] && FirePos[ny][nx] <= visited[JihoonPos.first][JihoonPos.second] + 1) continue;
-
-			// 이동 시간 연산 표시
-			visited[ny][nx] = visited[JihoonPos.first][JihoonPos.second] + 1;
-			
-			// 탈출 인점 범위 도달 못했을 시 반복을 위한 다음 위치 push
-			qPosInfo.push({ ny,nx });
-		}
-	}
-
-	// 탈출 실패(0)면 IMPOSSIBLE, 탈출 성공하면(cnt) 탈출 시간
-	string ret = 0 == cnt ? "IMPOSSIBLE" : to_string(cnt);
-	cout << ret;
+	cout << BFS();
 
 	return 0;
 }
