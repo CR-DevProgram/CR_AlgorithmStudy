@@ -483,68 +483,139 @@ using namespace std;
 // BFS 문제 => 경우의 수를 통해 최소한의 횟수로 SCV를 0으로 만들기 위함(가중치 동일)
 // ***** SCVVisited[61][61][61]: 각 SCV의 체력을 나타내는 상태를 방문했는지 여부를 기록하는 배열 ***** 메모이제이션 처리 위함
 // N: SCV의 수
-int N, SCV[3], SCVVisited[61][61][61];
-int Damage[6][3] =
-{
-	{9, 3, 1},
-	{9, 1, 3},
-	{3, 1, 9},
-	{3, 9 ,1},
-	{1, 3, 9},
-	{1, 9 ,3},
-};
+//int N, SCV[3], SCVVisited[61][61][61];
+//int Damage[6][3] =
+//{
+//	{9, 3, 1},
+//	{9, 1, 3},
+//	{3, 1, 9},
+//	{3, 9 ,1},
+//	{1, 3, 9},
+//	{1, 9 ,3},
+//};
+//
+//struct Attack
+//{
+//	int Attack1;
+//	int Attack2;
+//	int Attack3;
+//};
+//
+//int BFS()
+//{
+//	queue<Attack> q;
+//	q.push({ SCV[0], SCV[1], SCV[2] });
+//	SCVVisited[SCV[0]][SCV[1]][SCV[2]] = 1;
+//
+//	while (false == q.empty())
+//	{
+//		Attack atk = q.front();
+//		q.pop();
+//
+//		// 모든 체력이 0이 되어 최소한의 공격 횟수가 존재한다면 BFS While문 탈출
+//		if (0 != SCVVisited[0][0][0]) break;
+//
+//		// 공격 대미지 패턴에 대한 반복
+//		for (int i = 0; i < 6; ++i)
+//		{
+//			// 배열이 음수가 될 수 없으므로 값이 음수로 떨어진다면 0으로 설정
+//			int na1 = max(0, atk.Attack1 - Damage[i][0]);
+//			int na2 = max(0, atk.Attack2 - Damage[i][1]);
+//			int na3 = max(0, atk.Attack3 - Damage[i][2]);
+//			// 해당 체력 상태에 대한 정보가 있다면 건너뛰기
+//			if (0 != SCVVisited[na1][na2][na3]) continue;
+//
+//			// 공격 횟수 파악을 위한 누적 연산
+//			SCVVisited[na1][na2][na3] = SCVVisited[atk.Attack1][atk.Attack2][atk.Attack3] + 1;
+//			// 다음 탐색을 위해 큐에 저장
+//			q.push({ na1,na2,na3 });
+//		}
+//	}
+//
+//	return SCVVisited[0][0][0] - 1;
+//}
+//
+//int main()
+//{
+//	cin >> N;
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		cin >> SCV[i];
+//	}
+//
+//	cout << BFS();
+//
+//	return 0;
+//}
 
-struct Attack
-{
-	int Attack1;
-	int Attack2;
-	int Attack3;
-};
+// 6_괄호 추가하기
+// https://www.acmicpc.net/problem/16637
+// 완탐의 경우 인덱스를 기반으로 로직구현 => 방향성이 있고 사이클이 없다
+// 중첩 괄호 불가, 연산은 좌에서 우로 이루어진다
+// 누적합과 Index를 기반으로 탐색 필요
+// 연산자와 숫자로 나누어 해볼 것
+// 함수포인터로 계산식 나누어 설계 가능할 듯한데 해볼 것
+// N: 수식 길이
+int N, ret = -987654321;
+string Str;
+vector<int> Numbers;
+vector<char> Operations;
 
-int BFS()
-{
-	queue<Attack> q;
-	q.push({ SCV[0], SCV[1], SCV[2] });
-	SCVVisited[SCV[0]][SCV[1]][SCV[2]] = 1;
+int Add(int Left, int Right) { return Left + Right; }
+int Sub(int Left, int Right) { return Left - Right; }
+int Mul(int Left, int Right) { return Left * Right; }
 
-	while (false == q.empty())
+int Calculation(char InOperation, int InLeft, int InRight)
+{
+	int (*Oper)(int, int) = nullptr;
+	switch (InOperation)
 	{
-		Attack atk = q.front();
-		q.pop();
-
-		// 모든 체력이 0이 되어 최소한의 공격 횟수가 존재한다면 BFS While문 탈출
-		if (0 != SCVVisited[0][0][0]) break;
-
-		// 공격 대미지 패턴에 대한 반복
-		for (int i = 0; i < 6; ++i)
-		{
-			// 배열이 음수가 될 수 없으므로 값이 음수로 떨어진다면 0으로 설정
-			int na1 = max(0, atk.Attack1 - Damage[i][0]);
-			int na2 = max(0, atk.Attack2 - Damage[i][1]);
-			int na3 = max(0, atk.Attack3 - Damage[i][2]);
-			// 해당 체력 상태에 대한 정보가 있다면 건너뛰기
-			if (0 != SCVVisited[na1][na2][na3]) continue;
-
-			// 공격 횟수 파악을 위한 누적 연산
-			SCVVisited[na1][na2][na3] = SCVVisited[atk.Attack1][atk.Attack2][atk.Attack3] + 1;
-			// 다음 탐색을 위해 큐에 저장
-			q.push({ na1,na2,na3 });
-		}
+	case '+':
+		Oper = Add;
+		break;
+	case '-':
+		Oper = Sub;
+		break;
+	case '*':
+		Oper = Mul;
+		break;
 	}
 
-	return SCVVisited[0][0][0] - 1;
+	return nullptr != Oper ? Oper(InLeft, InRight) : 0;
+}
+
+void MakeExpression(int Index, int Value)
+{
+	// 계산의 끝
+	if (Numbers.size() - 1 == Index)
+	{
+		// 최대값 갱신 작업
+		ret = max(ret, Value);
+		return;
+	}
+
+	// 먼저 연산
+	MakeExpression(Index + 1, Calculation(Operations[Index], Value, Numbers[Index + 1]));
+	// 괄호가 있다 했을 때의 연산
+	if (Numbers.size() - 1 >= Index + 2)
+	{
+		int ParenthesesValue = Calculation(Operations[Index + 1], Numbers[Index + 1], Numbers[Index + 2]);
+		MakeExpression(Index + 2, Calculation(Operations[Index], Value, ParenthesesValue));
+	}
 }
 
 int main()
 {
-	cin >> N;
-
-	for (int i = 0; i < N; ++i)
+	cin >> N >> Str;
+	for (char ch : Str)
 	{
-		cin >> SCV[i];
+		if (0 != isdigit(ch)) Numbers.push_back(ch - '0');
+		else Operations.push_back(ch);
 	}
 
-	cout << BFS();
+	MakeExpression(0, Numbers[0]);
+	cout << ret;
 
 	return 0;
 }
