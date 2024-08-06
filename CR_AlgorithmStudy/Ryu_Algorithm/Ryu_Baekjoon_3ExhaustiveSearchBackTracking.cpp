@@ -623,61 +623,115 @@ using namespace std;
 // 7_숨바꼭질2(46% -> 오답)
 // https://www.acmicpc.net/problem/12851
 // N: 수빈 위치, K: 동생 위치
-int N, K, minCount, minTime = 987654321, visited[100001];
+//int N, K, minCount, minTime = 987654321, visited[100001];
+//
+//void Move()
+//{
+//	queue<int> q;
+//	q.push(N);
+//	// 첫 위치 방문 처리
+//	visited[N] = 1;
+//
+//	while (false == q.empty()) 
+//	{
+//		int curIndex = q.front();
+//		q.pop();
+//
+//		// 동생 위치와 겹쳤을 때
+//		if (K == curIndex) 
+//		{
+//			// 최소 시간 갱신
+//			if (minTime > visited[curIndex]) 
+//			{
+//				minTime = visited[curIndex];
+//				// 동일 최소 시간 카운트 값 초기화
+//				minCount = 1;
+//			}
+//			// 동일 최소 시간 카운트 증가
+//			else if (minTime == visited[curIndex]) ++minCount;
+//			
+//			continue;
+//		}
+//
+//		// 수빈 이동 위치 탐색
+//		int nextInfo[] = { curIndex - 1, curIndex + 1, curIndex * 2 };
+//		for (int i = 0; i < 3; ++i) 
+//		{
+//			int nextIndex = nextInfo[i];
+//
+//			// 이동할 다음 위치가 배열 범위 초과하면 무시
+//			if (0 > nextIndex || 100000 < nextIndex ) continue;
+//			// 방문 여부와 최소 시간보다 탐색 시간이 더 걸린다면 굳이 더 탐색할 필요 없으므로 무시
+//			if (0 != visited[nextIndex] || minTime < visited[curIndex] + 1) continue;
+//
+//			// 탐색 시간 파악
+//			visited[nextIndex] = visited[curIndex] + 1;
+//			q.push(nextIndex);
+//		}
+//	}
+//}
+//
+//int main()
+//{
+//	cin >> N >> K;
+//
+//	Move();
+//
+//	cout << minTime - 1 << "\n" << minCount;
+//
+//	return 0;
+//}
 
-void Move()
+// 7_다른 풀이
+// 가장 빠른 시간(BFS), 경우의 수
+const int MaxPosition = 100000;
+int visited[MaxPosition + 1], cnt[MaxPosition + 1];
+
+int main()
 {
-	queue<int> q;
-	q.push(N);
-	// 첫 위치 방문 처리
-	visited[N] = 1;
+	int n, k;
+	cin >> n >> k;
+	// 추가 반례(같은 위치일 경우), 반례 추가 안해주면 오답처리됨
+	if (n == k)
+	{
+		cout << '0' << "\n" << '1';
 
-	while (false == q.empty()) 
+		return 0;
+	}
+
+	visited[n] = 1;
+	cnt[n] = 1;
+
+	queue<int> q;
+	q.push(n);
+
+	while (false == q.empty())
 	{
 		int curIndex = q.front();
 		q.pop();
 
-		// 동생 위치와 겹쳤을 때
-		if (K == curIndex) 
-		{
-			// 최소 시간 갱신
-			if (minTime > visited[curIndex]) 
-			{
-				minTime = visited[curIndex];
-				// 동일 최소 시간 카운트 값 초기화
-				minCount = 1;
-			}
-			// 동일 최소 시간 카운트 증가
-			else if (minTime == visited[curIndex]) ++minCount;
-			
-			continue;
-		}
-
-		// 수빈 이동 위치 탐색
 		int nextInfo[] = { curIndex - 1, curIndex + 1, curIndex * 2 };
-		for (int i = 0; i < 3; ++i) 
+		for (int i = 0; i < 3; ++i)
 		{
-			int nextIndex = nextInfo[i];
-
-			// 이동할 다음 위치가 배열 범위 초과하면 무시
-			if (0 > nextIndex || 100000 < nextIndex ) continue;
-			// 방문 여부와 최소 시간보다 탐색 시간이 더 걸린다면 굳이 더 탐색할 필요 없으므로 무시
-			if (0 != visited[nextIndex] || minTime < visited[curIndex] + 1) continue;
-
-			// 탐색 시간 파악
-			visited[nextIndex] = visited[curIndex] + 1;
-			q.push(nextIndex);
+			// 이동 가능한 범위 확인
+			if (0 <= nextInfo[i] && MaxPosition >= nextInfo[i])
+			{
+				// 첫 방문
+				if (0 == visited[nextInfo[i]])
+				{
+					q.push(nextInfo[i]);
+					visited[nextInfo[i]] = visited[curIndex] + 1;
+					// 경우의 수를 구하기 위해 누적
+					cnt[nextInfo[i]] += cnt[curIndex];
+				}
+				// 동일하지만 다른 최단 루트가 있을 때 경우의 수 추가
+				// 해당 부분을 고려 못해서 46%에서 틀렸던게 아닐까 싶음
+				else if (visited[nextInfo[i]] == visited[curIndex] + 1) cnt[nextInfo[i]] += cnt[curIndex];
+			}
 		}
 	}
-}
 
-int main()
-{
-	cin >> N >> K;
-
-	Move();
-
-	cout << minTime - 1 << "\n" << minCount;
+	cout << visited[k] - 1 << "\n" << cnt[k];
 
 	return 0;
 }
