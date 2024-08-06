@@ -557,65 +557,127 @@ using namespace std;
 // 연산자와 숫자로 나누어 해볼 것
 // 함수포인터로 계산식 나누어 설계 가능할 듯한데 해볼 것
 // N: 수식 길이
-int N, ret = -987654321;
-string Str;
-vector<int> Numbers;
-vector<char> Operations;
+//int N, ret = -987654321;
+//string Str;
+//vector<int> Numbers;
+//vector<char> Operations;
+//
+//int Add(int Left, int Right) { return Left + Right; }
+//int Sub(int Left, int Right) { return Left - Right; }
+//int Mul(int Left, int Right) { return Left * Right; }
+//
+//int Calculation(char InOperation, int InLeft, int InRight)
+//{
+//	int (*Oper)(int, int) = nullptr;
+//	switch (InOperation)
+//	{
+//	case '+':
+//		Oper = Add;
+//		break;
+//	case '-':
+//		Oper = Sub;
+//		break;
+//	case '*':
+//		Oper = Mul;
+//		break;
+//	}
+//
+//	return nullptr != Oper ? Oper(InLeft, InRight) : 0;
+//}
+//
+//void MakeExpression(int Index, int Value)
+//{
+//	// 계산의 끝
+//	if (Numbers.size() - 1 == Index)
+//	{
+//		// 최대값 갱신 작업
+//		ret = max(ret, Value);
+//		return;
+//	}
+//
+//	// 먼저 연산
+//	MakeExpression(Index + 1, Calculation(Operations[Index], Value, Numbers[Index + 1]));
+//	// 괄호가 있다 했을 때의 연산
+//	if (Numbers.size() - 1 >= Index + 2)
+//	{
+//		int ParenthesesValue = Calculation(Operations[Index + 1], Numbers[Index + 1], Numbers[Index + 2]);
+//		MakeExpression(Index + 2, Calculation(Operations[Index], Value, ParenthesesValue));
+//	}
+//}
+//
+//int main()
+//{
+//	cin >> N >> Str;
+//	for (char ch : Str)
+//	{
+//		if (0 != isdigit(ch)) Numbers.push_back(ch - '0');
+//		else Operations.push_back(ch);
+//	}
+//
+//	MakeExpression(0, Numbers[0]);
+//	cout << ret;
+//
+//	return 0;
+//}
 
-int Add(int Left, int Right) { return Left + Right; }
-int Sub(int Left, int Right) { return Left - Right; }
-int Mul(int Left, int Right) { return Left * Right; }
+// 7_숨바꼭질2(46% -> 오답)
+// https://www.acmicpc.net/problem/12851
+// N: 수빈 위치, K: 동생 위치
+int N, K, minCount, minTime = 987654321, visited[100001];
 
-int Calculation(char InOperation, int InLeft, int InRight)
+void Move()
 {
-	int (*Oper)(int, int) = nullptr;
-	switch (InOperation)
-	{
-	case '+':
-		Oper = Add;
-		break;
-	case '-':
-		Oper = Sub;
-		break;
-	case '*':
-		Oper = Mul;
-		break;
-	}
+	queue<int> q;
+	q.push(N);
+	// 첫 위치 방문 처리
+	visited[N] = 1;
 
-	return nullptr != Oper ? Oper(InLeft, InRight) : 0;
-}
-
-void MakeExpression(int Index, int Value)
-{
-	// 계산의 끝
-	if (Numbers.size() - 1 == Index)
+	while (false == q.empty()) 
 	{
-		// 최대값 갱신 작업
-		ret = max(ret, Value);
-		return;
-	}
+		int curIndex = q.front();
+		q.pop();
 
-	// 먼저 연산
-	MakeExpression(Index + 1, Calculation(Operations[Index], Value, Numbers[Index + 1]));
-	// 괄호가 있다 했을 때의 연산
-	if (Numbers.size() - 1 >= Index + 2)
-	{
-		int ParenthesesValue = Calculation(Operations[Index + 1], Numbers[Index + 1], Numbers[Index + 2]);
-		MakeExpression(Index + 2, Calculation(Operations[Index], Value, ParenthesesValue));
+		// 동생 위치와 겹쳤을 때
+		if (K == curIndex) 
+		{
+			// 최소 시간 갱신
+			if (minTime > visited[curIndex]) 
+			{
+				minTime = visited[curIndex];
+				// 동일 최소 시간 카운트 값 초기화
+				minCount = 1;
+			}
+			// 동일 최소 시간 카운트 증가
+			else if (minTime == visited[curIndex]) ++minCount;
+			
+			continue;
+		}
+
+		// 수빈 이동 위치 탐색
+		int nextInfo[] = { curIndex - 1, curIndex + 1, curIndex * 2 };
+		for (int i = 0; i < 3; ++i) 
+		{
+			int nextIndex = nextInfo[i];
+
+			// 이동할 다음 위치가 배열 범위 초과하면 무시
+			if (0 > nextIndex || 100000 < nextIndex ) continue;
+			// 방문 여부와 최소 시간보다 탐색 시간이 더 걸린다면 굳이 더 탐색할 필요 없으므로 무시
+			if (0 != visited[nextIndex] || minTime < visited[curIndex] + 1) continue;
+
+			// 탐색 시간 파악
+			visited[nextIndex] = visited[curIndex] + 1;
+			q.push(nextIndex);
+		}
 	}
 }
 
 int main()
 {
-	cin >> N >> Str;
-	for (char ch : Str)
-	{
-		if (0 != isdigit(ch)) Numbers.push_back(ch - '0');
-		else Operations.push_back(ch);
-	}
+	cin >> N >> K;
 
-	MakeExpression(0, Numbers[0]);
-	cout << ret;
+	Move();
+
+	cout << minTime - 1 << "\n" << minCount;
 
 	return 0;
 }
