@@ -684,54 +684,104 @@ using namespace std;
 
 // 7_다른 풀이
 // 가장 빠른 시간(BFS), 경우의 수
+//const int MaxPosition = 100000;
+//int visited[MaxPosition + 1], cnt[MaxPosition + 1];
+//
+//int main()
+//{
+//	int n, k;
+//	cin >> n >> k;
+//	// 추가 반례(같은 위치일 경우), 반례 추가 안해주면 오답처리됨
+//	if (n == k)
+//	{
+//		cout << '0' << "\n" << '1';
+//
+//		return 0;
+//	}
+//
+//	visited[n] = 1;
+//	cnt[n] = 1;
+//
+//	queue<int> q;
+//	q.push(n);
+//
+//	while (false == q.empty())
+//	{
+//		int curIndex = q.front();
+//		q.pop();
+//
+//		int nextInfo[] = { curIndex - 1, curIndex + 1, curIndex * 2 };
+//		for (int i = 0; i < 3; ++i)
+//		{
+//			// 이동 가능한 범위 확인
+//			if (0 <= nextInfo[i] && MaxPosition >= nextInfo[i])
+//			{
+//				// 첫 방문
+//				if (0 == visited[nextInfo[i]])
+//				{
+//					q.push(nextInfo[i]);
+//					visited[nextInfo[i]] = visited[curIndex] + 1;
+//					// 경우의 수를 구하기 위해 누적
+//					cnt[nextInfo[i]] += cnt[curIndex];
+//				}
+//				// 동일하지만 다른 최단 루트가 있을 때 경우의 수 추가
+//				// 해당 부분을 고려 못해서 46%에서 틀렸던게 아닐까 싶음
+//				else if (visited[nextInfo[i]] == visited[curIndex] + 1) cnt[nextInfo[i]] += cnt[curIndex];
+//			}
+//		}
+//	}
+//
+//	cout << visited[k] - 1 << "\n" << cnt[k];
+//
+//	return 0;
+//}
+
+// 8_숨바꼭질4
+// https://www.acmicpc.net/problem/13913
+// BFS, ***** Trace(경로 추적): prev[next] = here *****
 const int MaxPosition = 100000;
-int visited[MaxPosition + 1], cnt[MaxPosition + 1];
+int visited[MaxPosition + 1], prevIndex[MaxPosition + 1];
+vector<int> cnt;
 
 int main()
 {
 	int n, k;
 	cin >> n >> k;
-	// 추가 반례(같은 위치일 경우), 반례 추가 안해주면 오답처리됨
-	if (n == k)
-	{
-		cout << '0' << "\n" << '1';
-
-		return 0;
-	}
-
-	visited[n] = 1;
-	cnt[n] = 1;
 
 	queue<int> q;
 	q.push(n);
+	visited[n] = 1;
 
 	while (false == q.empty())
 	{
 		int curIndex = q.front();
 		q.pop();
 
+		if (k == curIndex) break;
+
 		int nextInfo[] = { curIndex - 1, curIndex + 1, curIndex * 2 };
 		for (int i = 0; i < 3; ++i)
 		{
 			// 이동 가능한 범위 확인
-			if (0 <= nextInfo[i] && MaxPosition >= nextInfo[i])
+			if (0 <= nextInfo[i] && MaxPosition >= nextInfo[i] && 0 == visited[nextInfo[i]])
 			{
-				// 첫 방문
-				if (0 == visited[nextInfo[i]])
-				{
-					q.push(nextInfo[i]);
-					visited[nextInfo[i]] = visited[curIndex] + 1;
-					// 경우의 수를 구하기 위해 누적
-					cnt[nextInfo[i]] += cnt[curIndex];
-				}
-				// 동일하지만 다른 최단 루트가 있을 때 경우의 수 추가
-				// 해당 부분을 고려 못해서 46%에서 틀렸던게 아닐까 싶음
-				else if (visited[nextInfo[i]] == visited[curIndex] + 1) cnt[nextInfo[i]] += cnt[curIndex];
+				q.push(nextInfo[i]);
+				visited[nextInfo[i]] = visited[curIndex] + 1;
+				// Index 별로 이전에 거쳐온 위치를 파악해서 역탐색이 가능
+				prevIndex[nextInfo[i]] = curIndex;
 			}
 		}
 	}
 
-	cout << visited[k] - 1 << "\n" << cnt[k];
+	// 도착지점부터 시작해서 시작지점까지 Index를 역탐색 순으로 순회
+	for (int i = k; i != n; i = prevIndex[i]) cnt.push_back(i);
+	// 시작지점 담기
+	cnt.push_back(n);
+	// 역순이므로 뒤집기
+	reverse(cnt.begin(), cnt.end());
+
+	cout << visited[k] - 1 << "\n";
+	for (int i : cnt) cout << i << " ";
 
 	return 0;
 }
