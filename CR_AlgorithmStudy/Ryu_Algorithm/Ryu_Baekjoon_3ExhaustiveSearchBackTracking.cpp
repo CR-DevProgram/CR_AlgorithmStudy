@@ -739,49 +739,134 @@ using namespace std;
 // 8_숨바꼭질4
 // https://www.acmicpc.net/problem/13913
 // BFS, ***** Trace(경로 추적): prev[next] = here *****
-const int MaxPosition = 100000;
-int visited[MaxPosition + 1], prevIndex[MaxPosition + 1];
+//const int MaxPosition = 100000;
+//int visited[MaxPosition + 1], prevIndex[MaxPosition + 1];
+//vector<int> cnt;
+//
+//int main()
+//{
+//	int n, k;
+//	cin >> n >> k;
+//
+//	queue<int> q;
+//	q.push(n);
+//	visited[n] = 1;
+//
+//	while (false == q.empty())
+//	{
+//		int curIndex = q.front();
+//		q.pop();
+//
+//		if (k == curIndex) break;
+//
+//		int nextInfo[] = { curIndex - 1, curIndex + 1, curIndex * 2 };
+//		for (int i = 0; i < 3; ++i)
+//		{
+//			// 이동 가능한 범위 확인
+//			if (0 <= nextInfo[i] && MaxPosition >= nextInfo[i] && 0 == visited[nextInfo[i]])
+//			{
+//				q.push(nextInfo[i]);
+//				visited[nextInfo[i]] = visited[curIndex] + 1;
+//				// Index 별로 이전에 거쳐온 위치를 파악해서 역탐색이 가능
+//				prevIndex[nextInfo[i]] = curIndex;
+//			}
+//		}
+//	}
+//
+//	// 도착지점부터 시작해서 시작지점까지 Index를 역탐색 순으로 순회
+//	for (int i = k; i != n; i = prevIndex[i]) cnt.push_back(i);
+//	// 시작지점 담기
+//	cnt.push_back(n);
+//	// 역순이므로 뒤집기
+//	reverse(cnt.begin(), cnt.end());
+//
+//	cout << visited[k] - 1 << "\n";
+//	for (int i : cnt) cout << i << " ";
+//
+//	return 0;
+//}
+
+// 9_숨바꼭질5
+// https://www.acmicpc.net/problem/17071
+// 수빈이가 이동하는 배열, 동생이 이동하는 배열 각자 관리하려고 했으나 500000이라는 수치는 매우 큼(공간 복잡도를 고려)
+// 동생의 경우 홀수 짝수와 같이 이동 위치가 바뀜(+1, +2, +3, +4, ...)
+// 수빈의 경우 +1, -1 이동 가능 따라서 동생이 3초에 왔다고 했을 때 수빈이 1초에 미리 도착했다면 왔다 갔다 형식으로 만날 수 있음(단, 홀수 짝수 시간이 일치할 때)
+// 따라서 수빈이와 동생이 같이 가는 경우와 수빈이가 먼저 도착해서 왔다갔다로 동생과 마주하는 경우 고려
+// 수빈이의 위치는 홀짝으로 구분하되 동생의 이동 위치는 파악할 필요 있음
+const int MaxPosition = 500000;
+int MoveCount = 1, visited[2][MaxPosition + 1];		// visited[2][MaxPosition + 1] => [2]: 홀수 짝수인지 해당 턴의 확인용, [MaxPosition + 1]: 동생 위치
+bool IsVisited;
 vector<int> cnt;
 
 int main()
 {
 	int n, k;
 	cin >> n >> k;
+	if (n == k)
+	{
+		cout << 0;
+		return 0;
+	}
 
 	queue<int> q;
 	q.push(n);
-	visited[n] = 1;
+	// 수빈 기준 첫 방문 시작
+	visited[0][n] = 1;
 
 	while (false == q.empty())
 	{
-		int curIndex = q.front();
-		q.pop();
+		// 이동 수치만큼 동생 위치 연산
+		k += MoveCount;
 
-		if (k == curIndex) break;
-
-		int nextInfo[] = { curIndex - 1, curIndex + 1, curIndex * 2 };
-		for (int i = 0; i < 3; ++i)
+		if (MaxPosition < k) break;
+		// 만약 짝수(, 홀수 턴에 맞춰서)일 때 동생 위치에 미리 방문 했다면 왔다갔다로 만날 수 있으므로 IsVisited가 true
+		if (0 != visited[MoveCount % 2][k])
 		{
-			// 이동 가능한 범위 확인
-			if (0 <= nextInfo[i] && MaxPosition >= nextInfo[i] && 0 == visited[nextInfo[i]])
-			{
-				q.push(nextInfo[i]);
-				visited[nextInfo[i]] = visited[curIndex] + 1;
-				// Index 별로 이전에 거쳐온 위치를 파악해서 역탐색이 가능
-				prevIndex[nextInfo[i]] = curIndex;
-			}
+			IsVisited = true;
+			break;
 		}
+
+		// Flood Fill Algorithm(플러드 필 알고리즘)
+		// Leveling 변수가 필요한 이유?
+		// for문에 q.size()로 사용했을 시 q의 사이즈가 변하게 되면서 로직이 뒤틀리게 됨
+		// 따라서 각 탐색 레벨별 파악을 위해 미리 사이즈를 받아서 사용
+		int Leveling = q.size();
+		for (int i = 0; i < Leveling; ++i)
+		{
+			int curIndex = q.front();
+			q.pop();
+
+			int nextInfo[] = { curIndex - 1, curIndex + 1, curIndex * 2 };
+			for (int i = 0; i < 3; ++i)
+			{
+				// 이동 가능한 범위 확인
+				if (0 <= nextInfo[i] && MaxPosition >= nextInfo[i] && 0 == visited[MoveCount % 2][nextInfo[i]])
+				{
+					// + 1을 하는 이유? => 짝수에 방문했다면 다음은 홀수에 방문
+					// 만약 2초에 방문했다면 다음은 3초가 되니까?!
+					visited[MoveCount % 2][nextInfo[i]] = visited[(MoveCount + 1) % 2][curIndex] + 1;
+
+					// 동생과 위치가 동일하다면
+					if (k == nextInfo[i])
+					{
+						IsVisited = true;
+						break;
+					}
+
+					q.push(nextInfo[i]);
+				}
+			}
+
+			if (true == IsVisited) break;
+		}
+
+		if (true == IsVisited) break;
+		++MoveCount;
 	}
 
-	// 도착지점부터 시작해서 시작지점까지 Index를 역탐색 순으로 순회
-	for (int i = k; i != n; i = prevIndex[i]) cnt.push_back(i);
-	// 시작지점 담기
-	cnt.push_back(n);
-	// 역순이므로 뒤집기
-	reverse(cnt.begin(), cnt.end());
-
-	cout << visited[k] - 1 << "\n";
-	for (int i : cnt) cout << i << " ";
+	// 만난 적이 없으면 -1, 있으면 이동한 수 출력
+	MoveCount = true == IsVisited ? MoveCount : -1;
+	cout << MoveCount;
 
 	return 0;
 }
