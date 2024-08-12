@@ -793,80 +793,151 @@ using namespace std;
 // 수빈의 경우 +1, -1 이동 가능 따라서 동생이 3초에 왔다고 했을 때 수빈이 1초에 미리 도착했다면 왔다 갔다 형식으로 만날 수 있음(단, 홀수 짝수 시간이 일치할 때)
 // 따라서 수빈이와 동생이 같이 가는 경우와 수빈이가 먼저 도착해서 왔다갔다로 동생과 마주하는 경우 고려
 // 수빈이의 위치는 홀짝으로 구분하되 동생의 이동 위치는 파악할 필요 있음
-const int MaxPosition = 500000;
-int MoveCount = 1, visited[2][MaxPosition + 1];		// visited[2][MaxPosition + 1] => [2]: 홀수 짝수인지 해당 턴의 확인용, [MaxPosition + 1]: 동생 위치
-bool IsVisited;
-vector<int> cnt;
+//const int MaxPosition = 500000;
+//int MoveCount = 1, visited[2][MaxPosition + 1];		// visited[2][MaxPosition + 1] => [2]: 홀수 짝수인지 해당 턴의 확인용, [MaxPosition + 1]: 동생 위치
+//bool IsVisited;
+//vector<int> cnt;
+//
+//int main()
+//{
+//	int n, k;
+//	cin >> n >> k;
+//	if (n == k)
+//	{
+//		cout << 0;
+//		return 0;
+//	}
+//
+//	queue<int> q;
+//	q.push(n);
+//	// 수빈 기준 첫 방문 시작
+//	visited[0][n] = 1;
+//
+//	while (false == q.empty())
+//	{
+//		// 이동 수치만큼 동생 위치 연산
+//		k += MoveCount;
+//
+//		if (MaxPosition < k) break;
+//		// 만약 짝수(, 홀수 턴에 맞춰서)일 때 동생 위치에 미리 방문 했다면 왔다갔다로 만날 수 있으므로 IsVisited가 true
+//		if (0 != visited[MoveCount % 2][k])
+//		{
+//			IsVisited = true;
+//			break;
+//		}
+//
+//		// Flood Fill Algorithm(플러드 필 알고리즘)
+//		// Leveling 변수가 필요한 이유?
+//		// for문에 q.size()로 사용했을 시 q의 사이즈가 변하게 되면서 로직이 뒤틀리게 됨
+//		// 따라서 각 탐색 레벨별 파악을 위해 미리 사이즈를 받아서 사용
+//		int Leveling = q.size();
+//		for (int i = 0; i < Leveling; ++i)
+//		{
+//			int curIndex = q.front();
+//			q.pop();
+//
+//			int nextInfo[] = { curIndex - 1, curIndex + 1, curIndex * 2 };
+//			for (int i = 0; i < 3; ++i)
+//			{
+//				// 이동 가능한 범위 확인
+//				if (0 <= nextInfo[i] && MaxPosition >= nextInfo[i] && 0 == visited[MoveCount % 2][nextInfo[i]])
+//				{
+//					// + 1을 하는 이유? => 짝수에 방문했다면 다음은 홀수에 방문
+//					// 만약 2초에 방문했다면 다음은 3초가 되니까?!
+//					visited[MoveCount % 2][nextInfo[i]] = visited[(MoveCount + 1) % 2][curIndex] + 1;
+//
+//					// 동생과 위치가 동일하다면
+//					if (k == nextInfo[i])
+//					{
+//						IsVisited = true;
+//						break;
+//					}
+//
+//					q.push(nextInfo[i]);
+//				}
+//			}
+//
+//			if (true == IsVisited) break;
+//		}
+//
+//		if (true == IsVisited) break;
+//		++MoveCount;
+//	}
+//
+//	// 만난 적이 없으면 -1, 있으면 이동한 수 출력
+//	MoveCount = true == IsVisited ? MoveCount : -1;
+//	cout << MoveCount;
+//
+//	return 0;
+//}
+
+// 10_주난의 난(難)
+// https://www.acmicpc.net/problem/14497
+// *: 주난의 위치, #: 초코바를 가진 학생
+// 0: 이동가능, 1: 시간에 따른 이동 가능한 부분
+// 0이면 빈 공간이므로 해당 위치 4방향으로 확산(?)되어 1을 만날때 1을 0으로 바꾸고 멈춤
+// N: 가로, M: 세로 교실 크기
+int N, M, JumpCount = 1, visited[301][301];
+pair<int, int> JPos, CPos;
+char JClass[301][301];
+int dy[] = { -1, 0, 1, 0 };
+int dx[] = { 0, 1, 0, -1 };
 
 int main()
 {
-	int n, k;
-	cin >> n >> k;
-	if (n == k)
+	cin >> N >> M;
+	cin >> JPos.second >> JPos.first >> CPos.second >> CPos.first;
+
+	for (int i = 1; i <= N; ++i)
 	{
-		cout << 0;
-		return 0;
+		string str = "";
+		cin >> str;
+		for (int j = 1; j <= str.size(); ++j) JClass[i][j] = str[j - 1];
 	}
 
-	queue<int> q;
-	q.push(n);
-	// 수빈 기준 첫 방문 시작
-	visited[0][n] = 1;
-
-	while (false == q.empty())
+	queue<pair<int, int>> q;
+	q.push({ JPos.second, JPos.first });
+	visited[JPos.second][JPos.first] = 1;
+	
+	// 목표 지점이 '0'이 될 때까지 반복
+	while ('0' != JClass[CPos.second][CPos.first])
 	{
-		// 이동 수치만큼 동생 위치 연산
-		k += MoveCount;
+		// 다음 탐색을 위해 모아놓는 큐 자료구조
+		queue<pair<int, int>> nextq;
 
-		if (MaxPosition < k) break;
-		// 만약 짝수(, 홀수 턴에 맞춰서)일 때 동생 위치에 미리 방문 했다면 왔다갔다로 만날 수 있으므로 IsVisited가 true
-		if (0 != visited[MoveCount % 2][k])
+		while (false == q.empty())
 		{
-			IsVisited = true;
-			break;
-		}
-
-		// Flood Fill Algorithm(플러드 필 알고리즘)
-		// Leveling 변수가 필요한 이유?
-		// for문에 q.size()로 사용했을 시 q의 사이즈가 변하게 되면서 로직이 뒤틀리게 됨
-		// 따라서 각 탐색 레벨별 파악을 위해 미리 사이즈를 받아서 사용
-		int Leveling = q.size();
-		for (int i = 0; i < Leveling; ++i)
-		{
-			int curIndex = q.front();
+			int y = q.front().first;
+			int x = q.front().second;
 			q.pop();
-
-			int nextInfo[] = { curIndex - 1, curIndex + 1, curIndex * 2 };
-			for (int i = 0; i < 3; ++i)
+			
+			for (int i = 0; i < 4; ++i)
 			{
-				// 이동 가능한 범위 확인
-				if (0 <= nextInfo[i] && MaxPosition >= nextInfo[i] && 0 == visited[MoveCount % 2][nextInfo[i]])
+				int ny = y + dy[i];
+				int nx = x + dx[i];
+
+				if (1 > ny || 1 > nx || N < ny || M < nx || 0 != visited[ny][nx]) continue;
+
+				visited[ny][nx] = JumpCount;
+				// 만약 '1'로 친구가 존재한다면 '0'으로 변경
+				// nextq에 추가
+				if ('0' != JClass[ny][nx])
 				{
-					// + 1을 하는 이유? => 짝수에 방문했다면 다음은 홀수에 방문
-					// 만약 2초에 방문했다면 다음은 3초가 되니까?!
-					visited[MoveCount % 2][nextInfo[i]] = visited[(MoveCount + 1) % 2][curIndex] + 1;
-
-					// 동생과 위치가 동일하다면
-					if (k == nextInfo[i])
-					{
-						IsVisited = true;
-						break;
-					}
-
-					q.push(nextInfo[i]);
+					JClass[ny][nx] = '0';
+					nextq.push({ ny, nx });
 				}
+				// '0'이라면 q에 추가
+				else q.push({ ny, nx });
 			}
-
-			if (true == IsVisited) break;
 		}
 
-		if (true == IsVisited) break;
-		++MoveCount;
+		// '0' 탐색 이후 다음 jump로 탐색 시작을 위해 해당 정보를 q에 대입
+		q = nextq;
+		// 점프 카운트 증가
+		++JumpCount;
 	}
 
-	// 만난 적이 없으면 -1, 있으면 이동한 수 출력
-	MoveCount = true == IsVisited ? MoveCount : -1;
-	cout << MoveCount;
+	cout << visited[CPos.second][CPos.first];
 
 	return 0;
 }
