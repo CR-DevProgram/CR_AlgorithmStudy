@@ -1367,62 +1367,128 @@
 
 //문자열 압축
 // https://school.programmers.co.kr/learn/courses/30/lessons/60057
+//#include <string>
+//#include <vector>
+//#include <algorithm>
+//
+//using namespace std;
+//
+//string compress(const string& s, int size)
+//{
+//    // 처음부터 사이즈까지 자른 배열을 만든다.
+//    string prev = s.substr(0, size);
+//    string compressed = "";
+//    int count = 1;
+//    for (int i = size; i < s.size(); i += size)
+//    {
+//        // 현재 문자를 구한다.
+//        string cur = s.substr(i, size);
+//
+//        // 일치하면 count를 더한다.
+//        if (prev == cur)
+//            ++count;
+//        else
+//        {
+//            // 압축됐으면 숫자를 표기하고
+//            if (count > 1)
+//            {
+//                compressed += to_string(count);
+//                count = 1;
+//            }
+//
+//            // 문자를 붙인다
+//            compressed += prev;
+//            prev = cur;
+//        }
+//    }
+//
+//    if (count > 1)
+//    {
+//        compressed += to_string(count);
+//    }
+//
+//    compressed += prev;
+//
+//    return compressed;
+//}
+//
+//
+//int solution(string s) {
+//    int size = s.size();
+//    int minSize = size;
+//
+//    for (int i = 1; i <= size / 2; i++)
+//    {
+//        string compressed = compress(s, i);
+//        int newSize = compressed.size();
+//        minSize = min(minSize, newSize);
+//    }
+//
+//    return minSize;
+//}
+
+// 뉴스 클러스터링
+// https://school.programmers.co.kr/learn/courses/30/lessons/17677
+
 #include <string>
-#include <vector>
+#include <map>
 #include <algorithm>
 
 using namespace std;
 
-string compress(const string& s, int size)
+int solution(string str1, string str2)
 {
-    // 처음부터 사이즈까지 자른 배열을 만든다.
-    string prev = s.substr(0, size);
-    string compressed = "";
-    int count = 1;
-    for (int i = size; i < s.size(); i += size)
+    map<string, int> m1;
+    map<string, int> m2;
+
+    transform(str1.begin(), str1.end(), str1.begin(), ::tolower);
+    transform(str2.begin(), str2.end(), str2.begin(), ::tolower);
+
+    for (int i = 0; i < str1.size() - 1; i++)
     {
-        // 현재 문자를 구한다.
-        string cur = s.substr(i, size);
-
-        // 일치하면 count를 더한다.
-        if (prev == cur)
-            ++count;
-        else
+        string temp = str1.substr(i, 2);
+        if (isalpha(temp[0]) && isalpha(temp[1]))
         {
-            // 압축됐으면 숫자를 표기하고
-            if (count > 1)
-            {
-                compressed += to_string(count);
-                count = 1;
-            }
-
-            // 문자를 붙인다
-            compressed += prev;
-            prev = cur;
+            ++m1[temp];
         }
     }
 
-    if (count > 1)
+    for (int i = 0; i < str2.size() - 1; i++)
     {
-        compressed += to_string(count);
+        string temp = str2.substr(i, 2);
+        if (isalpha(temp[0]) && isalpha(temp[1]))
+        {
+            ++m2[temp];
+        }
     }
 
-    compressed += prev;
+    int intersection_size = 0;
+    int union_size = 0;
 
-    return compressed;
-}
-
-
-int solution(string s) {
-    int size = s.size();
-    int minSize = size;
-
-    for (int i = 1; i <= size / 2; i++)
+    for (auto it : m1)
     {
-        string compressed = compress(s, i);
-        int newSize = compressed.size();
-        minSize = min(minSize, newSize);
+        if (m2.end() != m2.find(it.first))
+            intersection_size += min(it.second, m2[it.first]);
     }
 
-    return minSize;
+    for (auto it : m1)
+    {
+        union_size += it.second;
+    }
+
+    for (auto it : m2)
+    {
+        union_size += it.second;
+    }
+
+    union_size -= intersection_size;
+
+    int mul = 65536;
+    if (union_size == 0)
+    {
+        return mul;
+    }
+
+    int answer = ((double)intersection_size / union_size) * mul;
+    return answer;
 }
