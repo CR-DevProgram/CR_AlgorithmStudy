@@ -946,124 +946,174 @@ using namespace std;
 // https://www.acmicpc.net/problem/3197
 // 하루 간격으로 물이 닿아있는 빙판은 녹는다(상하좌우이며 대각선은 고려X)
 // R: 행, C: 열
-const int Max_num = 1501;
-int R, C, day, Svisited[Max_num][Max_num], Wvisited[Max_num][Max_num];
-int SwanY, SwanX, CurY, CurX;
-char Lake[Max_num][Max_num];
-queue<pair<int, int>> WaterQ, SwanQ, Water_NextQ, Swan_NextQ;   // BFS, Flood Fill에 사용할 각 큐 2개
-int dy[4] = { 0, 1, 0, -1 };
-int dx[4] = { 1, 0, -1, 0 };
+//const int Max_num = 1501;
+//int R, C, day, Svisited[Max_num][Max_num], Wvisited[Max_num][Max_num];
+//int SwanY, SwanX, CurY, CurX;
+//char Lake[Max_num][Max_num];
+//queue<pair<int, int>> WaterQ, SwanQ, Water_NextQ, Swan_NextQ;   // BFS, Flood Fill에 사용할 각 큐 2개
+//int dy[4] = { 0, 1, 0, -1 };
+//int dx[4] = { 1, 0, -1, 0 };
+//
+//// 큐를 클리어 해주는 기능이 없으므로 생성하여 스왑해 바꿈
+//void Qclear(queue<pair<int, int>>& Inq) 
+//{
+//    queue<pair<int, int>> EmptyQ;
+//    // 빈 큐와 교체하여 큐를 비움
+//    swap(Inq, EmptyQ); 
+//}
+//
+//void IceMelting() 
+//{
+//    while (false == WaterQ.empty())
+//    {
+//        tie(CurY, CurX) = WaterQ.front();
+//        WaterQ.pop();
+//
+//        for (int i = 0; i < 4; ++i) 
+//        {
+//            int ny = CurY + dy[i];
+//            int nx = CurX + dx[i];
+//
+//            if (0 > ny || 0 > nx || R < ny || C < nx || 0 != Wvisited[ny][nx]) continue;
+//            
+//            // 다음 이동이 빙하라면 물로 변경
+//            if ('X' == Lake[ny][nx])
+//            {
+//                Wvisited[ny][nx] = 1;
+//                Lake[ny][nx] = '.';
+//                Water_NextQ.push({ ny, nx });
+//            }
+//        }
+//    }
+//}
+//
+//bool MoveAndMeet() 
+//{
+//    while (false == SwanQ.empty())
+//    {
+//        tie(CurY, CurX) = SwanQ.front();
+//        SwanQ.pop();
+//
+//        for (int i = 0; i < 4; ++i) 
+//        {
+//            int ny = CurY + dy[i];
+//            int nx = CurX + dx[i];
+//
+//            if (0 > ny || 0 > nx || R < ny || C < nx || 0 != Svisited[ny][nx]) continue;
+//
+//            Svisited[ny][nx] = 1;
+//            // 다음 이동이 물이라면 현재큐에 추가
+//            if ('.' == Lake[ny][nx]) SwanQ.push({ny, nx});
+//            // 다음 이동이 빙하라면 다음큐에 추가
+//            else if ('X' == Lake[ny][nx]) Swan_NextQ.push({ny, nx});
+//            // 다음 이동에 백조가 있다면 만났으므로 true
+//            else if ('L' == Lake[ny][nx]) return true;
+//        }
+//    }
+//
+//    // 여기까지 오면 만나지 못한 경우
+//    return false;
+//}
+//
+//int main() 
+//{
+//    cin >> R >> C;
+//    for (int i = 0; i < R; ++i)
+//    {
+//        string str = "";
+//        cin >> str;
+//        for (int j = 0; j < C; ++j) 
+//        {
+//            Lake[i][j] = str[j];
+//
+//            if ('L' == Lake[i][j] || '.' == Lake[i][j])
+//            {
+//                if ('L' == Lake[i][j])
+//                {
+//                    SwanY = i;
+//                    SwanX = j;
+//                }
+//
+//                Wvisited[i][j] = 1;
+//                WaterQ.push({ i, j });                          // 물 큐 추가
+//            }
+//        }
+//    }
+//
+//    SwanQ.push({ SwanY, SwanX });
+//    Svisited[SwanY][SwanX] = 1;
+//
+//    while (true) 
+//    {
+//        // 두 백조가 만나면 종료
+//        if (true == MoveAndMeet()) break;
+//        
+//        // 하루 간격 빙판 녹이기
+//        IceMelting();
+//        
+//        // 큐 업데이트(빙하 녹는 정보와, 백조 이동)
+//        WaterQ = Water_NextQ;
+//        SwanQ = Swan_NextQ;
+//        
+//        // 큐 비우기
+//        Qclear(Water_NextQ);
+//        Qclear(Swan_NextQ);
+//        
+//        // 하루 경과
+//        ++day;
+//    }
+//
+//    cout << day;
+//
+//    return 0;
+//}
 
-// 큐를 클리어 해주는 기능이 없으므로 생성하여 스왑해 바꿈
-void Qclear(queue<pair<int, int>>& Inq) 
+// 12_알파벳
+// https://www.acmicpc.net/problem/1987
+// 칸마다 대문자 존재, 말은 4방향 이동 가능 지금까지 지나온 칸과 다른 알파벳 칸만 이동 가능
+// 시작 지점은 좌상단(1,1), 최대 몇 칸 이동 가능한가
+// 알파벳 방문 배열로 해당 알파벳에 방문했는지 여부를 확인하여 탐색
+// R: 세로, C: 가로
+int R, C, visited[30];
+char Board[21][21];
+int dy[] = { -1, 0, 1, 0 };
+int dx[] = { 0, 1, 0, -1 };
+
+int DFS(int y, int x)
 {
-    queue<pair<int, int>> EmptyQ;
-    // 빈 큐와 교체하여 큐를 비움
-    swap(Inq, EmptyQ); 
+	int value = 0;
+
+	for (int i = 0; i < 4; ++i)
+	{
+		int ny = y + dy[i];
+		int nx = x + dx[i];
+
+		if (0 > ny || 0 > nx || R <= ny || C <= nx) continue;
+		if (0 != visited[Board[ny][nx] - 'A']) continue;
+
+		// 방문 체크
+		visited[Board[ny][nx] - 'A'] = 1;
+		// 재귀 및 반환 카운트를 통해 최대로 탐색한 길이 구하기
+		value = max(value, DFS(ny, nx));
+		// 방문 해제
+		visited[Board[ny][nx] - 'A'] = 0;
+	}
+
+	// 현재위치 포함하여 반환
+	return value + 1;
 }
 
-void IceMelting() 
+int main()
 {
-    while (false == WaterQ.empty())
-    {
-        tie(CurY, CurX) = WaterQ.front();
-        WaterQ.pop();
+	cin >> R >> C;
+	for (int i = 0; i < R; ++i)
+	{
+		for (int j = 0; j < C; ++j) cin >> Board[i][j];
+	}
 
-        for (int i = 0; i < 4; ++i) 
-        {
-            int ny = CurY + dy[i];
-            int nx = CurX + dx[i];
+	visited[Board[0][0]- 'A'] = 1;
 
-            if (0 > ny || 0 > nx || R < ny || C < nx || 0 != Wvisited[ny][nx]) continue;
-            
-            // 다음 이동이 빙하라면 물로 변경
-            if ('X' == Lake[ny][nx])
-            {
-                Wvisited[ny][nx] = 1;
-                Lake[ny][nx] = '.';
-                Water_NextQ.push({ ny, nx });
-            }
-        }
-    }
-}
+	cout << DFS(0, 0);
 
-bool MoveAndMeet() 
-{
-    while (false == SwanQ.empty())
-    {
-        tie(CurY, CurX) = SwanQ.front();
-        SwanQ.pop();
-
-        for (int i = 0; i < 4; ++i) 
-        {
-            int ny = CurY + dy[i];
-            int nx = CurX + dx[i];
-
-            if (0 > ny || 0 > nx || R < ny || C < nx || 0 != Svisited[ny][nx]) continue;
-
-            Svisited[ny][nx] = 1;
-            // 다음 이동이 물이라면 현재큐에 추가
-            if ('.' == Lake[ny][nx]) SwanQ.push({ny, nx});
-            // 다음 이동이 빙하라면 다음큐에 추가
-            else if ('X' == Lake[ny][nx]) Swan_NextQ.push({ny, nx});
-            // 다음 이동에 백조가 있다면 만났으므로 true
-            else if ('L' == Lake[ny][nx]) return true;
-        }
-    }
-
-    // 여기까지 오면 만나지 못한 경우
-    return false;
-}
-
-int main() 
-{
-    cin >> R >> C;
-    for (int i = 0; i < R; ++i)
-    {
-        string str = "";
-        cin >> str;
-        for (int j = 0; j < C; ++j) 
-        {
-            Lake[i][j] = str[j];
-
-            if ('L' == Lake[i][j] || '.' == Lake[i][j])
-            {
-                if ('L' == Lake[i][j])
-                {
-                    SwanY = i;
-                    SwanX = j;
-                }
-
-                Wvisited[i][j] = 1;
-                WaterQ.push({ i, j });                          // 물 큐 추가
-            }
-        }
-    }
-
-    SwanQ.push({ SwanY, SwanX });
-    Svisited[SwanY][SwanX] = 1;
-
-    while (true) 
-    {
-        // 두 백조가 만나면 종료
-        if (true == MoveAndMeet()) break;
-        
-        // 하루 간격 빙판 녹이기
-        IceMelting();
-        
-        // 큐 업데이트(빙하 녹는 정보와, 백조 이동)
-        WaterQ = Water_NextQ;
-        SwanQ = Swan_NextQ;
-        
-        // 큐 비우기
-        Qclear(Water_NextQ);
-        Qclear(Swan_NextQ);
-        
-        // 하루 경과
-        ++day;
-    }
-
-    cout << day;
-
-    return 0;
+	return 0;
 }
