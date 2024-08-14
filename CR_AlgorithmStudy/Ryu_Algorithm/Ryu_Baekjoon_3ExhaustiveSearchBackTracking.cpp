@@ -1074,46 +1074,106 @@ using namespace std;
 // 시작 지점은 좌상단(1,1), 최대 몇 칸 이동 가능한가
 // 알파벳 방문 배열로 해당 알파벳에 방문했는지 여부를 확인하여 탐색
 // R: 세로, C: 가로
-int R, C, visited[30];
-char Board[21][21];
-int dy[] = { -1, 0, 1, 0 };
-int dx[] = { 0, 1, 0, -1 };
+//int R, C, visited[30];
+//char Board[21][21];
+//int dy[] = { -1, 0, 1, 0 };
+//int dx[] = { 0, 1, 0, -1 };
+//
+//int DFS(int y, int x)
+//{
+//	int value = 0;
+//
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		int ny = y + dy[i];
+//		int nx = x + dx[i];
+//
+//		if (0 > ny || 0 > nx || R <= ny || C <= nx) continue;
+//		if (0 != visited[Board[ny][nx] - 'A']) continue;
+//
+//		// 방문 체크
+//		visited[Board[ny][nx] - 'A'] = 1;
+//		// 재귀 및 반환 카운트를 통해 최대로 탐색한 길이 구하기
+//		value = max(value, DFS(ny, nx));
+//		// 방문 해제
+//		visited[Board[ny][nx] - 'A'] = 0;
+//	}
+//
+//	// 현재위치 포함하여 반환
+//	return value + 1;
+//}
+//
+//int main()
+//{
+//	cin >> R >> C;
+//	for (int i = 0; i < R; ++i)
+//	{
+//		for (int j = 0; j < C; ++j) cin >> Board[i][j];
+//	}
+//
+//	visited[Board[0][0]- 'A'] = 1;
+//
+//	cout << DFS(0, 0);
+//
+//	return 0;
+//}
 
-int DFS(int y, int x)
+// 13_부등호
+// https://www.acmicpc.net/problem/2529
+// 주어진 부등호 순서에 맞게 숫자가 만족되는 것들을 모아 최소 최대
+// k: 부등호 개수
+int k, number[10];
+char sign[10];
+vector<string> ret;
+
+// 등호가 올바르게 되었는지 확인하여 반환
+bool Check(char Left, char Right, char Oper)
 {
-	int value = 0;
+	if (Left < Right && '<' == Oper) return true;
+	if (Left > Right && '>' == Oper) return true;
 
-	for (int i = 0; i < 4; ++i)
+	return false;
+}
+
+void Make(int Index, string strNum)
+{
+	// 부등호 끝 => 현재 생성 숫자 모으기
+	if (k + 1 == Index)
 	{
-		int ny = y + dy[i];
-		int nx = x + dx[i];
-
-		if (0 > ny || 0 > nx || R <= ny || C <= nx) continue;
-		if (0 != visited[Board[ny][nx] - 'A']) continue;
-
-		// 방문 체크
-		visited[Board[ny][nx] - 'A'] = 1;
-		// 재귀 및 반환 카운트를 통해 최대로 탐색한 길이 구하기
-		value = max(value, DFS(ny, nx));
-		// 방문 해제
-		visited[Board[ny][nx] - 'A'] = 0;
+		ret.push_back(strNum);
+		return;
 	}
 
-	// 현재위치 포함하여 반환
-	return value + 1;
+	for (int i = 0; i < 10; ++i)
+	{
+		// 이미 사용한 숫자면 무시
+		if (0 != number[i]) continue;
+
+		// 인덱스가 0이거나 (생성 끝숫자) (부등호) (추가될 숫자)가 옳은 식일 때
+		if (0 == Index || true == Check(strNum[Index - 1], i + '0', sign[Index - 1]))
+		{
+			// (추가될 숫자) 사용 체크
+			number[i] = 1;
+			// 완탐 숫자 만들기(인덱스 증가, 생성 숫자 + 추가될 숫자 넘기기)
+			Make(Index + 1, strNum + to_string(i));
+			// (추가될 숫자) 사용 해제 => 복원 작업
+			number[i] = 0;
+		}
+	}
 }
 
 int main()
 {
-	cin >> R >> C;
-	for (int i = 0; i < R; ++i)
-	{
-		for (int j = 0; j < C; ++j) cin >> Board[i][j];
-	}
+	cin >> k;
+	for (int i = 0; i < k; ++i) cin >> sign[i];
 
-	visited[Board[0][0]- 'A'] = 1;
+	// 완탐 숫자 만들기(인덱스 기반 탐색)
+	Make(0, "");
+	// 정렬
+	sort(ret.begin(), ret.end());
 
-	cout << DFS(0, 0);
+	// 최대 최소 출력
+	cout << ret[ret.size() - 1] << "\n" << ret[0];
 
 	return 0;
 }
