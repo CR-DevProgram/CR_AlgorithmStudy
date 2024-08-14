@@ -1122,58 +1122,108 @@ using namespace std;
 // https://www.acmicpc.net/problem/2529
 // 주어진 부등호 순서에 맞게 숫자가 만족되는 것들을 모아 최소 최대
 // k: 부등호 개수
-int k, number[10];
-char sign[10];
-vector<string> ret;
+//int k, number[10];
+//char sign[10];
+//vector<string> ret;
+//
+//// 등호가 올바르게 되었는지 확인하여 반환
+//bool Check(char Left, char Right, char Oper)
+//{
+//	if (Left < Right && '<' == Oper) return true;
+//	if (Left > Right && '>' == Oper) return true;
+//
+//	return false;
+//}
+//
+//void Make(int Index, string strNum)
+//{
+//	// 부등호 끝 => 현재 생성 숫자 모으기
+//	if (k + 1 == Index)
+//	{
+//		ret.push_back(strNum);
+//		return;
+//	}
+//
+//	for (int i = 0; i < 10; ++i)
+//	{
+//		// 이미 사용한 숫자면 무시
+//		if (0 != number[i]) continue;
+//
+//		// 인덱스가 0이거나 (생성 끝숫자) (부등호) (추가될 숫자)가 옳은 식일 때
+//		if (0 == Index || true == Check(strNum[Index - 1], i + '0', sign[Index - 1]))
+//		{
+//			// (추가될 숫자) 사용 체크
+//			number[i] = 1;
+//			// 완탐 숫자 만들기(인덱스 증가, 생성 숫자 + 추가될 숫자 넘기기)
+//			Make(Index + 1, strNum + to_string(i));
+//			// (추가될 숫자) 사용 해제 => 복원 작업
+//			number[i] = 0;
+//		}
+//	}
+//}
+//
+//int main()
+//{
+//	cin >> k;
+//	for (int i = 0; i < k; ++i) cin >> sign[i];
+//
+//	// 완탐 숫자 만들기(인덱스 기반 탐색)
+//	Make(0, "");
+//	// 정렬
+//	sort(ret.begin(), ret.end());
+//
+//	// 최대 최소 출력
+//	cout << ret[ret.size() - 1] << "\n" << ret[0];
+//
+//	return 0;
+//}
 
-// 등호가 올바르게 되었는지 확인하여 반환
-bool Check(char Left, char Right, char Oper)
+// 14_완전 이진 트리
+// https://www.acmicpc.net/problem/9934
+// 1)가장 처음 트리의 루트에 있는 빌딩 앞
+// 2)현재 빌딩의 왼쪽 자식에 있는 빌딩에 아직 들어가지 않았다면, 왼쪽 자식으로 이동
+// 3)현재 있는 노드가 왼쪽 자식을 가지고 있지 않거나 왼쪽 자식에 있는 빌딩을 이미 들어갔다면, 현재 노드에 있는 빌딩 진입, 종이에 번호 기록
+// 4)현재 빌딩을 이미 들어갔다 온 상태이고, 오른쪽 자식을 가지고 있는 경우 오른쪽 자식 이동
+// 5)현재 빌딩과 왼쪽, 오른쪽 자식에 있는 빌딩을 모두 방문했다면, 부모 노드로 이동
+// 중위 순회 방법
+// 모든 빌딩의 번호는 중복X, 1 ~ 2^K - 1, 즉 K는 1 ~ 10이므로 빌딩 최대 숫자는 2^10 - 1
+// K: 완전 이진 트리 깊이
+int K, Building[1025];
+vector<int> ret[11];			// 깊이 별 빌딩 숫자 파악
+
+void Go(int StartIndex, int EndIndex, int Depth)
 {
-	if (Left < Right && '<' == Oper) return true;
-	if (Left > Right && '>' == Oper) return true;
-
-	return false;
-}
-
-void Make(int Index, string strNum)
-{
-	// 부등호 끝 => 현재 생성 숫자 모으기
-	if (k + 1 == Index)
+	if (StartIndex > EndIndex) return;
+	if (StartIndex == EndIndex)
 	{
-		ret.push_back(strNum);
+		ret[Depth].push_back(Building[StartIndex]);
 		return;
 	}
 
-	for (int i = 0; i < 10; ++i)
-	{
-		// 이미 사용한 숫자면 무시
-		if (0 != number[i]) continue;
+	// 절반을 기점으로 깊이 파악
+	int Mid = (StartIndex + EndIndex) / 2;
+	ret[Depth].push_back(Building[Mid]);
 
-		// 인덱스가 0이거나 (생성 끝숫자) (부등호) (추가될 숫자)가 옳은 식일 때
-		if (0 == Index || true == Check(strNum[Index - 1], i + '0', sign[Index - 1]))
-		{
-			// (추가될 숫자) 사용 체크
-			number[i] = 1;
-			// 완탐 숫자 만들기(인덱스 증가, 생성 숫자 + 추가될 숫자 넘기기)
-			Make(Index + 1, strNum + to_string(i));
-			// (추가될 숫자) 사용 해제 => 복원 작업
-			number[i] = 0;
-		}
-	}
+	// 왼쪽 자식 탐색
+	Go(StartIndex, Mid - 1, Depth + 1);
+	// 오른쪽 자식 탐색
+	Go(Mid + 1, EndIndex, Depth + 1);
 }
 
 int main()
 {
-	cin >> k;
-	for (int i = 0; i < k; ++i) cin >> sign[i];
+	cin >> K;
+	int LastBuildingNum = static_cast<int>(pow(2, K)) - 1;
+	for (int i = 0; i < LastBuildingNum; ++i) cin >> Building[i];
 
-	// 완탐 숫자 만들기(인덱스 기반 탐색)
-	Make(0, "");
-	// 정렬
-	sort(ret.begin(), ret.end());
+	Go(0, LastBuildingNum, 1);
 
-	// 최대 최소 출력
-	cout << ret[ret.size() - 1] << "\n" << ret[0];
+	for (int i = 1; i <= K; ++i)
+	{
+		for (int j : ret[i]) cout << j << " ";
+
+		cout << "\n";
+	}
 
 	return 0;
 }
