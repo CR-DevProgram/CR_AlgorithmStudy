@@ -24,7 +24,10 @@
     <ClCompile Include="Ryu_Baekjoon_3ExhaustiveSearchBackTracking.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Ryu_Programmers.cpp">
+    <ClCompile Include="Ryu_Programmers_Lv1.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Ryu_Programmers_Lv2.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

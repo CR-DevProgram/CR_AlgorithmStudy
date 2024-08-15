@@ -169,46 +169,46 @@ using namespace std;
 //}
 
 // 감 익히기 차원으로 자동 및 검색 없이 풀기
-int n, m, x, y, maze[101][101], visited[101][101];
-int dy[] = { -1, 0, 1, 0 };
-int dx[] = { 0, 1, 0, -1 };
-
-int main()
-{
-	cin >> n >> m;
-	for (int i = 0; i < n; ++i)
-	{
-		string str = "";
-		cin >> str;
-
-		for (int j = 0; j < m; ++j) maze[i][j] = str[j] - '0';
-	}
-
-	queue<pair<int, int>> q;
-	q.push({ 0,0 });
-	visited[0][0] = 1;
-
-	while (false == q.empty())
-	{
-		tie(y, x) = q.front();
-		q.pop();
-
-		for (int i = 0; i < 4; ++i)
-		{
-			int ny = y + dy[i];
-			int nx = x + dx[i];
-
-			if (0 > ny || 0 > nx || n <= ny || m <= nx) continue;
-			if (0 == maze[ny][nx] || 0 != visited[ny][nx]) continue;
-
-			visited[ny][nx] = visited[y][x] + 1;
-			q.push({ ny, nx });
-		}
-	}
-
-	cout << visited[n - 1][m - 1];
-	return 0;
-}
+//int n, m, x, y, maze[101][101], visited[101][101];
+//int dy[] = { -1, 0, 1, 0 };
+//int dx[] = { 0, 1, 0, -1 };
+//
+//int main()
+//{
+//	cin >> n >> m;
+//	for (int i = 0; i < n; ++i)
+//	{
+//		string str = "";
+//		cin >> str;
+//
+//		for (int j = 0; j < m; ++j) maze[i][j] = str[j] - '0';
+//	}
+//
+//	queue<pair<int, int>> q;
+//	q.push({ 0,0 });
+//	visited[0][0] = 1;
+//
+//	while (false == q.empty())
+//	{
+//		tie(y, x) = q.front();
+//		q.pop();
+//
+//		for (int i = 0; i < 4; ++i)
+//		{
+//			int ny = y + dy[i];
+//			int nx = x + dx[i];
+//
+//			if (0 > ny || 0 > nx || n <= ny || m <= nx) continue;
+//			if (0 == maze[ny][nx] || 0 != visited[ny][nx]) continue;
+//
+//			visited[ny][nx] = visited[y][x] + 1;
+//			q.push({ ny, nx });
+//		}
+//	}
+//
+//	cout << visited[n - 1][m - 1];
+//	return 0;
+//}
 
 // 2_유기농 배추
 // https://www.acmicpc.net/problem/1012
