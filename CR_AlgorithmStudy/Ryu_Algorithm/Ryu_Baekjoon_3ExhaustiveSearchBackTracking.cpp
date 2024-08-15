@@ -1188,42 +1188,42 @@ using namespace std;
 // 중위 순회 방법
 // 모든 빌딩의 번호는 중복X, 1 ~ 2^K - 1, 즉 K는 1 ~ 10이므로 빌딩 최대 숫자는 2^10 - 1
 // K: 완전 이진 트리 깊이
-int K, Building[1025];
-vector<int> ret[11];			// 깊이 별 빌딩 숫자 파악
-
-void Go(int StartIndex, int EndIndex, int Depth)
-{
-	if (StartIndex > EndIndex) return;
-	if (StartIndex == EndIndex)
-	{
-		ret[Depth].push_back(Building[StartIndex]);
-		return;
-	}
-
-	// 절반을 기점으로 깊이 파악
-	int Mid = (StartIndex + EndIndex) / 2;
-	ret[Depth].push_back(Building[Mid]);
-
-	// 왼쪽 자식 탐색
-	Go(StartIndex, Mid - 1, Depth + 1);
-	// 오른쪽 자식 탐색
-	Go(Mid + 1, EndIndex, Depth + 1);
-}
-
-int main()
-{
-	cin >> K;
-	int LastBuildingNum = static_cast<int>(pow(2, K)) - 1;
-	for (int i = 0; i < LastBuildingNum; ++i) cin >> Building[i];
-
-	Go(0, LastBuildingNum, 1);
-
-	for (int i = 1; i <= K; ++i)
-	{
-		for (int j : ret[i]) cout << j << " ";
-
-		cout << "\n";
-	}
-
-	return 0;
-}
+//int K, Building[1025];
+//vector<int> ret[11];			// 깊이 별 빌딩 숫자 파악
+//
+//void Go(int StartIndex, int EndIndex, int Depth)
+//{
+//	if (StartIndex > EndIndex) return;
+//	if (StartIndex == EndIndex)
+//	{
+//		ret[Depth].push_back(Building[StartIndex]);
+//		return;
+//	}
+//
+//	// 절반을 기점으로 깊이 파악
+//	int Mid = (StartIndex + EndIndex) / 2;
+//	ret[Depth].push_back(Building[Mid]);
+//
+//	// 왼쪽 자식 탐색
+//	Go(StartIndex, Mid - 1, Depth + 1);
+//	// 오른쪽 자식 탐색
+//	Go(Mid + 1, EndIndex, Depth + 1);
+//}
+//
+//int main()
+//{
+//	cin >> K;
+//	int LastBuildingNum = static_cast<int>(pow(2, K)) - 1;
+//	for (int i = 0; i < LastBuildingNum; ++i) cin >> Building[i];
+//
+//	Go(0, LastBuildingNum, 1);
+//
+//	for (int i = 1; i <= K; ++i)
+//	{
+//		for (int j : ret[i]) cout << j << " ";
+//
+//		cout << "\n";
+//	}
+//
+//	return 0;
+//}
