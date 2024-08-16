@@ -72,31 +72,76 @@ using namespace std;
 //}
 
 // 완전탐색_Lv2 카펫
-vector<int> solution(int brown, int yellow)
+//vector<int> solution(int brown, int yellow)
+//{
+//    vector<int> answer;
+//
+//    // 내부 사각형인 yellow 수만큼 반복
+//    for (int i = 1; i <= yellow; ++i)
+//    {
+//        // 나누어 떨어지지 않으면 무시
+//        if (0 != yellow % i) continue;
+//
+//        // 가로(가로가 더 긴 사각형이므로 몫 값)
+//        int x = yellow / i;
+//        // 세로
+//        int y = i;
+//        // 테두리 수가 brown과 같은 경우
+//        if (brown == (((x + 2) * 2) + (y * 2)))
+//        {
+//            answer.push_back(x + 2);
+//            answer.push_back(y + 2);
+//
+//            break;
+//        }
+//    }
+//
+//    return answer;
+//}
+
+// 완전탐색_Lv2 소수 찾기
+bool visited[8];
+// 중복 방지 위해 set 사용
+set<int> ret;
+
+// 소수 판별
+bool check(int n)
 {
-    vector<int> answer;
+    if (1 >= n) return false;
+    if (2 == n) return true;
+    if (0 == n % 2) return false;
 
-    // 내부 사각형인 yellow 수만큼 반복
-    for (int i = 1; i <= yellow; ++i)
+    for (int i = 2; i * i <= n; ++i)
     {
-        // 나누어 떨어지지 않으면 무시
-        if (0 != yellow % i) continue;
-
-        // 가로(가로가 더 긴 사각형이므로 몫 값)
-        int x = yellow / i;
-        // 세로
-        int y = i;
-        // 테두리 수가 brown과 같은 경우
-        if (brown == (((x + 2) * 2) + (y * 2)))
-        {
-            answer.push_back(x + 2);
-            answer.push_back(y + 2);
-
-            break;
-        }
+        if (0 == n % i) return false;
     }
 
-    return answer;
+    return true;
+}
+
+void make(const string& numbers, string str)
+{
+    // 판별 문자가 비어있지 않고 소수인 경우
+    if (false == str.empty() && true == check(stoi(str)))
+    {
+        ret.insert(stoi(str));
+    }
+
+    for (int i = 0; i < numbers.size(); ++i)
+    {
+        if (true == visited[i]) continue;
+
+        visited[i] = true;
+        make(numbers, str + numbers[i]);
+        visited[i] = false;
+    }
+}
+
+int solution(string numbers)
+{
+    make(numbers, "");
+
+    return ret.size();
 }
 
 // DFS/BFS_Lv2 타겟 넘버
@@ -139,9 +184,13 @@ int main(void)
     //solution("EIO");        // 1189
 
     // 완전탐색_Lv2 카펫
-    solution(10, 2);        // 4, 3
-    solution(8, 1);         // 3, 3
-    solution(24, 24);       // 8, 6
+    //solution(10, 2);        // 4, 3
+    //solution(8, 1);         // 3, 3
+    //solution(24, 24);       // 8, 6
+
+    // 완전탐색_Lv2 소수 찾기
+    solution("17");         // 3
+    solution("011");        // 2
 
     // DFS/BFS_Lv2 타겟 넘버
     //solution({ 1, 1, 1, 1, 1 }, 3);     // 5
