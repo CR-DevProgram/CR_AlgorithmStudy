@@ -71,31 +71,59 @@ using namespace std;
 //    return cnt;
 //}
 
-// DFS/BFS_Lv2 타겟 넘버
-int cnt;
-
-void cal(const vector<int>& numbers, const int& target, int num, int index)
+// 완전탐색_Lv2 카펫
+vector<int> solution(int brown, int yellow)
 {
-    // 기저사례(마지막 확인)
-    if (numbers.size() == index)
+    vector<int> answer;
+
+    // 내부 사각형인 yellow 수만큼 반복
+    for (int i = 1; i <= yellow; ++i)
     {
-        // 타겟과 동일하면 카운트 증가
-        if (target == num) ++cnt;
-        return;
+        // 나누어 떨어지지 않으면 무시
+        if (0 != yellow % i) continue;
+
+        // 가로(가로가 더 긴 사각형이므로 몫 값)
+        int x = yellow / i;
+        // 세로
+        int y = i;
+        // 테두리 수가 brown과 같은 경우
+        if (brown == (((x + 2) * 2) + (y * 2)))
+        {
+            answer.push_back(x + 2);
+            answer.push_back(y + 2);
+
+            break;
+        }
     }
 
-    // 양수
-    cal(numbers, target, num + numbers[index], index + 1);
-    // 음수
-    cal(numbers, target, num - numbers[index], index + 1);
+    return answer;
 }
 
-int solution(vector<int> numbers, int target)
-{
-    cal(numbers, target, 0, 0);
-
-    return cnt;
-}
+// DFS/BFS_Lv2 타겟 넘버
+//int cnt;
+//
+//void cal(const vector<int>& numbers, const int& target, int num, int index)
+//{
+//    // 기저사례(마지막 확인)
+//    if (numbers.size() == index)
+//    {
+//        // 타겟과 동일하면 카운트 증가
+//        if (target == num) ++cnt;
+//        return;
+//    }
+//
+//    // 양수
+//    cal(numbers, target, num + numbers[index], index + 1);
+//    // 음수
+//    cal(numbers, target, num - numbers[index], index + 1);
+//}
+//
+//int solution(vector<int> numbers, int target)
+//{
+//    cal(numbers, target, 0, 0);
+//
+//    return cnt;
+//}
 
 int main(void)
 {
@@ -110,9 +138,14 @@ int main(void)
     //solution("I");          // 1563
     //solution("EIO");        // 1189
 
+    // 완전탐색_Lv2 카펫
+    solution(10, 2);        // 4, 3
+    solution(8, 1);         // 3, 3
+    solution(24, 24);       // 8, 6
+
     // DFS/BFS_Lv2 타겟 넘버
-    solution({ 1, 1, 1, 1, 1 }, 3);     // 5
-    solution({ 4, 1, 2, 1 }, 4);        // 2
+    //solution({ 1, 1, 1, 1, 1 }, 3);     // 5
+    //solution({ 4, 1, 2, 1 }, 4);        // 2
 
     return 0;
 }
