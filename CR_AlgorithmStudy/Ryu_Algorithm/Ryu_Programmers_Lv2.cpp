@@ -29,9 +29,44 @@ void Enter(int energy, int count, const vector<vector<int>>& dungeons)
     }
 }
 
-int solution(int k, vector<vector<int>> dungeons)
+//int solution(int k, vector<vector<int>> dungeons)
+//{
+//    Enter(k, 0, dungeons);
+//
+//    return cnt;
+//}
+
+// 완전탐색_Lv2 모음 사전
+// 이렇게 푸는게 아닌거 같기도.. 시간이 에법 오래 걸림
+char ch[5] = { 'A', 'E', 'I', 'O', 'U' };
+int cnt;
+bool bIsFind = false;
+
+void check(const string& word, string str, int depth)
 {
-    Enter(k, 0, dungeons);
+    // 길이 확인
+    if (5 < depth) return;
+    // 동일 문자 확인
+    if (word == str)
+    {
+        bIsFind = true;
+        return;
+    }
+
+    ++cnt;
+
+    for (int i = 0; i < 5; ++i)
+    {
+        // 동일 문자 찾았을 시 순회 탈출
+        if (true == bIsFind) break;
+
+        check(word, str + ch[i], depth + 1);
+    }
+}
+
+int solution(string word)
+{
+    check(word, "", 0);
 
     return cnt;
 }
@@ -39,9 +74,15 @@ int solution(int k, vector<vector<int>> dungeons)
 int main(void)
 {
     // 완전탐색_Lv2 피로도
-    solution(80, { {80, 20},{50, 40},{30, 10} });                                   // 3
-    solution(40, { {40, 20},{10, 10},{10, 10},{10, 10},{10, 10} });                 // 4
-    solution(100, { {100, 1},{99, 1},{99, 1},{99, 1},{99, 1},{99, 1},{99, 1} });    // 2
+    //solution(80, { {80, 20},{50, 40},{30, 10} });                                   // 3
+    //solution(40, { {40, 20},{10, 10},{10, 10},{10, 10},{10, 10} });                 // 4
+    //solution(100, { {100, 1},{99, 1},{99, 1},{99, 1},{99, 1},{99, 1},{99, 1} });    // 2
+
+    // 완전탐색_Lv2 모음 사전
+    solution("AAAAE");      // 6
+    solution("AAAE");       // 10
+    solution("I");          // 1563
+    solution("EIO");        // 1189
 
     return 0;
 }
