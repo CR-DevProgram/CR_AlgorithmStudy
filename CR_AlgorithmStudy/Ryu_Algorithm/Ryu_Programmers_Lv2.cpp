@@ -100,49 +100,49 @@ using namespace std;
 //}
 
 // 완전탐색_Lv2 소수 찾기
-bool visited[8];
-// 중복 방지 위해 set 사용
-set<int> ret;
-
-// 소수 판별
-bool check(int n)
-{
-    if (1 >= n) return false;
-    if (2 == n) return true;
-    if (0 == n % 2) return false;
-
-    for (int i = 2; i * i <= n; ++i)
-    {
-        if (0 == n % i) return false;
-    }
-
-    return true;
-}
-
-void make(const string& numbers, string str)
-{
-    // 판별 문자가 비어있지 않고 소수인 경우
-    if (false == str.empty() && true == check(stoi(str)))
-    {
-        ret.insert(stoi(str));
-    }
-
-    for (int i = 0; i < numbers.size(); ++i)
-    {
-        if (true == visited[i]) continue;
-
-        visited[i] = true;
-        make(numbers, str + numbers[i]);
-        visited[i] = false;
-    }
-}
-
-int solution(string numbers)
-{
-    make(numbers, "");
-
-    return ret.size();
-}
+//bool visited[8];
+//// 중복 방지 위해 set 사용
+//set<int> ret;
+//
+//// 소수 판별
+//bool check(int n)
+//{
+//    if (1 >= n) return false;
+//    if (2 == n) return true;
+//    if (0 == n % 2) return false;
+//
+//    for (int i = 2; i * i <= n; ++i)
+//    {
+//        if (0 == n % i) return false;
+//    }
+//
+//    return true;
+//}
+//
+//void make(const string& numbers, string str)
+//{
+//    // 판별 문자가 비어있지 않고 소수인 경우
+//    if (false == str.empty() && true == check(stoi(str)))
+//    {
+//        ret.insert(stoi(str));
+//    }
+//
+//    for (int i = 0; i < numbers.size(); ++i)
+//    {
+//        if (true == visited[i]) continue;
+//
+//        visited[i] = true;
+//        make(numbers, str + numbers[i]);
+//        visited[i] = false;
+//    }
+//}
+//
+//int solution(string numbers)
+//{
+//    make(numbers, "");
+//
+//    return ret.size();
+//}
 
 // DFS/BFS_Lv2 타겟 넘버
 //int cnt;
@@ -170,31 +170,87 @@ int solution(string numbers)
 //    return cnt;
 //}
 
-//int main(void)
-//{
-//    // 완전탐색_Lv2 피로도
-//    //solution(80, { {80, 20},{50, 40},{30, 10} });                                   // 3
-//    //solution(40, { {40, 20},{10, 10},{10, 10},{10, 10},{10, 10} });                 // 4
-//    //solution(100, { {100, 1},{99, 1},{99, 1},{99, 1},{99, 1},{99, 1},{99, 1} });    // 2
-//
-//    // 완전탐색_Lv2 모음 사전
-//    //solution("AAAAE");      // 6
-//    //solution("AAAE");       // 10
-//    //solution("I");          // 1563
-//    //solution("EIO");        // 1189
-//
-//    // 완전탐색_Lv2 카펫
-//    //solution(10, 2);        // 4, 3
-//    //solution(8, 1);         // 3, 3
-//    //solution(24, 24);       // 8, 6
-//
-//    // 완전탐색_Lv2 소수 찾기
-//    solution("17");         // 3
-//    solution("011");        // 2
-//
-//    // DFS/BFS_Lv2 타겟 넘버
-//    //solution({ 1, 1, 1, 1, 1 }, 3);     // 5
-//    //solution({ 4, 1, 2, 1 }, 4);        // 2
-//
-//    return 0;
-//}
+// PCCP_Lv2 석유 시추
+// 정확성 모두 통과, 효율성 모두 시간초과
+// DFS로 사용하여 재귀 호출로 인한 시간 초과가 발생되는 것으로 추측 중
+int cnt = -1;
+int dy[] = { -1, 0, 1, 0 };
+int dx[] = { 0, 1, 0, -1 };
+
+int go(vector<vector<int>>& visited, const vector<vector<int>>& land, int y, int x)
+{
+    // 방문 기록
+    visited[y][x] = 1;
+    int scale = 0;
+
+    for (int i = 0; i < 4; ++i)
+    {
+        int ny = y + dy[i];
+        int nx = x + dx[i];
+
+        if (0 > ny || 0 > nx || land.size() <= ny || land[0].size() <= nx) continue;
+        if (0 == land[ny][nx] || 0 != visited[ny][nx]) continue;
+
+        // 커넥티드 컴포넌트 수 연산
+        scale += go(visited, land, ny, nx);
+    }
+
+    return scale + 1;
+}
+
+int solution(vector<vector<int>> land)
+{
+    for (int i = 0; i < land[0].size(); ++i)
+    {
+        // 방문 기록 변수 생성(초기화 작업을 위해 for문 내에서 생성)
+        vector<vector<int>> visited(land.size(), vector<int>(land[0].size()));
+        // i번째 땅을 시추해서 나오는 석유의 합을 위한 변수
+        int maxCheck = 0;
+
+        for (int j = 0; j < land.size(); ++j)
+        {
+            if (0 != land[j][i] && 0 == visited[j][i])
+            {
+                maxCheck += go(visited, land, j, i);
+            }
+        }
+
+        // 최대 갱신
+        cnt = max(cnt, maxCheck);
+    }
+
+    return cnt;
+}
+
+int main(void)
+{
+    // 완전탐색_Lv2 피로도
+    //solution(80, { {80, 20},{50, 40},{30, 10} });                                   // 3
+    //solution(40, { {40, 20},{10, 10},{10, 10},{10, 10},{10, 10} });                 // 4
+    //solution(100, { {100, 1},{99, 1},{99, 1},{99, 1},{99, 1},{99, 1},{99, 1} });    // 2
+
+    // 완전탐색_Lv2 모음 사전
+    //solution("AAAAE");      // 6
+    //solution("AAAE");       // 10
+    //solution("I");          // 1563
+    //solution("EIO");        // 1189
+
+    // 완전탐색_Lv2 카펫
+    //solution(10, 2);        // 4, 3
+    //solution(8, 1);         // 3, 3
+    //solution(24, 24);       // 8, 6
+
+    // 완전탐색_Lv2 소수 찾기
+    //solution("17");         // 3
+    //solution("011");        // 2
+
+    // DFS/BFS_Lv2 타겟 넘버
+    //solution({ 1, 1, 1, 1, 1 }, 3);     // 5
+    //solution({ 4, 1, 2, 1 }, 4);        // 2
+
+    // PCCP_Lv2 석유 시추
+    solution({ {0, 0, 0, 1, 1, 1, 0, 0},{0, 0, 0, 0, 1, 1, 0, 0},{1, 1, 0, 0, 0, 1, 1, 0},{1, 1, 1, 0, 0, 0, 0, 0},{1, 1, 1, 0, 0, 0, 1, 1} });             // 9
+    solution({ {1, 0, 1, 0, 1, 1},{1, 0, 1, 0, 0, 0},{1, 0, 1, 0, 0, 1},{1, 0, 0, 1, 0, 0},{1, 0, 0, 1, 0, 1},{1, 0, 0, 0, 0, 0},{1, 1, 1, 1, 1, 1} });     // 16
+
+    return 0;
+}
