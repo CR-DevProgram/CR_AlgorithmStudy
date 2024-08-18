@@ -1429,66 +1429,127 @@
 
 // 뉴스 클러스터링
 // https://school.programmers.co.kr/learn/courses/30/lessons/17677
+//#include <string>
+//#include <map>
+//#include <algorithm>
+//
+//using namespace std;
+//
+//int solution(string str1, string str2)
+//{
+//    map<string, int> m1;
+//    map<string, int> m2;
+//
+//    transform(str1.begin(), str1.end(), str1.begin(), ::tolower);
+//    transform(str2.begin(), str2.end(), str2.begin(), ::tolower);
+//
+//    for (int i = 0; i < str1.size() - 1; i++)
+//    {
+//        string temp = str1.substr(i, 2);
+//        if (isalpha(temp[0]) && isalpha(temp[1]))
+//        {
+//            ++m1[temp];
+//        }
+//    }
+//
+//    for (int i = 0; i < str2.size() - 1; i++)
+//    {
+//        string temp = str2.substr(i, 2);
+//        if (isalpha(temp[0]) && isalpha(temp[1]))
+//        {
+//            ++m2[temp];
+//        }
+//    }
+//
+//    int intersection_size = 0;
+//    int union_size = 0;
+//
+//    for (auto it : m1)
+//    {
+//        if (m2.end() != m2.find(it.first))
+//            intersection_size += min(it.second, m2[it.first]);
+//    }
+//
+//    for (auto it : m1)
+//    {
+//        union_size += it.second;
+//    }
+//
+//    for (auto it : m2)
+//    {
+//        union_size += it.second;
+//    }
+//
+//    union_size -= intersection_size;
+//
+//    int mul = 65536;
+//    if (union_size == 0)
+//    {
+//        return mul;
+//    }
+//
+//    int answer = ((double)intersection_size / union_size) * mul;
+//    return answer;
+//}
 
+// 압축
+// https://school.programmers.co.kr/learn/courses/30/lessons/17684
 #include <string>
+#include <vector>
 #include <map>
-#include <algorithm>
+#include <queue>
+#include <iostream>
 
 using namespace std;
 
-int solution(string str1, string str2)
-{
+vector<int> solution(string msg) {
+    // 기본 사전을 만든다.
     map<string, int> m1;
-    map<string, int> m2;
+    queue<string> q;
+    vector<int> answer;
 
-    transform(str1.begin(), str1.end(), str1.begin(), ::tolower);
-    transform(str2.begin(), str2.end(), str2.begin(), ::tolower);
-
-    for (int i = 0; i < str1.size() - 1; i++)
+    for (int i = 0; i < msg.size(); i++)
     {
-        string temp = str1.substr(i, 2);
-        if (isalpha(temp[0]) && isalpha(temp[1]))
+        string temp;
+        temp += msg[i];
+        q.push(temp);
+    }
+
+    for (int i = 0; i < 26; i++)
+    {
+        string temp;
+        temp += i + 65;
+        m1[temp] = i + 1;
+    }
+
+    int idx = 27;
+    string w;
+    for (int i = 0; i < msg.size(); i++)
+    {
+        w += msg[i];
+
+        if (m1.end() != m1.find(w)) continue;
+        else
         {
-            ++m1[temp];
+            string nw = w.substr(0, w.size() - 1);
+            answer.push_back(m1[nw]);
+
+            // 새 문자를 넣어준다.
+            m1[w] = idx++;
+
+            w = msg[i];
         }
     }
 
-    for (int i = 0; i < str2.size() - 1; i++)
+    if (w != "")
     {
-        string temp = str2.substr(i, 2);
-        if (isalpha(temp[0]) && isalpha(temp[1]))
-        {
-            ++m2[temp];
-        }
+        answer.push_back(m1[w]);
     }
 
-    int intersection_size = 0;
-    int union_size = 0;
-
-    for (auto it : m1)
-    {
-        if (m2.end() != m2.find(it.first))
-            intersection_size += min(it.second, m2[it.first]);
-    }
-
-    for (auto it : m1)
-    {
-        union_size += it.second;
-    }
-
-    for (auto it : m2)
-    {
-        union_size += it.second;
-    }
-
-    union_size -= intersection_size;
-
-    int mul = 65536;
-    if (union_size == 0)
-    {
-        return mul;
-    }
-
-    int answer = ((double)intersection_size / union_size) * mul;
     return answer;
+}
+
+int main()
+{
+    solution("ABABABABABABABAB");
 }
