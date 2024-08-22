@@ -1227,3 +1227,77 @@ using namespace std;
 //
 //	return 0;
 //}
+
+// 15_사다리 조작
+// https://www.acmicpc.net/problem/15684
+// 시작 값과 도착 값이 같게 만들기
+// 이 때 추가해야하는 가로선의 최소 개수
+// N: 세로선, M: 가로선, H: 세로선마다 가로선 놓을 수 있는 위치 개수
+const int inf = 987654321;
+int n, m, h, a, b, ret = inf, visited[31][31];
+
+// 시작과 도착이 같은 수인지 판별
+bool check()
+{
+	for (int i = 1; i <= n; ++i)
+	{
+		// 위치 지점을 파악하기 위한 pos 변수
+		int pos = i;
+		for (int j = 1; j <= h; ++j)
+		{
+			// 위치에 따른 사다리가 놓인 방향(오른쪽 ++, 왼쪽 --)
+			if (0 != visited[j][pos]) ++pos;
+			else if (0 != visited[j][pos - 1]) --pos;
+		}
+
+		// 시작 도착이 다를 경우 false
+		if (i != pos) return false;
+	}
+
+	return true;
+}
+
+void move(int here, int cnt)
+{
+	// 3 혹은 기존 최소값보다 클 경우 return
+	if (3 < cnt || ret <= cnt) return;
+	if (true == check())
+	{
+		ret = min(ret, cnt);
+		return;
+	}
+
+	for (int i = here; i <= h; ++i)
+	{
+		for (int j = 1; j < n; ++j)
+		{
+			// 사다리 연속 놓기 불가(무시)
+			if (0 != visited[i][j] || 0 != visited[i][j - 1] || 0 != visited[i][j + 1]) continue;
+
+			// 사다리 놓기
+			visited[i][j] = 1;
+			move(i, cnt + 1);
+			// 사다리 원복
+			visited[i][j] = 0;
+		}
+	}
+}
+
+int main()
+{
+	cin >> n >> m >> h;
+
+	// 사다리 만들기
+	for (int i = 0; i < m; ++i)
+	{
+		cin >> a >> b;
+		visited[a][b] = 1;;
+	}
+
+	// 사다리 조작 시작
+	move(1, 0);
+
+	cout << (inf == ret ? -1 : ret) << "\n";
+
+	return 0;
+}
