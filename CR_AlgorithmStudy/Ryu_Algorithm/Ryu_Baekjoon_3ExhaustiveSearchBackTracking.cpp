@@ -1308,107 +1308,166 @@ using namespace std;
 // 3개의 씨앗을 최소 비용으로 꽃 피우기
 // 전부 탐색하되 꽃을 피울 수 있는지 확인하고 가능한 지역에서 피웠을 때 비용 연산 후 원복 작업 처리 필요
 // n: 화단 한 변의 길이
-int n, ret = 987654321, ground[11][11];
-bool bloomed[11][11];
+//int n, ret = 987654321, ground[11][11];
+//bool bloomed[11][11];
+//int dy[] = { -1, 0, 1, 0 };
+//int dx[] = { 0, 1, 0, -1 };
+//
+//// 꽃 피우기 가능한지 확인
+//bool check(int y, int x)
+//{
+//	// 이미 피어있는 곳이면 불가능
+//	if (true == bloomed[y][x]) return false;
+//
+//	// 꽃잎 4방향 확인
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		int ny = y + dy[i];
+//		int nx = x + dx[i];
+//
+//		// 범위 이탈 및 피어 있는 곳이면 불가능
+//		if (0 > ny || 0 > nx || n <= ny || n <= nx || true == bloomed[ny][nx]) return false;
+//	}
+//
+//	return true;
+//}
+//
+//// y, x 기준으로 꽃 피웠을 때 비용 연산
+//int cost(int y, int x)
+//{
+//	// 꽃 피움 처리
+//	bloomed[y][x] = true;
+//
+//	// 씨앗 뿌린 지점 비용
+//	int totalcost = ground[y][x];
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		int ny = y + dy[i];
+//		int nx = x + dx[i];
+//
+//		// 꽃잎 피움 처리
+//		bloomed[ny][nx] = true;
+//		// 피워진 꽃잎 자리 비용 추가
+//		totalcost += ground[ny][nx];
+//	}
+//
+//	// 최종 비용 반환
+//	return totalcost;
+//}
+//
+//// 꽃 핀 자리 원복 작업 처리
+//void eraseFlower(int y, int x)
+//{
+//	// 피운 자리 원복
+//	bloomed[y][x] = false;
+//
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		int ny = y + dy[i];
+//		int nx = x + dx[i];
+//
+//		// 폈던 꽃잎 자리 원복
+//		bloomed[ny][nx] = false;
+//	}
+//}
+//
+//void flower(int cnt, int curcost)
+//{
+//	// 씨앗 3개 모두 뿌렸을 때 최소 비용 갱신
+//	if (3 == cnt)
+//	{
+//		ret = min(ret, curcost);
+//		return;
+//	}
+//
+//	for (int i = 0; i < n; ++i)
+//	{
+//		for (int j = 0; j < n; ++j)
+//		{
+//			// 꽃 피기 불가능한 곳이면 무시
+//			if (false == check(i, j)) continue;
+//			
+//			// 씨 카운트 및 비용 연산 합 재귀 꽃 피우기
+//			flower(cnt + 1, curcost + cost(i, j));
+//			// 원복
+//			eraseFlower(i, j);
+//		}
+//	}
+//}
+//
+//int main()
+//{
+//	cin >> n;
+//	for (int i = 0; i < n; ++i)
+//	{
+//		for (int j = 0; j < n; ++j)
+//		{
+//			cin >> ground[i][j];
+//		}
+//	}
+//
+//	flower(0, 0);
+//
+//	cout << ret;
+//
+//	return 0;
+//}
+
+// 17_컴백홈
+// https://www.acmicpc.net/problem/1189
+int r, c, k, visited[8][8];
+char Hmap[8][8];
 int dy[] = { -1, 0, 1, 0 };
 int dx[] = { 0, 1, 0, -1 };
 
-// 꽃 피우기 가능한지 확인
-bool check(int y, int x)
+int move(int y, int x)
 {
-	// 이미 피어있는 곳이면 불가능
-	if (true == bloomed[y][x]) return false;
+	// 오른쪽 끝(현수 집)
+	if (0 == y && c - 1 == x)
+	{
+		// 방문 이동 카운트가 k와 같다면 더는 이동 못함
+		// return 1인 이유는 해당 지점에 총 몇 방문했는지 합산을 구하기 위함
+		if (visited[y][x] == k) return 1;
 
-	// 꽃잎 4방향 확인
+		return 0;
+	}
+
+	int ret = 0;
 	for (int i = 0; i < 4; ++i)
 	{
 		int ny = y + dy[i];
 		int nx = x + dx[i];
 
-		// 범위 이탈 및 피어 있는 곳이면 불가능
-		if (0 > ny || 0 > nx || n <= ny || n <= nx || true == bloomed[ny][nx]) return false;
+		// 범위 이탈 무시
+		if (0 > ny || 0 > nx || r <= ny || c <= nx) continue;
+		// 방문 기록이 있거나 'T'로 못가는 지역이면 무시
+		if (0 != visited[ny][nx] || 'T' == Hmap[ny][nx]) continue;
+
+		// 방문 이동 카운트 기록
+		visited[ny][nx] = visited[y][x] + 1;
+		// 이동 & 합산
+		ret += move(ny, nx);
+		// 방문 이동 카운트 복원
+		visited[ny][nx] = 0;
 	}
 
-	return true;
-}
-
-// y, x 기준으로 꽃 피웠을 때 비용 연산
-int cost(int y, int x)
-{
-	// 꽃 피움 처리
-	bloomed[y][x] = true;
-
-	// 씨앗 뿌린 지점 비용
-	int totalcost = ground[y][x];
-	for (int i = 0; i < 4; ++i)
-	{
-		int ny = y + dy[i];
-		int nx = x + dx[i];
-
-		// 꽃잎 피움 처리
-		bloomed[ny][nx] = true;
-		// 피워진 꽃잎 자리 비용 추가
-		totalcost += ground[ny][nx];
-	}
-
-	// 최종 비용 반환
-	return totalcost;
-}
-
-// 꽃 핀 자리 원복 작업 처리
-void eraseFlower(int y, int x)
-{
-	// 피운 자리 원복
-	bloomed[y][x] = false;
-
-	for (int i = 0; i < 4; ++i)
-	{
-		int ny = y + dy[i];
-		int nx = x + dx[i];
-
-		// 폈던 꽃잎 자리 원복
-		bloomed[ny][nx] = false;
-	}
-}
-
-void flower(int cnt, int curcost)
-{
-	// 씨앗 3개 모두 뿌렸을 때 최소 비용 갱신
-	if (3 == cnt)
-	{
-		ret = min(ret, curcost);
-		return;
-	}
-
-	for (int i = 0; i < n; ++i)
-	{
-		for (int j = 0; j < n; ++j)
-		{
-			// 꽃 피기 불가능한 곳이면 무시
-			if (false == check(i, j)) continue;
-			
-			// 씨 카운트 및 비용 연산 합 재귀 꽃 피우기
-			flower(cnt + 1, curcost + cost(i, j));
-			// 원복
-			eraseFlower(i, j);
-		}
-	}
+	return ret;
 }
 
 int main()
 {
-	cin >> n;
-	for (int i = 0; i < n; ++i)
+	cin >> r >> c >> k;
+	for (int i = 0; i < r; ++i)
 	{
-		for (int j = 0; j < n; ++j)
+		for (int j = 0; j < c; ++j)
 		{
-			cin >> ground[i][j];
+			cin >> Hmap[i][j];
 		}
 	}
 
-	flower(0, 0);
-
-	cout << ret;
+	// 현수 시작 위치 방문 기록
+	visited[r - 1][0] = 1;
+	cout << move(r - 1, 0);
 
 	return 0;
 }
