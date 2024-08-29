@@ -1494,62 +1494,62 @@
 
 // 압축
 // https://school.programmers.co.kr/learn/courses/30/lessons/17684
-#include <string>
-#include <vector>
-#include <map>
-#include <queue>
-#include <iostream>
-
-using namespace std;
-
-vector<int> solution(string msg) {
-    // 기본 사전을 만든다.
-    map<string, int> m1;
-    queue<string> q;
-    vector<int> answer;
-
-    for (int i = 0; i < msg.size(); i++)
-    {
-        string temp;
-        temp += msg[i];
-        q.push(temp);
-    }
-
-    for (int i = 0; i < 26; i++)
-    {
-        string temp;
-        temp += i + 65;
-        m1[temp] = i + 1;
-    }
-
-    int idx = 27;
-    string w;
-    for (int i = 0; i < msg.size(); i++)
-    {
-        w += msg[i];
-
-        if (m1.end() != m1.find(w)) continue;
-        else
-        {
-            string nw = w.substr(0, w.size() - 1);
-            answer.push_back(m1[nw]);
-
-            // 새 문자를 넣어준다.
-            m1[w] = idx++;
-
-            w = msg[i];
-        }
-    }
-
-    if (w != "")
-    {
-        answer.push_back(m1[w]);
-    }
-
-    return answer;
-}
-
-int main()
-{
-    solution("ABABABABABABABAB");
-}
+//#include <string>
+//#include <vector>
+//#include <map>
+//#include <queue>
+//#include <iostream>
+//
+//using namespace std;
+//
+//vector<int> solution(string msg) {
+//    // 기본 사전을 만든다.
+//    map<string, int> m1;
+//    queue<string> q;
+//    vector<int> answer;
+//
+//    for (int i = 0; i < msg.size(); i++)
+//    {
+//        string temp;
+//        temp += msg[i];
+//        q.push(temp);
+//    }
+//
+//    for (int i = 0; i < 26; i++)
+//    {
+//        string temp;
+//        temp += i + 65;
+//        m1[temp] = i + 1;
+//    }
+//
+//    int idx = 27;
+//    string w;
+//    for (int i = 0; i < msg.size(); i++)
+//    {
+//        w += msg[i];
+//
+//        if (m1.end() != m1.find(w)) continue;
+//        else
+//        {
+//            string nw = w.substr(0, w.size() - 1);
+//            answer.push_back(m1[nw]);
+//
+//            // 새 문자를 넣어준다.
+//            m1[w] = idx++;
+//
+//            w = msg[i];
+//        }
+//    }
+//
+//    if (w != "")
+//    {
+//        answer.push_back(m1[w]);
+//    }
+//
+//    return answer;
+//}
+//
+//int main()
+//{
+//    solution("ABABABABABABABAB");
+//}

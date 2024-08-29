@@ -697,64 +697,30 @@
 //    cout << cnt;
 //}
 
-//#include <string>
-//#include <vector>
-//#include <iostream>
-//
-//using namespace std;
-//
-//vector<double> solution(int k, vector<vector<int>> ranges) {
-//    vector<int> value;
-//    int origin = k;
-//    while (k > 1)
-//    {
-//        value.push_back(k);
-//
-//        if (k % 2 == 0)
-//            k /= 2;
-//        else
-//        {
-//            k = k * 3 + 1;
-//        }
-//    }
-//
-//    value.push_back(1);
-//    int size = value.size();
-//    vector<double> tempValue;
-//
-//    for (int i = 1; i < size; i++)
-//    {
-//        int w1 = value[i - 1];
-//        int w2 = value[i];
-//        double temp = ((double)w1 + w2) / 2;
-//        tempValue.push_back(temp);
-//    }
-//
-//    vector<double> answer;
-//    for (auto i : ranges)
-//    {
-//        int start = i[0];
-//        int end = tempValue.size() + i[1];
-//
-//        if (start > end)
-//        {
-//            answer.push_back(-1);
-//            continue;
-//        }
-//
-//        double sum = 0;
-//        for (int j = start; j < end; j++)
-//        {
-//            sum += tempValue[j];
-//        }
-//
-//        answer.push_back(sum);
-//    }
-//
-//    return answer;
-//}
-//
-//int main()
-//{
-//    solution(5, { {0,0},{0,-1},{2,-3},{3,-3} });
-//}
+// 1
+// https://www.acmicpc.net/problem/4375
+
+#include <iostream>
+using namespace std;
+
+int main()
+{
+	int n;
+
+	while (cin >> n)
+	{
+		int sum = 0;
+
+		for (int i = 1; ; i++)
+		{
+			sum = sum * 10 + 1;
+			sum %= n;
+
+			if (sum == 0)
+			{
+				cout << i << endl;
+				break;
+			}
+		}
+	}
+}
