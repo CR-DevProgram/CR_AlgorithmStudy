@@ -699,28 +699,27 @@
 
 // 1
 // https://www.acmicpc.net/problem/4375
-
-#include <iostream>
-using namespace std;
-
-int main()
-{
-	int n;
-
-	while (cin >> n)
-	{
-		int sum = 0;
-
-		for (int i = 1; ; i++)
-		{
-			sum = sum * 10 + 1;
-			sum %= n;
-
-			if (sum == 0)
-			{
-				cout << i << endl;
-				break;
-			}
-		}
-	}
-}
+//#include <iostream>
+//using namespace std;
+//
+//int main()
+//{
+//	int n;
+//
+//	while (cin >> n)
+//	{
+//		int sum = 0;
+//
+//		for (int i = 1; ; i++)
+//		{
+//			sum = sum * 10 + 1;
+//			sum %= n;
+//
+//			if (sum == 0)
+//			{
+//				cout << i << endl;
+//				break;
+//			}
+//		}
+//	}
+//}
