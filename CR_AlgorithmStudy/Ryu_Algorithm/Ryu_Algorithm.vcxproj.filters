@@ -30,5 +30,8 @@
     <ClCompile Include="Ryu_Programmers_Lv2.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Ryu_Baekjoon_4BitMasking.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

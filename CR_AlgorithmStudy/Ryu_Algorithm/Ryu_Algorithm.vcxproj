@@ -130,6 +130,7 @@
     <ClCompile Include="Ryu_Baekjoon_1StringPrefixSum.cpp" />
     <ClCompile Include="Ryu_Baekjoon_2DFSBFS.cpp" />
     <ClCompile Include="Ryu_Baekjoon_3ExhaustiveSearchBackTracking.cpp" />
+    <ClCompile Include="Ryu_Baekjoon_4BitMasking.cpp" />
     <ClCompile Include="Ryu_Programmers_Lv1.cpp" />
     <ClCompile Include="Ryu_Programmers_Lv2.cpp" />
   </ItemGroup>

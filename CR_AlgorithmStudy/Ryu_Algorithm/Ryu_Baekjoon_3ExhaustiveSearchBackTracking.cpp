@@ -1415,59 +1415,59 @@ using namespace std;
 
 // 17_컴백홈
 // https://www.acmicpc.net/problem/1189
-int r, c, k, visited[8][8];
-char Hmap[8][8];
-int dy[] = { -1, 0, 1, 0 };
-int dx[] = { 0, 1, 0, -1 };
-
-int move(int y, int x)
-{
-	// 오른쪽 끝(현수 집)
-	if (0 == y && c - 1 == x)
-	{
-		// 방문 이동 카운트가 k와 같다면 더는 이동 못함
-		// return 1인 이유는 해당 지점에 총 몇 방문했는지 합산을 구하기 위함
-		if (visited[y][x] == k) return 1;
-
-		return 0;
-	}
-
-	int ret = 0;
-	for (int i = 0; i < 4; ++i)
-	{
-		int ny = y + dy[i];
-		int nx = x + dx[i];
-
-		// 범위 이탈 무시
-		if (0 > ny || 0 > nx || r <= ny || c <= nx) continue;
-		// 방문 기록이 있거나 'T'로 못가는 지역이면 무시
-		if (0 != visited[ny][nx] || 'T' == Hmap[ny][nx]) continue;
-
-		// 방문 이동 카운트 기록
-		visited[ny][nx] = visited[y][x] + 1;
-		// 이동 & 합산
-		ret += move(ny, nx);
-		// 방문 이동 카운트 복원
-		visited[ny][nx] = 0;
-	}
-
-	return ret;
-}
-
-int main()
-{
-	cin >> r >> c >> k;
-	for (int i = 0; i < r; ++i)
-	{
-		for (int j = 0; j < c; ++j)
-		{
-			cin >> Hmap[i][j];
-		}
-	}
-
-	// 현수 시작 위치 방문 기록
-	visited[r - 1][0] = 1;
-	cout << move(r - 1, 0);
-
-	return 0;
-}
+//int r, c, k, visited[8][8];
+//char Hmap[8][8];
+//int dy[] = { -1, 0, 1, 0 };
+//int dx[] = { 0, 1, 0, -1 };
+//
+//int move(int y, int x)
+//{
+//	// 오른쪽 끝(현수 집)
+//	if (0 == y && c - 1 == x)
+//	{
+//		// 방문 이동 카운트가 k와 같다면 더는 이동 못함
+//		// return 1인 이유는 해당 지점에 총 몇 방문했는지 합산을 구하기 위함
+//		if (visited[y][x] == k) return 1;
+//
+//		return 0;
+//	}
+//
+//	int ret = 0;
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		int ny = y + dy[i];
+//		int nx = x + dx[i];
+//
+//		// 범위 이탈 무시
+//		if (0 > ny || 0 > nx || r <= ny || c <= nx) continue;
+//		// 방문 기록이 있거나 'T'로 못가는 지역이면 무시
+//		if (0 != visited[ny][nx] || 'T' == Hmap[ny][nx]) continue;
+//
+//		// 방문 이동 카운트 기록
+//		visited[ny][nx] = visited[y][x] + 1;
+//		// 이동 & 합산
+//		ret += move(ny, nx);
+//		// 방문 이동 카운트 복원
+//		visited[ny][nx] = 0;
+//	}
+//
+//	return ret;
+//}
+//
+//int main()
+//{
+//	cin >> r >> c >> k;
+//	for (int i = 0; i < r; ++i)
+//	{
+//		for (int j = 0; j < c; ++j)
+//		{
+//			cin >> Hmap[i][j];
+//		}
+//	}
+//
+//	// 현수 시작 위치 방문 기록
+//	visited[r - 1][0] = 1;
+//	cout << move(r - 1, 0);
+//
+//	return 0;
+//}
