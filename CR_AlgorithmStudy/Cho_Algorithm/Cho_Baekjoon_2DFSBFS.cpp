@@ -61,15 +61,84 @@
 
 // 유기농배추
 // https://www.acmicpc.net/problem/1012
+//#include <iostream>
+//#include <vector>
+//#include <queue>
+//using namespace std;
+//
+//int dx[4] = { 1, -1, 0, 0 };
+//int dy[4] = { 0, 0, 1, -1 };
+//
+//void bfs(vector<vector<bool>>& v, int x, int y, int mx, int my)
+//{
+//    queue<pair<int, int>> q;
+//    q.push({ x, y });
+//
+//    while (!q.empty())
+//    {
+//        int cx = q.front().first;
+//        int cy = q.front().second;
+//        q.pop();
+//
+//        for (int i = 0; i < 4; i++)
+//        {
+//            int nx = cx + dx[i];
+//            int ny = cy + dy[i];
+//
+//            if (nx < 0 || nx >= mx || ny < 0 || ny >= my) continue;
+//            if (v[nx][ny] == false) continue;
+//            v[nx][ny] = false;
+//            q.push({ nx, ny });
+//        }
+//    }
+//}
+//
+//int main()
+//{
+//    int tc;
+//    cin >> tc;
+//
+//    for (int i = 0; i < tc; i++)
+//    {
+//        int x, y, z;
+//        cin >> x >> y >> z;
+//        vector<vector<bool>> v(x, vector<bool>(y, false));
+//        for (int i = 0; i < z; i++)
+//        {
+//            int tx, ty;
+//            cin >> tx >> ty;
+//            v[tx][ty] = true;
+//        }
+//
+//        int cnt = 0;
+//        for (int i = 0; i < x; i++)
+//        {
+//            for (int j = 0; j < y; j++)
+//            {
+//                if (v[i][j] == true)
+//                {
+//                    bfs(v, i, j, x, y);
+//                    ++cnt;
+//                }
+//            }
+//        }
+//
+//        cout << cnt << '\n';
+//    }
+//}
+
+// 안전 영역
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include <queue>
+
 using namespace std;
 
 int dx[4] = { 1, -1, 0, 0 };
 int dy[4] = { 0, 0, 1, -1 };
 
-void bfs(vector<vector<bool>>& v, int x, int y, int mx, int my)
+void bfs(vector<vector<int>>& v, vector<vector<bool>>& isVisited, int x, int y, int rain, int n)
 {
     queue<pair<int, int>> q;
     q.push({ x, y });
@@ -85,44 +154,56 @@ void bfs(vector<vector<bool>>& v, int x, int y, int mx, int my)
             int nx = cx + dx[i];
             int ny = cy + dy[i];
 
-            if (nx < 0 || nx >= mx || ny < 0 || ny >= my) continue;
-            if (v[nx][ny] == false) continue;
-            v[nx][ny] = false;
+            if (nx < 0 || ny < 0 || nx >= n || ny >= n) continue;
+            if (isVisited[nx][ny] || v[nx][ny] <= rain) continue;
+
             q.push({ nx, ny });
+            isVisited[nx][ny] = true;
         }
     }
 }
 
 int main()
 {
-    int tc;
-    cin >> tc;
-
-    for (int i = 0; i < tc; i++)
+    int n;
+    int minValue = 101;
+    int maxValue = 0;
+    cin >> n;
+    vector<vector<int>> v(n, vector<int>(n));
+    for (int i = 0; i < n; i++)
     {
-        int x, y, z;
-        cin >> x >> y >> z;
-        vector<vector<bool>> v(x, vector<bool>(y, false));
-        for (int i = 0; i < z; i++)
+        for (int j = 0; j < n; j++)
         {
-            int tx, ty;
-            cin >> tx >> ty;
-            v[tx][ty] = true;
+            int temp;
+            cin >> temp;
+            v[i][j] = temp;
+            minValue = min(minValue, temp);
+            maxValue = max(maxValue, temp);
         }
+    }
 
+    int answer = 1;
+    while (minValue < maxValue)
+    {
         int cnt = 0;
-        for (int i = 0; i < x; i++)
+        vector<vector<bool>> isVisited(n, vector<bool>(n, false));
+        for (int i = 0; i < n; i++)
         {
-            for (int j = 0; j < y; j++)
+            for (int j = 0; j < n; j++)
             {
-                if (v[i][j] == true)
+                if (isVisited[i][j] == false &&
+                    v[i][j] > minValue)
                 {
-                    bfs(v, i, j, x, y);
                     ++cnt;
+                    isVisited[i][j] = true;
+                    bfs(v, isVisited, i, j, minValue, n);
                 }
             }
         }
 
-        cout << cnt << '\n';
+        answer = max(answer, cnt);
+        ++minValue;
     }
+
+    cout << answer;
 }
