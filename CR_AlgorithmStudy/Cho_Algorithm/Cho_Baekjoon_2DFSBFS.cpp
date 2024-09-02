@@ -128,25 +128,108 @@
 //}
 
 // 안전 영역
+//#include <iostream>
+//#include <vector>
+//#include <algorithm>
+//#include <queue>
+//
+//using namespace std;
+//
+//int dx[4] = { 1, -1, 0, 0 };
+//int dy[4] = { 0, 0, 1, -1 };
+//
+//void bfs(vector<vector<int>>& v, vector<vector<bool>>& isVisited, int x, int y, int rain, int n)
+//{
+//    queue<pair<int, int>> q;
+//    q.push({ x, y });
+//
+//    while (!q.empty())
+//    {
+//        int cx = q.front().first;
+//        int cy = q.front().second;
+//        q.pop();
+//
+//        for (int i = 0; i < 4; i++)
+//        {
+//            int nx = cx + dx[i];
+//            int ny = cy + dy[i];
+//
+//            if (nx < 0 || ny < 0 || nx >= n || ny >= n) continue;
+//            if (isVisited[nx][ny] || v[nx][ny] <= rain) continue;
+//
+//            q.push({ nx, ny });
+//            isVisited[nx][ny] = true;
+//        }
+//    }
+//}
+//
+//int main()
+//{
+//    int n;
+//    int minValue = 101;
+//    int maxValue = 0;
+//    cin >> n;
+//    vector<vector<int>> v(n, vector<int>(n));
+//    for (int i = 0; i < n; i++)
+//    {
+//        for (int j = 0; j < n; j++)
+//        {
+//            int temp;
+//            cin >> temp;
+//            v[i][j] = temp;
+//            minValue = min(minValue, temp);
+//            maxValue = max(maxValue, temp);
+//        }
+//    }
+//
+//    int answer = 1;
+//    while (minValue < maxValue)
+//    {
+//        int cnt = 0;
+//        vector<vector<bool>> isVisited(n, vector<bool>(n, false));
+//        for (int i = 0; i < n; i++)
+//        {
+//            for (int j = 0; j < n; j++)
+//            {
+//                if (isVisited[i][j] == false &&
+//                    v[i][j] > minValue)
+//                {
+//                    ++cnt;
+//                    isVisited[i][j] = true;
+//                    bfs(v, isVisited, i, j, minValue, n);
+//                }
+//            }
+//        }
+//
+//        answer = max(answer, cnt);
+//        ++minValue;
+//    }
+//
+//    cout << answer;
+//}
+
+// 영역 구하기
+// https://www.acmicpc.net/problem/2583
 #include <iostream>
 #include <vector>
-#include <algorithm>
 #include <queue>
-
+#include <algorithm>
 using namespace std;
 
 int dx[4] = { 1, -1, 0, 0 };
 int dy[4] = { 0, 0, 1, -1 };
 
-void bfs(vector<vector<int>>& v, vector<vector<bool>>& isVisited, int x, int y, int rain, int n)
+int bfs(vector<vector<bool>>& v, int x, int y, int m, int n)
 {
     queue<pair<int, int>> q;
     q.push({ x, y });
-
+    v[x][y] = false;
+    int cnt = 1;
     while (!q.empty())
     {
         int cx = q.front().first;
         int cy = q.front().second;
+
         q.pop();
 
         for (int i = 0; i < 4; i++)
@@ -154,56 +237,58 @@ void bfs(vector<vector<int>>& v, vector<vector<bool>>& isVisited, int x, int y, 
             int nx = cx + dx[i];
             int ny = cy + dy[i];
 
-            if (nx < 0 || ny < 0 || nx >= n || ny >= n) continue;
-            if (isVisited[nx][ny] || v[nx][ny] <= rain) continue;
+            if (nx < 0 || ny < 0 || nx >= m || ny >= n) continue;
+            if (!v[nx][ny]) continue;
 
+            v[nx][ny] = false;
             q.push({ nx, ny });
-            isVisited[nx][ny] = true;
+            ++cnt;
         }
     }
+
+    return cnt;
 }
 
 int main()
 {
-    int n;
-    int minValue = 101;
-    int maxValue = 0;
-    cin >> n;
-    vector<vector<int>> v(n, vector<int>(n));
-    for (int i = 0; i < n; i++)
+    // 영역을 만든다.
+    int m, n, k;
+    cin >> m >> n >> k;
+    vector<vector<bool>> v(m, vector<bool>(n, true));
+
+    for (int i = 0; i < k; i++)
+    {
+        int x1, y1, x2, y2;
+        cin >> x1 >> y1 >> x2 >> y2;
+
+        for (int i = x1; i < x2; i++)
+        {
+            for (int j = y1; j < y2; j++)
+            {
+                v[j][i] = false;
+            }
+        }
+    }
+
+    int cnt = 0;
+    vector<int> answer;
+    for (int i = 0; i < m; i++)
     {
         for (int j = 0; j < n; j++)
         {
-            int temp;
-            cin >> temp;
-            v[i][j] = temp;
-            minValue = min(minValue, temp);
-            maxValue = max(maxValue, temp);
-        }
-    }
-
-    int answer = 1;
-    while (minValue < maxValue)
-    {
-        int cnt = 0;
-        vector<vector<bool>> isVisited(n, vector<bool>(n, false));
-        for (int i = 0; i < n; i++)
-        {
-            for (int j = 0; j < n; j++)
+            if (v[i][j])
             {
-                if (isVisited[i][j] == false &&
-                    v[i][j] > minValue)
-                {
-                    ++cnt;
-                    isVisited[i][j] = true;
-                    bfs(v, isVisited, i, j, minValue, n);
-                }
+                ++cnt;
+                answer.push_back(bfs(v, i, j, m, n));
             }
         }
-
-        answer = max(answer, cnt);
-        ++minValue;
     }
 
-    cout << answer;
+    sort(answer.begin(), answer.end());
+
+    cout << cnt << '\n';
+    for (auto i : answer)
+    {
+        cout << i << ' ';
+    }
 }
