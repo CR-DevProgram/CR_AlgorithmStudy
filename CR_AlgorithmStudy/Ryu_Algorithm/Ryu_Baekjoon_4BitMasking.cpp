@@ -156,82 +156,137 @@ using namespace std;
 // 모든 경우의 수를 확인하여 그 중 2개로 나누어진 것 중에서 최솟값을 갱신
 // 각 구역들을 2개의 큰 영역으로 나누어 영역별 인구수의 차가 가장 적은 경우의 차이 최솟값
 // n: 구역 개수
-const int VAL = 987654321;
-int n, m, ret = VAL, area[11], comp[11], visited[11];
-vector<int> adj[11];
+//const int VAL = 987654321;
+//int n, m, ret = VAL, area[11], comp[11], visited[11];
+//vector<int> adj[11];
+//
+//pair<int, int> dfs(int here, int value) 
+//{
+//    visited[here] = 1;
+//                       // 노드 자식의 수, 인구 수
+//    pair<int, int> ret = { 1, area[here] };
+//    for (int there : adj[here]) 
+//    {
+//        // 색이 다르면 무시
+//        if (comp[there] != value) continue;
+//        // 방문한 적이 있다면 무시
+//        if (0 != visited[there]) continue;
+//
+//        pair<int, int> tmp = dfs(there, value);
+//        ret.first += tmp.first;
+//        ret.second += tmp.second;
+//    }
+//
+//    return ret;
+//}
+//
+//int main() 
+//{
+//    // 구역 수 입력 받기
+//    cin >> n;
+//    // 구역당 인구 수 입력 받기
+//    for (int i = 1; i <= n; ++i) cin >> area[i];
+//    for (int i = 1; i <= n; ++i) 
+//    {
+//        // 구역 당 다른 구역과 연결 된 수 입력 받기
+//        cin >> m;
+//        // 어느 구역과 연결되어 있는지 입력 받기 & 연결 작업
+//        for (int j = 0; j < m; ++j) 
+//        {
+//            int temp = 0;
+//            cin >> temp;
+//
+//            // 인접 리스트
+//            adj[i].push_back(temp);
+//            adj[temp].push_back(i);
+//        }
+//    }
+//
+//    // 모든 경우의 수 확인
+//    for (int i = 1; i < (1 << n) - 1; ++i) 
+//    {
+//        // 초기화 작업
+//        fill(comp, comp + 11, 0);
+//        fill(visited, visited + 11, 0);
+//
+//        int a = -1;
+//        int b = -1;
+//        for (int j = 0; j < n; ++j) 
+//        {
+//            if (i & (1 << j)) 
+//            { 
+//                // 색칠 작업
+//                comp[j + 1] = 1; 
+//                // A 시작 지점
+//                a = j + 1; 
+//            }
+//            // B 시작 지점
+//            else b = j + 1;
+//        }
+//
+//        pair<int, int> A = dfs(a, 1);
+//        pair<int, int> B = dfs(b, 0);
+//
+//        // n == 합 을 하는 이유: 3개 이상으로 쪼개지는지 확인하기 위함(3개 이상이면 둘을 합했을 때 n보다 작음)
+//        if (n == A.first + B.first) ret = min(ret, abs(A.second - B.second));
+//    }
+//
+//    cout << (VAL == ret ? -1 : ret);
+//
+//    return 0;
+//}
 
-pair<int, int> dfs(int here, int value) 
+// 4_알파벳  
+// https://www.acmicpc.net/problem/1987
+// 좌측 상단 시작하여 최대 몇 칸 이동 가능한가
+// +) 이동 재귀 부분에서 인자로 방문 기록에 관한 합연사자 인자값을 넘겨서 간단하게 처리하는 방법도 있음
+// r: 세로 칸수, c: 가로 칸수,
+int r, c, visited, ret = -1;
+char alphabet[22][22];
+int dy[] = { -1, 0, 1, 0 };
+int dx[] = { 0, 1, 0, -1 };
+
+void move(int y, int x, int cnt)
 {
-    visited[here] = 1;
-                       // 노드 자식의 수, 인구 수
-    pair<int, int> ret = { 1, area[here] };
-    for (int there : adj[here]) 
-    {
-        // 색이 다르면 무시
-        if (comp[there] != value) continue;
-        // 방문한 적이 있다면 무시
-        if (0 != visited[there]) continue;
+	// 최대 카운트 갱신
+	ret = max(ret, cnt);
 
-        pair<int, int> tmp = dfs(there, value);
-        ret.first += tmp.first;
-        ret.second += tmp.second;
-    }
+	// 4방향 이동
+	for (int i = 0; i < 4; ++i)
+	{
+		int ny = y + dy[i];
+		int nx = x + dx[i];
 
-    return ret;
+		// 범위 벗어나거나 이미 방문했다면 무시
+		if (0 > ny || 0 > nx || r <= ny || c <= nx) continue;
+		if (visited & (1 << (alphabet[ny][nx] - 'A'))) continue;
+
+		// 방문 처리
+		visited |= (1 << (alphabet[ny][nx] - 'A'));
+		// 재귀 이동 및 이동 카운트 증가
+		move(ny, nx, cnt + 1);
+		// 방문 원복
+		visited &= ~(1 << (alphabet[ny][nx] - 'A'));
+	}
 }
 
-int main() 
+int main()
 {
-    // 구역 수 입력 받기
-    cin >> n;
-    // 구역당 인구 수 입력 받기
-    for (int i = 1; i <= n; ++i) cin >> area[i];
-    for (int i = 1; i <= n; ++i) 
-    {
-        // 구역 당 다른 구역과 연결 된 수 입력 받기
-        cin >> m;
-        // 어느 구역과 연결되어 있는지 입력 받기 & 연결 작업
-        for (int j = 0; j < m; ++j) 
-        {
-            int temp = 0;
-            cin >> temp;
+	cin >> r >> c;
+	for (int i = 0; i < r; ++i)
+	{
+		for (int j = 0; j < c; ++j)
+		{
+			cin >> alphabet[i][j];
+		}
+	}
 
-            // 인접 리스트
-            adj[i].push_back(temp);
-            adj[temp].push_back(i);
-        }
-    }
+	// 시작점 방문처리
+	visited |= (1 << (alphabet[0][0] - 'A'));
+	// 이동 시작
+	move(0, 0, 1);
 
-    // 모든 경우의 수 확인
-    for (int i = 1; i < (1 << n) - 1; ++i) 
-    {
-        // 초기화 작업
-        fill(comp, comp + 11, 0);
-        fill(visited, visited + 11, 0);
+	cout << ret;
 
-        int a = -1;
-        int b = -1;
-        for (int j = 0; j < n; ++j) 
-        {
-            if (i & (1 << j)) 
-            { 
-                // 색칠 작업
-                comp[j + 1] = 1; 
-                // A 시작 지점
-                a = j + 1; 
-            }
-            // B 시작 지점
-            else b = j + 1;
-        }
-
-        pair<int, int> A = dfs(a, 1);
-        pair<int, int> B = dfs(b, 0);
-
-        // n == 합 을 하는 이유: 3개 이상으로 쪼개지는지 확인하기 위함(3개 이상이면 둘을 합했을 때 n보다 작음)
-        if (n == A.first + B.first) ret = min(ret, abs(A.second - B.second));
-    }
-
-    cout << (VAL == ret ? -1 : ret);
-
-    return 0;
+	return 0;
 }
