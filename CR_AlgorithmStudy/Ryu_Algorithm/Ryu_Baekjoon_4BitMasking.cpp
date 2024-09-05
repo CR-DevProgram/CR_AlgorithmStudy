@@ -241,52 +241,104 @@ using namespace std;
 // 좌측 상단 시작하여 최대 몇 칸 이동 가능한가
 // +) 이동 재귀 부분에서 인자로 방문 기록에 관한 합연사자 인자값을 넘겨서 간단하게 처리하는 방법도 있음
 // r: 세로 칸수, c: 가로 칸수,
-int r, c, visited, ret = -1;
-char alphabet[22][22];
-int dy[] = { -1, 0, 1, 0 };
-int dx[] = { 0, 1, 0, -1 };
+//int r, c, visited, ret = -1;
+//char alphabet[22][22];
+//int dy[] = { -1, 0, 1, 0 };
+//int dx[] = { 0, 1, 0, -1 };
+//
+//void move(int y, int x, int cnt)
+//{
+//	// 최대 카운트 갱신
+//	ret = max(ret, cnt);
+//
+//	// 4방향 이동
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		int ny = y + dy[i];
+//		int nx = x + dx[i];
+//
+//		// 범위 벗어나거나 이미 방문했다면 무시
+//		if (0 > ny || 0 > nx || r <= ny || c <= nx) continue;
+//		if (visited & (1 << (alphabet[ny][nx] - 'A'))) continue;
+//
+//		// 방문 처리
+//		visited |= (1 << (alphabet[ny][nx] - 'A'));
+//		// 재귀 이동 및 이동 카운트 증가
+//		move(ny, nx, cnt + 1);
+//		// 방문 원복
+//		visited &= ~(1 << (alphabet[ny][nx] - 'A'));
+//	}
+//}
+//
+//int main()
+//{
+//	cin >> r >> c;
+//	for (int i = 0; i < r; ++i)
+//	{
+//		for (int j = 0; j < c; ++j)
+//		{
+//			cin >> alphabet[i][j];
+//		}
+//	}
+//
+//	// 시작점 방문처리
+//	visited |= (1 << (alphabet[0][0] - 'A'));
+//	// 이동 시작
+//	move(0, 0, 1);
+//
+//	cout << ret;
+//
+//	return 0;
+//}
 
-void move(int y, int x, int cnt)
+// 5_경사로
+// https://www.acmicpc.net/problem/14890
+// 주어진 경사로 크기에 높이가 1차이 나는 곳만 경사로 배치 가능
+// 경사로 크기보다 작은 곳에 놓을 수 없음
+// 이동 가능한 경로수 확인
+int n, l, ret, hor[101][101], ver[101][101];
+
+void go(int a[101][101])
 {
-	// 최대 카운트 갱신
-	ret = max(ret, cnt);
+    for (int i = 0; i < n; ++i) 
+    {
+        int cnt = 1;
+        int j = 0;
+        for (; j < n - 1; ++j) 
+        {
+            // 같은 층수
+            if (a[i][j] == a[i][j + 1]) ++cnt;
+            // 오르막길 초기화(칸수 하나 차이, l인 경사로 크기보다 크거나 같아야 가능)
+            else if (a[i][j] + 1 == a[i][j + 1] && l <= cnt) cnt = 1;
+            // 내리막길 초기화(칸수 하나 차이, 음수가 아닌 양수여야 가능), 음수로 만들어서 시작
+            else if (a[i][j] - 1 == a[i][j + 1] && 0 <= cnt) cnt = -l + 1;
+            else break;
+        }
 
-	// 4방향 이동
-	for (int i = 0; i < 4; ++i)
-	{
-		int ny = y + dy[i];
-		int nx = x + dx[i];
-
-		// 범위 벗어나거나 이미 방문했다면 무시
-		if (0 > ny || 0 > nx || r <= ny || c <= nx) continue;
-		if (visited & (1 << (alphabet[ny][nx] - 'A'))) continue;
-
-		// 방문 처리
-		visited |= (1 << (alphabet[ny][nx] - 'A'));
-		// 재귀 이동 및 이동 카운트 증가
-		move(ny, nx, cnt + 1);
-		// 방문 원복
-		visited &= ~(1 << (alphabet[ny][nx] - 'A'));
-	}
+        // 마지막 지점 최종 확인 & 경로수 증가
+        if (n - 1 == j && 0 <= cnt) ++ret;
+    }
 }
 
-int main()
+int main() 
 {
-	cin >> r >> c;
-	for (int i = 0; i < r; ++i)
-	{
-		for (int j = 0; j < c; ++j)
-		{
-			cin >> alphabet[i][j];
-		}
-	}
+    cin >> n >> l;
+    for (int i = 0; i < n; ++i) 
+    {
+        for (int j = 0; j < n; ++j) 
+        {
+            cin >> hor[i][j];
+            // 가로 세로 대칭 작업
+            ver[j][i] = hor[i][j];
+        }
+    }
 
-	// 시작점 방문처리
-	visited |= (1 << (alphabet[0][0] - 'A'));
-	// 이동 시작
-	move(0, 0, 1);
+    // 가로
+    go(hor);
+    // 세로
+    go(ver);
 
-	cout << ret;
+    cout << ret;
 
-	return 0;
+    return 0;
 }
