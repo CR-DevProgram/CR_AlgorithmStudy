@@ -210,85 +210,151 @@
 
 // 영역 구하기
 // https://www.acmicpc.net/problem/2583
+//#include <iostream>
+//#include <vector>
+//#include <queue>
+//#include <algorithm>
+//using namespace std;
+//
+//int dx[4] = { 1, -1, 0, 0 };
+//int dy[4] = { 0, 0, 1, -1 };
+//
+//int bfs(vector<vector<bool>>& v, int x, int y, int m, int n)
+//{
+//    queue<pair<int, int>> q;
+//    q.push({ x, y });
+//    v[x][y] = false;
+//    int cnt = 1;
+//    while (!q.empty())
+//    {
+//        int cx = q.front().first;
+//        int cy = q.front().second;
+//
+//        q.pop();
+//
+//        for (int i = 0; i < 4; i++)
+//        {
+//            int nx = cx + dx[i];
+//            int ny = cy + dy[i];
+//
+//            if (nx < 0 || ny < 0 || nx >= m || ny >= n) continue;
+//            if (!v[nx][ny]) continue;
+//
+//            v[nx][ny] = false;
+//            q.push({ nx, ny });
+//            ++cnt;
+//        }
+//    }
+//
+//    return cnt;
+//}
+//
+//int main()
+//{
+//    // 영역을 만든다.
+//    int m, n, k;
+//    cin >> m >> n >> k;
+//    vector<vector<bool>> v(m, vector<bool>(n, true));
+//
+//    for (int i = 0; i < k; i++)
+//    {
+//        int x1, y1, x2, y2;
+//        cin >> x1 >> y1 >> x2 >> y2;
+//
+//        for (int i = x1; i < x2; i++)
+//        {
+//            for (int j = y1; j < y2; j++)
+//            {
+//                v[j][i] = false;
+//            }
+//        }
+//    }
+//
+//    int cnt = 0;
+//    vector<int> answer;
+//    for (int i = 0; i < m; i++)
+//    {
+//        for (int j = 0; j < n; j++)
+//        {
+//            if (v[i][j])
+//            {
+//                ++cnt;
+//                answer.push_back(bfs(v, i, j, m, n));
+//            }
+//        }
+//    }
+//
+//    sort(answer.begin(), answer.end());
+//
+//    cout << cnt << '\n';
+//    for (auto i : answer)
+//    {
+//        cout << i << ' ';
+//    }
+//}
+
+// 쿼드트리
+// https://www.acmicpc.net/problem/1992
 #include <iostream>
 #include <vector>
-#include <queue>
-#include <algorithm>
 using namespace std;
 
-int dx[4] = { 1, -1, 0, 0 };
-int dy[4] = { 0, 0, 1, -1 };
-
-int bfs(vector<vector<bool>>& v, int x, int y, int m, int n)
+void dfs(vector<vector<int>>& v, int x, int y, int gap)
 {
-    queue<pair<int, int>> q;
-    q.push({ x, y });
-    v[x][y] = false;
-    int cnt = 1;
-    while (!q.empty())
-    {
-        int cx = q.front().first;
-        int cy = q.front().second;
+	if (gap == 1)
+	{
+		cout << v[x][y];
+		return;
+	}
 
-        q.pop();
+	bool isAllOne = true;
+	bool isAllZero = true;
+	for (int i = x; i < x + gap; i++)
+	{
+		for (int j = y; j < y + gap; j++)
+		{
+			if (v[i][j] == 0)
+				isAllOne = false;
+			if (v[i][j] == 1)
+				isAllZero = false;
+		}
+	}
 
-        for (int i = 0; i < 4; i++)
-        {
-            int nx = cx + dx[i];
-            int ny = cy + dy[i];
+	if (isAllOne)
+	{
+		cout << 1;
+		return;
+	}
+	if (isAllZero)
+	{
+		cout << 0;
+		return;
+	}
 
-            if (nx < 0 || ny < 0 || nx >= m || ny >= n) continue;
-            if (!v[nx][ny]) continue;
-
-            v[nx][ny] = false;
-            q.push({ nx, ny });
-            ++cnt;
-        }
-    }
-
-    return cnt;
+	cout << '(';
+	dfs(v, x, y, gap / 2);
+	dfs(v, x, y + gap / 2, gap / 2);
+	dfs(v, x + gap / 2, y, gap / 2);
+	dfs(v, x + gap / 2, y + gap / 2, gap / 2);
+	cout << ')';
 }
 
 int main()
 {
-    // 영역을 만든다.
-    int m, n, k;
-    cin >> m >> n >> k;
-    vector<vector<bool>> v(m, vector<bool>(n, true));
+	int n;
+	cin >> n;
 
-    for (int i = 0; i < k; i++)
-    {
-        int x1, y1, x2, y2;
-        cin >> x1 >> y1 >> x2 >> y2;
+	vector<vector<int>> v(n, vector<int>(n));
 
-        for (int i = x1; i < x2; i++)
-        {
-            for (int j = y1; j < y2; j++)
-            {
-                v[j][i] = false;
-            }
-        }
-    }
+	for (int i = 0; i < n; i++)
+	{
+		string s;
+		cin >> s;
+		for (int j = 0; j < n; j++)
+		{
+			v[i][j] = s[j] - '0';
+		}
+	}
 
-    int cnt = 0;
-    vector<int> answer;
-    for (int i = 0; i < m; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            if (v[i][j])
-            {
-                ++cnt;
-                answer.push_back(bfs(v, i, j, m, n));
-            }
-        }
-    }
-
-    sort(answer.begin(), answer.end());
-
-    cout << cnt << '\n';
-    for (auto i : answer)
-    {
-        cout << i << ' ';
-    }
+	dfs(v, 0, 0, n);
 }
