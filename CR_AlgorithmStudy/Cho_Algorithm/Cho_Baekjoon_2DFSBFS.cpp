@@ -359,52 +359,130 @@
 //	dfs(v, 0, 0, n);
 //}
 
+//#include <string>
+//#include <vector>
+//#include <iostream>
+//#include <algorithm>
+//
+//using namespace std;
+//
+//void quadTree(vector<vector<int>>& arr, int startX, int startY, int gap, vector<int>& answer)
+//{
+//    bool isAllOne = true;
+//    bool isAllZero = true;
+//    for (int x = startX; x < startX + gap; x++)
+//    {
+//        for (int y = startY; y < startY + gap; y++)
+//        {
+//            if (arr[x][y] == 0)
+//            {
+//                isAllOne = false;
+//            }
+//            else
+//            {
+//                isAllZero = false;
+//            }
+//        }
+//    }
+//
+//    if (isAllZero)
+//    {
+//        answer[0]++;
+//        return;
+//    }
+//
+//    if (isAllOne)
+//    {
+//        answer[1]++;
+//        return;
+//    }
+//
+//    quadTree(arr, startX, startY, gap / 2, answer);
+//    quadTree(arr, startX + gap / 2, startY, gap / 2, answer);
+//    quadTree(arr, startX, startY + gap / 2, gap / 2, answer);
+//    quadTree(arr, startX + gap / 2, startY + gap / 2, gap / 2, answer);
+//}
+//
+//vector<int> solution(vector<vector<int>> arr) {
+//    vector<int> answer(2);
+//    quadTree(arr, 0, 0, arr.size(), answer);
+//    return answer;
+//}
+
 #include <string>
 #include <vector>
+#include <queue>
 #include <iostream>
-#include <algorithm>
 
 using namespace std;
 
-void quadTree(vector<vector<int>>& arr, int startX, int startY, int gap, vector<int>& answer)
+int dx[4] = { 1, -1, 0, 0 };
+int dy[4] = { 0, 0, 1, -1 };
+
+int bfs(vector<string>& maps, int x, int y, int tx, int ty)
 {
-    bool isAllOne = true;
-    bool isAllZero = true;
-    for (int x = startX; x < startX + gap; x++)
+    int ex = maps[0].size();
+    int ey = maps.size();
+
+    vector<vector<bool>> isVisited(ey, vector<bool>(ex, false));
+    vector<vector<int>> visitedCnt(ey, vector<int>(ex, 0));
+
+    queue<pair<int, int>> q;
+    q.push({ x, y });
+    isVisited[x][y] = true;
+
+    while (!q.empty())
     {
-        for (int y = startY; y < startY + gap; y++)
+        int cx = q.front().first;
+        int cy = q.front().second;
+
+        q.pop();
+
+        for (int i = 0; i < 4; i++)
         {
-            if (arr[x][y] == 0)
+            int nx = cx + dx[i];
+            int ny = cy + dy[i];
+
+            if (nx < 0 || ny < 0 || nx >= ey || ny >= ex) continue;
+            if (isVisited[nx][ny]) continue;
+            if (maps[nx][ny] == 'X') continue;
+
+            isVisited[nx][ny] = true;
+            visitedCnt[nx][ny] = visitedCnt[cx][cy] + 1;
+            if (nx == tx && ny == ty) return visitedCnt[nx][ny];
+            q.push({ nx, ny });
+        }
+    }
+
+    return -1;
+}
+
+int solution(vector<string> maps) {
+    // S, E를 찾는다.
+    int sx, sy, ex, ey, lx, ly;
+    for (int i = 0; i < maps.size(); i++)
+    {
+        for (int j = 0; j < maps[i].size(); j++)
+        {
+            if (maps[i][j] == 'S')
             {
-                isAllOne = false;
+                sx = i; sy = j;
             }
-            else
+            else if (maps[i][j] == 'E')
             {
-                isAllZero = false;
+                ex = i; ey = j;
+            }
+            else if (maps[i][j] == 'L')
+            {
+                lx = i; ly = j;
             }
         }
     }
 
-    if (isAllZero)
-    {
-        answer[0]++;
-        return;
-    }
-
-    if (isAllOne)
-    {
-        answer[1]++;
-        return;
-    }
-
-    quadTree(arr, startX, startY, gap / 2, answer);
-    quadTree(arr, startX + gap / 2, startY, gap / 2, answer);
-    quadTree(arr, startX, startY + gap / 2, gap / 2, answer);
-    quadTree(arr, startX + gap / 2, startY + gap / 2, gap / 2, answer);
-}
-
-vector<int> solution(vector<vector<int>> arr) {
-    vector<int> answer(2);
-    quadTree(arr, 0, 0, arr.size(), answer);
-    return answer;
+    // 레버까지 최소한으로 이동해서 도착한다.
+    int c1 = bfs(maps, sx, sy, lx, ly);
+    if (c1 == -1) return -1;
+    int c2 = bfs(maps, lx, ly, ex, ey);
+    if (c2 == -1) return -1;
+    return c1 + c2;
 }
