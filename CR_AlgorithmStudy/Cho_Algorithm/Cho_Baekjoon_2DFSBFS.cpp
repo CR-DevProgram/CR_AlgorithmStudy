@@ -409,80 +409,158 @@
 //    return answer;
 //}
 
+//#include <string>
+//#include <vector>
+//#include <queue>
+//#include <iostream>
+//
+//using namespace std;
+//
+//int dx[4] = { 1, -1, 0, 0 };
+//int dy[4] = { 0, 0, 1, -1 };
+//
+//int bfs(vector<string>& maps, int x, int y, int tx, int ty)
+//{
+//    int ex = maps[0].size();
+//    int ey = maps.size();
+//
+//    vector<vector<bool>> isVisited(ey, vector<bool>(ex, false));
+//    vector<vector<int>> visitedCnt(ey, vector<int>(ex, 0));
+//
+//    queue<pair<int, int>> q;
+//    q.push({ x, y });
+//    isVisited[x][y] = true;
+//
+//    while (!q.empty())
+//    {
+//        int cx = q.front().first;
+//        int cy = q.front().second;
+//
+//        q.pop();
+//
+//        for (int i = 0; i < 4; i++)
+//        {
+//            int nx = cx + dx[i];
+//            int ny = cy + dy[i];
+//
+//            if (nx < 0 || ny < 0 || nx >= ey || ny >= ex) continue;
+//            if (isVisited[nx][ny]) continue;
+//            if (maps[nx][ny] == 'X') continue;
+//
+//            isVisited[nx][ny] = true;
+//            visitedCnt[nx][ny] = visitedCnt[cx][cy] + 1;
+//            if (nx == tx && ny == ty) return visitedCnt[nx][ny];
+//            q.push({ nx, ny });
+//        }
+//    }
+//
+//    return -1;
+//}
+//
+//int solution(vector<string> maps) {
+//    // S, E를 찾는다.
+//    int sx, sy, ex, ey, lx, ly;
+//    for (int i = 0; i < maps.size(); i++)
+//    {
+//        for (int j = 0; j < maps[i].size(); j++)
+//        {
+//            if (maps[i][j] == 'S')
+//            {
+//                sx = i; sy = j;
+//            }
+//            else if (maps[i][j] == 'E')
+//            {
+//                ex = i; ey = j;
+//            }
+//            else if (maps[i][j] == 'L')
+//            {
+//                lx = i; ly = j;
+//            }
+//        }
+//    }
+//
+//    // 레버까지 최소한으로 이동해서 도착한다.
+//    int c1 = bfs(maps, sx, sy, lx, ly);
+//    if (c1 == -1) return -1;
+//    int c2 = bfs(maps, lx, ly, ex, ey);
+//    if (c2 == -1) return -1;
+//    return c1 + c2;
+//}
+
 #include <string>
 #include <vector>
-#include <queue>
+#include <sstream>
+#include <algorithm>
 #include <iostream>
 
 using namespace std;
 
-int dx[4] = { 1, -1, 0, 0 };
-int dy[4] = { 0, 0, 1, -1 };
-
-int bfs(vector<string>& maps, int x, int y, int tx, int ty)
+vector<string> splitString(string s)
 {
-    int ex = maps[0].size();
-    int ey = maps.size();
+    istringstream iss(s);
+    vector<string> answer;
+    string temp;
 
-    vector<vector<bool>> isVisited(ey, vector<bool>(ex, false));
-    vector<vector<int>> visitedCnt(ey, vector<int>(ex, 0));
-
-    queue<pair<int, int>> q;
-    q.push({ x, y });
-    isVisited[x][y] = true;
-
-    while (!q.empty())
+    while (getline(iss, temp, ','))
     {
-        int cx = q.front().first;
-        int cy = q.front().second;
-
-        q.pop();
-
-        for (int i = 0; i < 4; i++)
-        {
-            int nx = cx + dx[i];
-            int ny = cy + dy[i];
-
-            if (nx < 0 || ny < 0 || nx >= ey || ny >= ex) continue;
-            if (isVisited[nx][ny]) continue;
-            if (maps[nx][ny] == 'X') continue;
-
-            isVisited[nx][ny] = true;
-            visitedCnt[nx][ny] = visitedCnt[cx][cy] + 1;
-            if (nx == tx && ny == ty) return visitedCnt[nx][ny];
-            q.push({ nx, ny });
-        }
+        answer.push_back(temp);
     }
 
-    return -1;
+    return answer;
 }
 
-int solution(vector<string> maps) {
-    // S, E를 찾는다.
-    int sx, sy, ex, ey, lx, ly;
-    for (int i = 0; i < maps.size(); i++)
+string solution(string m, vector<string> musicinfos) {
+    int playTime = -1;
+    string musicName = "";
+    for (int i = 0; i < musicinfos.size(); i++)
     {
-        for (int j = 0; j < maps[i].size(); j++)
+        // ,를 기준으로 split하고 플레이 시간을 구한다.
+        vector<string> curString = splitString(musicinfos[i]);
+        int hour = stoi(curString[1].substr(0, 2)) - stoi(curString[0].substr(0, 2));
+        int minutes = stoi(curString[1].substr(3, 2)) - stoi(curString[0].substr(3, 2));
+        minutes += hour * 60;
+
+        // 플레이시간만큼 멜로디를 구한다.
+        string newString = "";
+        int cnt = 0;
+        int ttlCnt = 0;
+
+        string melody = curString[3];
+        while (ttlCnt != minutes)
         {
-            if (maps[i][j] == 'S')
+            int idx = cnt++ % melody.size();
+            newString += melody[idx];
+            if (melody[idx] != '#') ++ttlCnt;
+        }
+
+        int idx = cnt++ % melody.size();
+        if (melody[idx] == '#') newString += '#';
+
+        // 멜로디 내에 m이 있는지 확인한다.
+        int pos = 0;
+        string curMusicName = curString[2];
+        while (string::npos != newString.find(m, pos))
+        {
+            int lastIdx = newString.find(m, pos) + m.size();
+            pos = lastIdx;
+
+            // 만약 다음 문자가 #이면 계속한다.
+            if (lastIdx < newString.size() && newString[lastIdx] == '#')
             {
-                sx = i; sy = j;
+                continue;
             }
-            else if (maps[i][j] == 'E')
+
+            // 현재 플레이 시간이 더 긴 경우 현재 음악 이름을 저장한다.
+            if (playTime < minutes)
             {
-                ex = i; ey = j;
-            }
-            else if (maps[i][j] == 'L')
-            {
-                lx = i; ly = j;
+                playTime = minutes;
+                musicName = curMusicName;
             }
         }
     }
 
-    // 레버까지 최소한으로 이동해서 도착한다.
-    int c1 = bfs(maps, sx, sy, lx, ly);
-    if (c1 == -1) return -1;
-    int c2 = bfs(maps, lx, ly, ex, ey);
-    if (c2 == -1) return -1;
-    return c1 + c2;
+    // 조건이 일치하는 음악이 있는 경우 이름을 반환한다.
+    if (playTime != -1) return musicName;
+
+    return "(None)";
 }
