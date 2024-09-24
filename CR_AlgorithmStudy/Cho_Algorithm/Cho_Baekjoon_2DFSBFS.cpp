@@ -295,66 +295,116 @@
 
 // ÄõµåÆ®¸®
 // https://www.acmicpc.net/problem/1992
-#include <iostream>
+//#include <iostream>
+//#include <vector>
+//using namespace std;
+//
+//void dfs(vector<vector<int>>& v, int x, int y, int gap)
+//{
+//	if (gap == 1)
+//	{
+//		cout << v[x][y];
+//		return;
+//	}
+//
+//	bool isAllOne = true;
+//	bool isAllZero = true;
+//	for (int i = x; i < x + gap; i++)
+//	{
+//		for (int j = y; j < y + gap; j++)
+//		{
+//			if (v[i][j] == 0)
+//				isAllOne = false;
+//			if (v[i][j] == 1)
+//				isAllZero = false;
+//		}
+//	}
+//
+//	if (isAllOne)
+//	{
+//		cout << 1;
+//		return;
+//	}
+//	if (isAllZero)
+//	{
+//		cout << 0;
+//		return;
+//	}
+//
+//	cout << '(';
+//	dfs(v, x, y, gap / 2);
+//	dfs(v, x, y + gap / 2, gap / 2);
+//	dfs(v, x + gap / 2, y, gap / 2);
+//	dfs(v, x + gap / 2, y + gap / 2, gap / 2);
+//	cout << ')';
+//}
+//
+//int main()
+//{
+//	int n;
+//	cin >> n;
+//
+//	vector<vector<int>> v(n, vector<int>(n));
+//
+//	for (int i = 0; i < n; i++)
+//	{
+//		string s;
+//		cin >> s;
+//		for (int j = 0; j < n; j++)
+//		{
+//			v[i][j] = s[j] - '0';
+//		}
+//	}
+//
+//	dfs(v, 0, 0, n);
+//}
+
+#include <string>
 #include <vector>
+#include <iostream>
+#include <algorithm>
+
 using namespace std;
 
-void dfs(vector<vector<int>>& v, int x, int y, int gap)
+void quadTree(vector<vector<int>>& arr, int startX, int startY, int gap, vector<int>& answer)
 {
-	if (gap == 1)
-	{
-		cout << v[x][y];
-		return;
-	}
+    bool isAllOne = true;
+    bool isAllZero = true;
+    for (int x = startX; x < startX + gap; x++)
+    {
+        for (int y = startY; y < startY + gap; y++)
+        {
+            if (arr[x][y] == 0)
+            {
+                isAllOne = false;
+            }
+            else
+            {
+                isAllZero = false;
+            }
+        }
+    }
 
-	bool isAllOne = true;
-	bool isAllZero = true;
-	for (int i = x; i < x + gap; i++)
-	{
-		for (int j = y; j < y + gap; j++)
-		{
-			if (v[i][j] == 0)
-				isAllOne = false;
-			if (v[i][j] == 1)
-				isAllZero = false;
-		}
-	}
+    if (isAllZero)
+    {
+        answer[0]++;
+        return;
+    }
 
-	if (isAllOne)
-	{
-		cout << 1;
-		return;
-	}
-	if (isAllZero)
-	{
-		cout << 0;
-		return;
-	}
+    if (isAllOne)
+    {
+        answer[1]++;
+        return;
+    }
 
-	cout << '(';
-	dfs(v, x, y, gap / 2);
-	dfs(v, x, y + gap / 2, gap / 2);
-	dfs(v, x + gap / 2, y, gap / 2);
-	dfs(v, x + gap / 2, y + gap / 2, gap / 2);
-	cout << ')';
+    quadTree(arr, startX, startY, gap / 2, answer);
+    quadTree(arr, startX + gap / 2, startY, gap / 2, answer);
+    quadTree(arr, startX, startY + gap / 2, gap / 2, answer);
+    quadTree(arr, startX + gap / 2, startY + gap / 2, gap / 2, answer);
 }
 
-int main()
-{
-	int n;
-	cin >> n;
-
-	vector<vector<int>> v(n, vector<int>(n));
-
-	for (int i = 0; i < n; i++)
-	{
-		string s;
-		cin >> s;
-		for (int j = 0; j < n; j++)
-		{
-			v[i][j] = s[j] - '0';
-		}
-	}
-
-	dfs(v, 0, 0, n);
+vector<int> solution(vector<vector<int>> arr) {
+    vector<int> answer(2);
+    quadTree(arr, 0, 0, arr.size(), answer);
+    return answer;
 }
