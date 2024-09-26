@@ -487,80 +487,124 @@
 //    return c1 + c2;
 //}
 
+//#include <string>
+//#include <vector>
+//#include <sstream>
+//#include <algorithm>
+//#include <iostream>
+//
+//using namespace std;
+//
+//vector<string> splitString(string s)
+//{
+//    istringstream iss(s);
+//    vector<string> answer;
+//    string temp;
+//
+//    while (getline(iss, temp, ','))
+//    {
+//        answer.push_back(temp);
+//    }
+//
+//    return answer;
+//}
+//
+//string solution(string m, vector<string> musicinfos) {
+//    int playTime = -1;
+//    string musicName = "";
+//    for (int i = 0; i < musicinfos.size(); i++)
+//    {
+//        // ,를 기준으로 split하고 플레이 시간을 구한다.
+//        vector<string> curString = splitString(musicinfos[i]);
+//        int hour = stoi(curString[1].substr(0, 2)) - stoi(curString[0].substr(0, 2));
+//        int minutes = stoi(curString[1].substr(3, 2)) - stoi(curString[0].substr(3, 2));
+//        minutes += hour * 60;
+//
+//        // 플레이시간만큼 멜로디를 구한다.
+//        string newString = "";
+//        int cnt = 0;
+//        int ttlCnt = 0;
+//
+//        string melody = curString[3];
+//        while (ttlCnt != minutes)
+//        {
+//            int idx = cnt++ % melody.size();
+//            newString += melody[idx];
+//            if (melody[idx] != '#') ++ttlCnt;
+//        }
+//
+//        int idx = cnt++ % melody.size();
+//        if (melody[idx] == '#') newString += '#';
+//
+//        // 멜로디 내에 m이 있는지 확인한다.
+//        int pos = 0;
+//        string curMusicName = curString[2];
+//        while (string::npos != newString.find(m, pos))
+//        {
+//            int lastIdx = newString.find(m, pos) + m.size();
+//            pos = lastIdx;
+//
+//            // 만약 다음 문자가 #이면 계속한다.
+//            if (lastIdx < newString.size() && newString[lastIdx] == '#')
+//            {
+//                continue;
+//            }
+//
+//            // 현재 플레이 시간이 더 긴 경우 현재 음악 이름을 저장한다.
+//            if (playTime < minutes)
+//            {
+//                playTime = minutes;
+//                musicName = curMusicName;
+//            }
+//        }
+//    }
+//
+//    // 조건이 일치하는 음악이 있는 경우 이름을 반환한다.
+//    if (playTime != -1) return musicName;
+//
+//    return "(None)";
+//}
+
 #include <string>
 #include <vector>
-#include <sstream>
-#include <algorithm>
-#include <iostream>
+#include <limits.h>
 
 using namespace std;
 
-vector<string> splitString(string s)
-{
-    istringstream iss(s);
-    vector<string> answer;
-    string temp;
+vector<vector<int>> consume = { {1, 1, 1}, {5, 1, 1}, {25, 5, 1} };
 
-    while (getline(iss, temp, ','))
+int dfs(int depth, int count, vector<int>& picks, vector<string>& minerals)
+{
+    if (depth >= minerals.size() || (picks[0] == 0 && picks[1] == 0 && picks[2] == 0)) return count;
+
+    int minValue = INT_MAX;
+    for (int i = 0; i < picks.size(); i++)
     {
-        answer.push_back(temp);
+        if (picks[i] != 0)
+        {
+            --picks[i];
+            int j = depth;
+            int temp = 0;
+            while (j < depth + 5 && j < minerals.size())
+            {
+                int value = minerals[j] == "diamond" ? 0 : minerals[j] == "iron" ? 1 : 2;
+                ++j;
+                temp += consume[i][value];
+            }
+
+            minValue = min(minValue, dfs(j, count + temp, picks, minerals));
+            ++picks[i];
+        }
     }
 
-    return answer;
+    return minValue;
 }
 
-string solution(string m, vector<string> musicinfos) {
-    int playTime = -1;
-    string musicName = "";
-    for (int i = 0; i < musicinfos.size(); i++)
-    {
-        // ,를 기준으로 split하고 플레이 시간을 구한다.
-        vector<string> curString = splitString(musicinfos[i]);
-        int hour = stoi(curString[1].substr(0, 2)) - stoi(curString[0].substr(0, 2));
-        int minutes = stoi(curString[1].substr(3, 2)) - stoi(curString[0].substr(3, 2));
-        minutes += hour * 60;
+int solution(vector<int> picks, vector<string> minerals) {
+    return dfs(0, 0, picks, minerals);
+}
 
-        // 플레이시간만큼 멜로디를 구한다.
-        string newString = "";
-        int cnt = 0;
-        int ttlCnt = 0;
-
-        string melody = curString[3];
-        while (ttlCnt != minutes)
-        {
-            int idx = cnt++ % melody.size();
-            newString += melody[idx];
-            if (melody[idx] != '#') ++ttlCnt;
-        }
-
-        int idx = cnt++ % melody.size();
-        if (melody[idx] == '#') newString += '#';
-
-        // 멜로디 내에 m이 있는지 확인한다.
-        int pos = 0;
-        string curMusicName = curString[2];
-        while (string::npos != newString.find(m, pos))
-        {
-            int lastIdx = newString.find(m, pos) + m.size();
-            pos = lastIdx;
-
-            // 만약 다음 문자가 #이면 계속한다.
-            if (lastIdx < newString.size() && newString[lastIdx] == '#')
-            {
-                continue;
-            }
-
-            // 현재 플레이 시간이 더 긴 경우 현재 음악 이름을 저장한다.
-            if (playTime < minutes)
-            {
-                playTime = minutes;
-                musicName = curMusicName;
-            }
-        }
-    }
-
-    // 조건이 일치하는 음악이 있는 경우 이름을 반환한다.
-    if (playTime != -1) return musicName;
-
-    return "(None)";
+int main()
+{
+    solution({ 1, 3, 2 }, { "diamond", "diamond", "diamond", "iron", "iron", "diamond", "iron", "stone" });
 }
