@@ -565,46 +565,66 @@
 //    return "(None)";
 //}
 
+//#include <string>
+//#include <vector>
+//#include <limits.h>
+//
+//using namespace std;
+//
+//vector<vector<int>> consume = { {1, 1, 1}, {5, 1, 1}, {25, 5, 1} };
+//
+//int dfs(int depth, int count, vector<int>& picks, vector<string>& minerals)
+//{
+//    if (depth >= minerals.size() || (picks[0] == 0 && picks[1] == 0 && picks[2] == 0))
+//    {
+//        return count;
+//    }
+//    int minValue = INT_MAX;
+//    for (int i = 0; i < picks.size(); i++)
+//    {
+//        if (picks[i] != 0)
+//        {
+//            --picks[i];
+//            int j = depth;
+//            int temp = 0;
+//            while (j < depth + 5 && j < minerals.size())
+//            {
+//                int value = minerals[j] == "diamond" ? 0 : minerals[j] == "iron" ? 1 : 2;
+//                ++j;
+//                temp += consume[i][value];
+//            }
+//
+//            minValue = min(minValue, dfs(j, count + temp, picks, minerals));
+//            ++picks[i];
+//        }
+//    }
+//
+//    return minValue;
+//}
+//
+//int solution(vector<int> picks, vector<string> minerals) {
+//    return dfs(0, 0, picks, minerals);
+//}
+//
+//int main()
+//{
+//    solution({ 1, 3, 2 }, { "diamond", "diamond", "diamond", "iron", "iron", "diamond", "iron", "stone" });
+//}
+
 #include <string>
 #include <vector>
-#include <limits.h>
+#include <math.h>
+#include <iostream>
 
 using namespace std;
 
-vector<vector<int>> consume = { {1, 1, 1}, {5, 1, 1}, {25, 5, 1} };
+long long solution(int k, int d) {
+    long long answer = 0;
 
-int dfs(int depth, int count, vector<int>& picks, vector<string>& minerals)
-{
-    if (depth >= minerals.size() || (picks[0] == 0 && picks[1] == 0 && picks[2] == 0)) return count;
-
-    int minValue = INT_MAX;
-    for (int i = 0; i < picks.size(); i++)
+    for (int i = 0; i <= d; i += k)
     {
-        if (picks[i] != 0)
-        {
-            --picks[i];
-            int j = depth;
-            int temp = 0;
-            while (j < depth + 5 && j < minerals.size())
-            {
-                int value = minerals[j] == "diamond" ? 0 : minerals[j] == "iron" ? 1 : 2;
-                ++j;
-                temp += consume[i][value];
-            }
-
-            minValue = min(minValue, dfs(j, count + temp, picks, minerals));
-            ++picks[i];
-        }
+        answer += (int)sqrt(pow(d, 2) - pow(i, 2)) / k + 1;
     }
 
-    return minValue;
-}
-
-int solution(vector<int> picks, vector<string> minerals) {
-    return dfs(0, 0, picks, minerals);
-}
-
-int main()
-{
-    solution({ 1, 3, 2 }, { "diamond", "diamond", "diamond", "iron", "iron", "diamond", "iron", "stone" });
+    return answer;
 }
