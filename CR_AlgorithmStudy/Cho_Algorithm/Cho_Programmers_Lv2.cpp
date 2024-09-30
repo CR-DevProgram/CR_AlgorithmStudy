@@ -1554,3 +1554,87 @@
 //    solution("ABABABABABABABAB");
 //}
 
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <iostream>
+#include <stack>
+#include <sstream>
+
+using namespace std;
+
+vector<string> splitString(string s)
+{
+    istringstream iss(s);
+    string temp;
+    vector<string> answer;
+    while (getline(iss, temp, ':'))
+    {
+        answer.push_back(temp);
+    }
+
+    return answer;
+}
+
+int getMinutes(string time)
+{
+    vector<string> value = splitString(time);
+
+    int hour = stoi(value[0]);
+    return hour * 60 + stoi(value[1]);
+}
+
+string getTime(string a, string b)
+{
+    int temp = getMinutes(a) + stoi(b);
+    string hour = temp / 60 < 10 ? "0" + to_string(temp / 60) : to_string(temp / 60);
+    string min = temp % 60 < 10 ? "0" + to_string(temp % 60) : to_string(temp % 60);
+    return hour + ":" + min;
+}
+
+vector<string> solution(vector<vector<string>> plans) {
+    sort(plans.begin(), plans.end(), [](vector<string>& a, vector<string>& b) { return a[1] < b[1]; });
+
+    stack<pair<string, int>> remainPlans;
+    vector<string> answer;
+
+    string curTime = plans[0][1];
+    for (int i = 0; i < plans.size(); i++)
+    {
+        if (curTime > plans[i][1])
+        {
+            int time = getMinutes(curTime) - getMinutes(plans[i][1]);
+            remainPlans.push({ plans[i - 1][0], time });
+            answer.pop_back();
+        }
+        else if (curTime < plans[i][1])
+        {
+            int workTime = getMinutes(plans[i][1]) - getMinutes(curTime);
+            while (workTime > 0 && !remainPlans.empty())
+            {
+                auto& curPlan = remainPlans.top();
+                if (curPlan.second - workTime <= 0)
+                {
+                    answer.push_back(curPlan.first);
+                    workTime -= curPlan.second;
+                    remainPlans.pop();
+                }
+                else
+                {
+                    curPlan.second -= workTime;
+                    workTime = 0;
+                }
+            }
+        }
+        curTime = getTime(plans[i][1], plans[i][2]);
+        answer.push_back(plans[i][0]);
+    }
+
+    while (!remainPlans.empty())
+    {
+        answer.push_back(remainPlans.top().first);
+        remainPlans.pop();
+    }
+
+    return answer;
+}

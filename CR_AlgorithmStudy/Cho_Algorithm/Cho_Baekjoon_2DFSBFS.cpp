@@ -611,20 +611,20 @@
 //    solution({ 1, 3, 2 }, { "diamond", "diamond", "diamond", "iron", "iron", "diamond", "iron", "stone" });
 //}
 
-#include <string>
-#include <vector>
-#include <math.h>
-#include <iostream>
-
-using namespace std;
-
-long long solution(int k, int d) {
-    long long answer = 0;
-
-    for (int i = 0; i <= d; i += k)
-    {
-        answer += (int)sqrt(pow(d, 2) - pow(i, 2)) / k + 1;
-    }
-
-    return answer;
-}
+//#include <string>
+//#include <vector>
+//#include <math.h>
+//#include <iostream>
+//
+//using namespace std;
+//
+//long long solution(int k, int d) {
+//    long long answer = 0;
+//
+//    for (int i = 0; i <= d; i += k)
+//    {
+//        answer += (int)sqrt(pow(d, 2) - pow(i, 2)) / k + 1;
+//    }
+//
+//    return answer;
+//}
