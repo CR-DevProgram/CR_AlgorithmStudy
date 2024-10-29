@@ -1639,52 +1639,133 @@
 //    return answer;
 //}
 
+//#include <string>
+//#include <vector>
+//#include <iostream>
+//
+//using namespace std;
+//
+//vector<int> discounts = { 10, 20, 30, 40 };
+//
+//void func(vector<vector<int>>& users, vector<int>& emoticons, vector<int>& discount, int& maxJoinPlus, int& maxAllPaid)
+//{
+//    int joinPlus = 0, allPaid = 0;
+//    if (discount.size() == emoticons.size())
+//    {
+//        for (int i = 0; i < users.size(); i++)
+//        {
+//            int total = 0;
+//            for (int j = 0; j < discount.size(); j++)
+//                if (discount[j] >= users[i][0]) total += emoticons[j] - emoticons[j] * discount[j] / 100;
+//
+//            if (total >= users[i][1]) ++joinPlus;
+//            else  allPaid += total;
+//        }
+//
+//        if (joinPlus > maxJoinPlus || (joinPlus == maxJoinPlus && allPaid > maxAllPaid))
+//        {
+//            maxJoinPlus = joinPlus;
+//            maxAllPaid = allPaid;
+//        }
+//
+//        return;
+//    }
+//
+//    for (int i = 0; i < 4; i++)
+//    {
+//        discount.push_back(discounts[i]);
+//        func(users, emoticons, discount, maxJoinPlus, maxAllPaid);
+//        discount.pop_back();
+//    }
+//
+//    return;
+//}
+//
+//
+//vector<int> solution(vector<vector<int>> users, vector<int> emoticons) {
+//    vector<int> discount;
+//    int maxJoinPlus = 0, maxAllPaid = 0;
+//    func(users, emoticons, discount, maxJoinPlus, maxAllPaid);
+//    return { maxJoinPlus, maxAllPaid };
+//}
+
+// 괄호 변환
 #include <string>
 #include <vector>
+#include <stack>
 #include <iostream>
 
 using namespace std;
 
-vector<int> discounts = { 10, 20, 30, 40 };
-
-void func(vector<vector<int>>& users, vector<int>& emoticons, vector<int>& discount, int& maxJoinPlus, int& maxAllPaid)
+bool isBalance(const string& s)
 {
-    int joinPlus = 0, allPaid = 0;
-    if (discount.size() == emoticons.size())
+    int left = 0, right = 0;
+    for (const char c : s)
     {
-        for (int i = 0; i < users.size(); i++)
-        {
-            int total = 0;
-            for (int j = 0; j < discount.size(); j++)
-                if (discount[j] >= users[i][0]) total += emoticons[j] - emoticons[j] * discount[j] / 100;
-
-            if (total >= users[i][1]) ++joinPlus;
-            else  allPaid += total;
-        }
-
-        if (joinPlus > maxJoinPlus || (joinPlus == maxJoinPlus && allPaid > maxAllPaid))
-        {
-            maxJoinPlus = joinPlus;
-            maxAllPaid = allPaid;
-        }
-
-        return;
+        if (c == '(') ++left;
+        else ++right;
     }
 
-    for (int i = 0; i < 4; i++)
-    {
-        discount.push_back(discounts[i]);
-        func(users, emoticons, discount, maxJoinPlus, maxAllPaid);
-        discount.pop_back();
-    }
-
-    return;
+    return left == right;
 }
 
+bool isRight(const string& s)
+{
+    stack<char> se;
+    for (const char c : s)
+    {
+        if (c == '(') se.push(c);
+        else
+        {
+            if (se.empty()) return false;
+            se.pop();
+        }
+    }
 
-vector<int> solution(vector<vector<int>> users, vector<int> emoticons) {
-    vector<int> discount;
-    int maxJoinPlus = 0, maxAllPaid = 0;
-    func(users, emoticons, discount, maxJoinPlus, maxAllPaid);
-    return { maxJoinPlus, maxAllPaid };
+    return true;
+}
+
+int getSplitIndex(const string& p)
+{
+    int maxSize = p.size() / 2; // 5면 2번, 6이면 3번
+    for (int i = 1; i <= maxSize; i++)
+    {
+        if (isBalance(p.substr(0, 2 * i))) return i * 2;
+    }
+
+    return -1;
+}
+
+string reserve(const string& p)
+{
+    string result = p;
+    for (char& c : result)
+    {
+        if (c == '(') c = ')';
+        else c = '(';
+    }
+
+    return result;
+}
+
+string recursive(string& p)
+{
+    if (p.empty()) return "";
+
+    int idx = getSplitIndex(p);
+    string u = p.substr(0, idx);
+    string v = p.substr(idx);
+
+    if (isRight(u)) return u + recursive(v);
+    else
+    {
+        string temp = "(" + recursive(v) + ")";
+        u = u.substr(1, u.size() - 2);
+        temp += reserve(u);
+        return temp;
+    }
+}
+
+string solution(string p) {
+    return recursive(p);
 }
