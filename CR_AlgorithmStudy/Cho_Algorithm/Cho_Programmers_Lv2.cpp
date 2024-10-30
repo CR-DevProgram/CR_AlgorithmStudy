@@ -1771,62 +1771,90 @@
 //}
 
 // 행렬 테두리 회전하기
-#include <string>
+//#include <string>
+//#include <vector>
+//#include <iostream>
+//#include <set>
+//
+//using namespace std;
+//
+//// 오 -> 아 -> 왼 -> 위
+//int dx[4] = { 0, 1, 0, -1 };
+//int dy[4] = { 1, 0, -1, 0 };
+//
+//int roateAndgetMinNum(vector<vector<int>>& v, const vector<int>& query)
+//{
+//    int x1 = query[0], y1 = query[1], x2 = query[2], y2 = query[3];
+//    int idx = 0;
+//    int cx = x1;
+//    int cy = y1;
+//    int temp = v[cx][cy];
+//    set<int> s;
+//
+//    while (true)
+//    {
+//        int nx = cx + dx[idx];
+//        int ny = cy + dy[idx];
+//        if (nx > x2 || ny > y2 || nx < x1 || ny < y1)
+//        {
+//            idx = (idx + 1) % 4;
+//            nx = cx + dx[idx];
+//            ny = cy + dy[idx];
+//        }
+//
+//        int curNum = v[nx][ny];
+//        v[nx][ny] = temp;
+//        temp = curNum;
+//        s.insert(v[nx][ny]);
+//
+//        cx = nx;
+//        cy = ny;
+//
+//        if (cx == x1 && cy == y1) break;
+//    }
+//
+//    return *s.begin();
+//}
+//
+//vector<int> solution(int rows, int columns, vector<vector<int>> queries)
+//{
+//    vector<vector<int>> v(rows + 1, vector<int>(columns + 1, 0));
+//    int num = 1;
+//    for (int i = 1; i <= rows; i++)
+//    {
+//        for (int j = 1; j <= columns; j++) v[i][j] = num++;
+//    }
+//
+//    vector<int> answer;
+//    for (auto query : queries)  answer.push_back(roateAndgetMinNum(v, query));
+//
+//    return answer;
+//}
+
 #include <vector>
 #include <iostream>
-#include <set>
 
 using namespace std;
 
-// 오 -> 아 -> 왼 -> 위
-int dx[4] = { 0, 1, 0, -1 };
-int dy[4] = { 1, 0, -1, 0 };
-
-int roateAndgetMinNum(vector<vector<int>>& v, const vector<int>& query)
-{
-    int x1 = query[0], y1 = query[1], x2 = query[2], y2 = query[3];
-    int idx = 0;
-    int cx = x1;
-    int cy = y1;
-    int temp = v[cx][cy];
-    set<int> s;
-
-    while (true)
-    {
-        int nx = cx + dx[idx];
-        int ny = cy + dy[idx];
-        if (nx > x2 || ny > y2 || nx < x1 || ny < y1)
-        {
-            idx = (idx + 1) % 4;
-            nx = cx + dx[idx];
-            ny = cy + dy[idx];
-        }
-
-        int curNum = v[nx][ny];
-        v[nx][ny] = temp;
-        temp = curNum;
-        s.insert(v[nx][ny]);
-
-        cx = nx;
-        cy = ny;
-
-        if (cx == x1 && cy == y1) break;
+void hanoi(int n, int start, int end, int via, vector<vector<int>>& result) {
+    if (n == 1) {
+        cout << start << ' ' << end << '\n';
+        result.push_back({ start, end });
+        return;
     }
-
-    return *s.begin();
+    hanoi(n - 1, start, via, end, result);
+    result.push_back({ start, end });
+	cout << start << ' ' << end << '\n';
+    hanoi(n - 1, via, end, start, result);
 }
 
-vector<int> solution(int rows, int columns, vector<vector<int>> queries)
+vector<vector<int>> solution(int n) {
+    vector<vector<int>> result;
+    hanoi(n, 1, 3, 2, result);
+    return result;
+}
+
+int main()
 {
-    vector<vector<int>> v(rows + 1, vector<int>(columns + 1, 0));
-    int num = 1;
-    for (int i = 1; i <= rows; i++)
-    {
-        for (int j = 1; j <= columns; j++) v[i][j] = num++;
-    }
-
-    vector<int> answer;
-    for (auto query : queries)  answer.push_back(roateAndgetMinNum(v, query));
-
-    return answer;
+    solution(3);
 }
