@@ -1690,82 +1690,143 @@
 //}
 
 // 괄호 변환
+//#include <string>
+//#include <vector>
+//#include <stack>
+//#include <iostream>
+//
+//using namespace std;
+//
+//bool isBalance(const string& s)
+//{
+//    int left = 0, right = 0;
+//    for (const char c : s)
+//    {
+//        if (c == '(') ++left;
+//        else ++right;
+//    }
+//
+//    return left == right;
+//}
+//
+//bool isRight(const string& s)
+//{
+//    stack<char> se;
+//    for (const char c : s)
+//    {
+//        if (c == '(') se.push(c);
+//        else
+//        {
+//            if (se.empty()) return false;
+//            se.pop();
+//        }
+//    }
+//
+//    return true;
+//}
+//
+//int getSplitIndex(const string& p)
+//{
+//    int maxSize = p.size() / 2; // 5면 2번, 6이면 3번
+//    for (int i = 1; i <= maxSize; i++)
+//    {
+//        if (isBalance(p.substr(0, 2 * i))) return i * 2;
+//    }
+//
+//    return -1;
+//}
+//
+//string reserve(const string& p)
+//{
+//    string result = p;
+//    for (char& c : result)
+//    {
+//        if (c == '(') c = ')';
+//        else c = '(';
+//    }
+//
+//    return result;
+//}
+//
+//string recursive(string& p)
+//{
+//    if (p.empty()) return "";
+//
+//    int idx = getSplitIndex(p);
+//    string u = p.substr(0, idx);
+//    string v = p.substr(idx);
+//
+//    if (isRight(u)) return u + recursive(v);
+//    else
+//    {
+//        string temp = "(" + recursive(v) + ")";
+//        u = u.substr(1, u.size() - 2);
+//        temp += reserve(u);
+//        return temp;
+//    }
+//}
+//
+//string solution(string p) {
+//    return recursive(p);
+//}
+
+// 행렬 테두리 회전하기
 #include <string>
 #include <vector>
-#include <stack>
 #include <iostream>
+#include <set>
 
 using namespace std;
 
-bool isBalance(const string& s)
-{
-    int left = 0, right = 0;
-    for (const char c : s)
-    {
-        if (c == '(') ++left;
-        else ++right;
-    }
+// 오 -> 아 -> 왼 -> 위
+int dx[4] = { 0, 1, 0, -1 };
+int dy[4] = { 1, 0, -1, 0 };
 
-    return left == right;
-}
-
-bool isRight(const string& s)
+int roateAndgetMinNum(vector<vector<int>>& v, const vector<int>& query)
 {
-    stack<char> se;
-    for (const char c : s)
+    int x1 = query[0], y1 = query[1], x2 = query[2], y2 = query[3];
+    int idx = 0;
+    int cx = x1;
+    int cy = y1;
+    int temp = v[cx][cy];
+    set<int> s;
+
+    while (true)
     {
-        if (c == '(') se.push(c);
-        else
+        int nx = cx + dx[idx];
+        int ny = cy + dy[idx];
+        if (nx > x2 || ny > y2 || nx < x1 || ny < y1)
         {
-            if (se.empty()) return false;
-            se.pop();
+            idx = (idx + 1) % 4;
+            nx = cx + dx[idx];
+            ny = cy + dy[idx];
         }
+
+        int curNum = v[nx][ny];
+        v[nx][ny] = temp;
+        temp = curNum;
+        s.insert(v[nx][ny]);
+
+        cx = nx;
+        cy = ny;
+
+        if (cx == x1 && cy == y1) break;
     }
 
-    return true;
+    return *s.begin();
 }
 
-int getSplitIndex(const string& p)
+vector<int> solution(int rows, int columns, vector<vector<int>> queries)
 {
-    int maxSize = p.size() / 2; // 5면 2번, 6이면 3번
-    for (int i = 1; i <= maxSize; i++)
+    vector<vector<int>> v(rows + 1, vector<int>(columns + 1, 0));
+    int num = 1;
+    for (int i = 1; i <= rows; i++)
     {
-        if (isBalance(p.substr(0, 2 * i))) return i * 2;
+        for (int j = 1; j <= columns; j++) v[i][j] = num++;
     }
 
-    return -1;
-}
+    vector<int> answer;
+    for (auto query : queries)  answer.push_back(roateAndgetMinNum(v, query));
 
-string reserve(const string& p)
-{
-    string result = p;
-    for (char& c : result)
-    {
-        if (c == '(') c = ')';
-        else c = '(';
-    }
-
-    return result;
-}
-
-string recursive(string& p)
-{
-    if (p.empty()) return "";
-
-    int idx = getSplitIndex(p);
-    string u = p.substr(0, idx);
-    string v = p.substr(idx);
-
-    if (isRight(u)) return u + recursive(v);
-    else
-    {
-        string temp = "(" + recursive(v) + ")";
-        u = u.substr(1, u.size() - 2);
-        temp += reserve(u);
-        return temp;
-    }
-}
-
-string solution(string p) {
-    return recursive(p);
+    return answer;
 }
