@@ -1831,30 +1831,398 @@
 //    return answer;
 //}
 
+//#include <vector>
+//#include <iostream>
+//
+//using namespace std;
+//
+//void hanoi(int n, int start, int end, int via, vector<vector<int>>& result) {
+//    if (n == 1) {
+//        cout << start << ' ' << end << '\n';
+//        result.push_back({ start, end });
+//        return;
+//    }
+//    hanoi(n - 1, start, via, end, result);
+//    result.push_back({ start, end });
+//	cout << start << ' ' << end << '\n';
+//    hanoi(n - 1, via, end, start, result);
+//}
+//
+//vector<vector<int>> solution(int n) {
+//    vector<vector<int>> result;
+//    hanoi(n, 1, 3, 2, result);
+//    return result;
+//}
+//
+//int main()
+//{
+//    solution(2);
+//}
+
+//#define M_PI 3.14159265358979323846
+//
+//#include <iostream>
+//#include <cmath>
+//
+//class Vector3 {
+//private :
+//    float x, y, z;
+//
+//public:
+//    Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
+//
+//    // 벡터 빼기 연산 정의 (두 점 사이의 방향 벡터)
+//    Vector3 operator-(const Vector3& other) const {
+//        return Vector3(x - other.x, y - other.y, z - other.z);
+//    }
+//
+//    // 벡터 정규화 함수 (길이가 1인 단위 벡터로 변환)
+//    Vector3 normalize() const {
+//        float magnitude = std::sqrt(x * x + y * y + z * z);
+//        return Vector3(x / magnitude, y / magnitude, z / magnitude);
+//    }
+//
+//    // 벡터 내적 함수
+//    float dot(const Vector3& other) const {
+//        return x * other.x + y * other.y + z * other.z;
+//    }
+//};
+//
+//// 시야 내 포함 여부를 판별하는 함수
+//bool isInSight(const Vector3& myPosition, const Vector3& monsterPosition,
+//    const Vector3& myViewDirection, float myFOV) {
+//    // 내 위치에서 몬스터 위치로의 방향 벡터 계산
+//    Vector3 monsterDirection = (monsterPosition - myPosition).normalize();
+//
+//    // 시야 중심 벡터를 정규화
+//    Vector3 viewDirection = myViewDirection.normalize();
+//
+//    // FOV를 반으로 나눈 각도에 대한 코사인 값
+//    float cosAngle = std::cos(myFOV * 0.5f * (M_PI / 180.0f));  // 각도를 라디안으로 변환
+//
+//    // 시야 벡터와 몬스터 방향 벡터 간의 내적 계산
+//    float dotProduct = viewDirection.dot(monsterDirection);
+//
+//    // 내적 값이 코사인 값 이상이면 시야 안에 있음
+//    return dotProduct >= cosAngle;
+//}
+//
+//int main() {
+//    // 예시 위치와 시야 방향, 시야각
+//    Vector3 myPosition(0, 0, 0);
+//    Vector3 monsterPosition(1, 1, 0);
+//    Vector3 myViewDirection(0, 1, 0); // x축 방향을 보고 있다고 가정
+//    float myFOV = 10.0f;  // 시야각 90도`
+//
+//    if (isInSight(myPosition, monsterPosition, myViewDirection, myFOV)) {
+//        std::cout << "몬스터가 시야 안에 있습니다." << std::endl;
+//    }
+//    else {
+//        std::cout << "몬스터가 시야 밖에 있습니다." << std::endl;
+//    }
+//
+//    return 0;
+//}
+
+//#include <iostream>
+//#include <vector>
+//
+//using namespace std;
+//
+//#define M_PI 3.141592f
+//
+//class Vector3
+//{
+//	// (1) 생성자
+//public:
+//	Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
+//
+//	// 빼기 연산
+//	Vector3 operator-(const Vector3& other) const
+//	{
+//		return Vector3(x - other.x, y - other.y, z - other.z);
+//	}
+//
+//	Vector3 normalize() const
+//	{
+//		float magnitue = sqrt(x * x + y * y + z * z);
+//		return Vector3(x / magnitue, y / magnitue, z / magnitue);
+//	}
+//
+//	float dot(const Vector3& other) const
+//	{
+//		return x * other.x + y * other.y + z * other.z;
+//	}
+//
+//private:
+//	float x;
+//	float y;
+//	float z;
+//};
+//
+//void solution(vector<vector<float>> v, float fov)
+//{
+//	Vector3 myPos(v[0][0], v[0][1], v[0][2]);
+//	Vector3 monPos(v[1][0], v[1][1], v[1][2]);
+//	Vector3 viewDirection(v[2][0], v[2][1], v[2][2]);
+//	
+//	Vector3 monDir = (monPos - myPos).normalize();
+//	Vector3 viewDir = viewDirection.normalize();
+//
+//	// 시야각의 반을 라디안으로 바꾼다.
+//	float cosAngle = cos(fov * 0.5 * (M_PI / 180.f));
+//	float dotProduct = viewDir.dot(monDir);
+//
+//	if (dotProduct >= cosAngle)
+//	{
+//		cout << "시야각 내에 있다";
+//	}
+//	else
+//	{
+//		cout << "시야각 내에 없다.";
+//	}
+//}
+
+
+//#include <iostream>
+//#include <vector>
+//
+//using namespace std;
+//
+//#define M_PI 3.14159265358979323846
+//
+//class Vector3
+//{
+//public:
+//	Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
+//
+//	Vector3 operator-(const Vector3 other) const
+//	{
+//		return { x - other.x, y - other.y, z - other.z };
+//	}
+//
+//	Vector3 normalize()
+//	{
+//		float mag = sqrt(x * x + y * y + z * z);
+//		return { x / mag, y / mag, z / mag };
+//	}
+//
+//	float dot(const Vector3 other) const
+//	{
+//		return { x * other.x + y * other.y + z * other.z };
+//	}
+//
+//private:
+//	float x;
+//	float y;
+//	float z;
+//};
+//
+//bool solution(vector<vector<float>> v, float myFov)
+//{
+//	// (1) myPos, monPos, viewDirection Vector3를 만든다.
+//	Vector3 myPos(v[0][0], v[0][1], v[0][2]);
+//	Vector3 monPos(v[1][0], v[1][1], v[1][2]);
+//	Vector3 viewDir(v[2][0], v[2][1], v[2][2]);
+//
+//	Vector3 monDirection = (monPos - myPos).normalize();
+//	Vector3 viewDirection = viewDir.normalize();
+//
+//	float cosAngle = cos(myFov * 0.5 * (M_PI / 180.0));
+//	cout << cosAngle;
+//	float dotProduct = viewDirection.dot(monDirection);
+//
+//	return dotProduct >= cosAngle;
+//}
+//
+//int main()
+//{
+//	vector<vector<float>> v;
+//	v.push_back({ 0, 0, 0 }); // myPos
+//	v.push_back({ 1, 1, 0 }); // monPos
+//	v.push_back({ 0, 1, 0 }); // view
+//	float myFov = 90.f;
+//
+//	if (solution(v, myFov))
+//	{
+//		cout << "보인다.";
+//	}
+//	else
+//	{
+//		cout << "안보인다.";
+//	}
+//
+//	return 0;
+//}
+
+//#include <iostream>
+//#include <cmath>
+//
+//struct Vector3 {
+//    float x, y, z;
+//    Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
+//
+//    // 벡터 빼기 연산자
+//    Vector3 operator-(const Vector3& other) const {
+//        return Vector3(x - other.x, y - other.y, z - other.z);
+//    }
+//
+//    // 외적 함수
+//    Vector3 cross(const Vector3& other) const {
+//        return Vector3(
+//            y * other.z - z * other.y,
+//            z * other.x - x * other.z,
+//            x * other.y - y * other.x
+//        );
+//    }
+//
+//    // 벡터 크기 계산
+//    float magnitude() const {
+//        return std::sqrt(x * x + y * y + z * z);
+//    }
+//};
+//
+//float triangleArea(const Vector3& A, const Vector3& B, const Vector3& C) {
+//    Vector3 AB = B - A;
+//    Vector3 AC = C - A;
+//    Vector3 crossProduct = AB.cross(AC);
+//    return crossProduct.magnitude() / 2.0f;
+//}
+
+//#include <iostream>
+//
+//using namespace std;
+//
+//class Vector3
+//{
+//public:
+//    Vector3(int x, int y, int z) : x(x), y(y), z(z) {}
+//    Vector3 operator-(Vector3 other) const
+//    {
+//        return Vector3(x - other.x, y - other.y, z - other.z);
+//    }
+//
+//    Vector3 cross(Vector3 other) const
+//    {
+//        return Vector3(
+//            y * other.z - z * other.y,
+//            z * other.x - x * other.z,
+//            x * other.y - y * other.x
+//        );
+//    }
+//
+//    float mag() 
+//    {
+//        return sqrt(x * x + y * y + z * z);
+//    }
+//
+//private:
+//    int x;
+//    int y;
+//    int z;
+//};
+//
+//int triangleArea(Vector3 A, Vector3 B, Vector3 C)
+//{
+//    Vector3 AB = B - A;
+//    Vector3 AC = C - A;
+//    Vector3 crossProduct = AB.cross(AC);
+//    return crossProduct.mag() / 2.f;
+//}
+//
+//int main() {
+//    Vector3 A(0, 0, 0);
+//    Vector3 B(4, 0, 0);
+//    Vector3 C(0, 4, 0);
+//    std::cout << "삼각형의 넓이: " << triangleArea(A, B, C) << std::endl;
+//    return 0;
+//}
+
+//#include <iostream>
+//
+//using namespace std;
+//
+//struct pos {
+//    int x, y;
+//};
+//
+//int main(int argc, const char* argv[])
+//{
+//    pos a, b, c;
+//    cin >> a.x >> a.y;
+//    cin >> b.x >> b.y;
+//    cin >> c.x >> c.y;
+//
+//    long long temp = a.x * b.y + b.x * c.y + c.x * a.y - (b.x * a.y + c.x * b.y + a.x * c.y);
+//
+//    if (temp < 0)
+//        cout << "-1";
+//    else if (temp > 0)
+//        cout << "1";
+//    else
+//        cout << "0";
+//
+//    return 0;
+//}
+
+// 정규 표현식
+//#include <iostream>
+//#include <regex>
+//#include <vector>
+//
+//using namespace std;
+//
+//int main()
+//{
+//	vector<string> file_names = { "db-123-log.txt", "db-124-log.txt",
+//								 "not-db-log.txt", "db-12-log.txt",
+//								 "db-12-log.jpg" };
+//
+//	regex re("db-\\d*-log\\.txt");
+//
+//	for (const auto& file_name : file_names)
+//	{
+//		// regex_match : 첫 번째 인자로 전달된 문자열이
+//		//               두 번째 인자로 전달된 정규 표현식 객체와
+//		//               완전히 매칭되는 경우 true 리턴
+//		cout << file_name << ": " << std::boolalpha << std::regex_match(file_name, re) << '\n';
+//	}
+//}
+
+// 다리를 지나는 트럭
+// https://school.programmers.co.kr/learn/courses/30/lessons/42583
+
+#include <string>
 #include <vector>
+#include <queue>
 #include <iostream>
 
 using namespace std;
 
-void hanoi(int n, int start, int end, int via, vector<vector<int>>& result) {
-    if (n == 1) {
-        cout << start << ' ' << end << '\n';
-        result.push_back({ start, end });
-        return;
-    }
-    hanoi(n - 1, start, via, end, result);
-    result.push_back({ start, end });
-	cout << start << ' ' << end << '\n';
-    hanoi(n - 1, via, end, start, result);
-}
-
-vector<vector<int>> solution(int n) {
-    vector<vector<int>> result;
-    hanoi(n, 1, 3, 2, result);
-    return result;
-}
-
-int main()
+int solution(int bridge_length, int max_weight, vector<int> truck_weights)
 {
-    solution(3);
+    int length = 0, weight = 0, idx = 0;
+    queue<pair<int, int>> q;
+
+    for (int time = 1; ; time++)
+    {
+        if (!q.empty() && time - q.front().first >= bridge_length)
+        {
+            --length;
+            weight -= q.front().second;
+            q.pop();
+        }
+
+        if (length + 1 <= bridge_length && idx < truck_weights.size() && max_weight >= weight + truck_weights[idx])
+        {
+            ++length;
+            weight += truck_weights[idx];
+            q.push({ time, truck_weights[idx] });
+            ++idx;
+        }
+
+        if (idx >= truck_weights.size() && q.empty()) return time;
+    }
+
+    return -1;
 }
