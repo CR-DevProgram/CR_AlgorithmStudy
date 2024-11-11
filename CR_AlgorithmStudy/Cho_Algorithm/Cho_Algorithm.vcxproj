@@ -134,6 +134,7 @@
     <ClCompile Include="Cho_Programmers.cpp" />
     <ClCompile Include="Cho_Programmers_Lv1.cpp" />
     <ClCompile Include="Cho_Programmers_Lv2.cpp" />
+    <ClCompile Include="Cho_Programmers_Lv3.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
