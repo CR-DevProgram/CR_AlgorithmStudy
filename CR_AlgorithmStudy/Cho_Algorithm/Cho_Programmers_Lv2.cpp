@@ -2192,37 +2192,109 @@
 // 다리를 지나는 트럭
 // https://school.programmers.co.kr/learn/courses/30/lessons/42583
 
+//#include <string>
+//#include <vector>
+//#include <queue>
+//#include <iostream>
+//
+//using namespace std;
+//
+//int solution(int bridge_length, int max_weight, vector<int> truck_weights)
+//{
+//    int length = 0, weight = 0, idx = 0;
+//    queue<pair<int, int>> q;
+//
+//    for (int time = 1; ; time++)
+//    {
+//        if (!q.empty() && time - q.front().first >= bridge_length)
+//        {
+//            --length;
+//            weight -= q.front().second;
+//            q.pop();
+//        }
+//
+//        if (length + 1 <= bridge_length && idx < truck_weights.size() && max_weight >= weight + truck_weights[idx])
+//        {
+//            ++length;
+//            weight += truck_weights[idx];
+//            q.push({ time, truck_weights[idx] });
+//            ++idx;
+//        }
+//
+//        if (idx >= truck_weights.size() && q.empty()) return time;
+//    }
+//
+//    return -1;
+//}
+
+// 리코쳇 로봇
+// https://school.programmers.co.kr/learn/courses/30/lessons/169199
+
 #include <string>
 #include <vector>
-#include <queue>
 #include <iostream>
+#include <stack>
 
 using namespace std;
 
-int solution(int bridge_length, int max_weight, vector<int> truck_weights)
+int dx[4] = { 1, 0, -1, 0 };
+int dy[4] = { 0, 1, 0, -1 };
+
+int bfs(const vector<string>& board)
 {
-    int length = 0, weight = 0, idx = 0;
-    queue<pair<int, int>> q;
-
-    for (int time = 1; ; time++)
+    stack<pair<int, int>> s;
+    for (int i = 0; i < board.size(); i++)
     {
-        if (!q.empty() && time - q.front().first >= bridge_length)
+        auto j = board[i].find('R');
+        if (string::npos != j)
         {
-            --length;
-            weight -= q.front().second;
-            q.pop();
+            s.push({ i, j });
         }
+    }
 
-        if (length + 1 <= bridge_length && idx < truck_weights.size() && max_weight >= weight + truck_weights[idx])
+    vector<vector<int>> visitedCnt(board.size(), vector<int>(board[0].size(), 0));
+    vector<vector<bool>> isVisited(board.size(), vector<bool>(board[0].size(), false));
+    isVisited[s.top().first][s.top().second] = true;
+
+    int cnt = 0;
+    while (!s.empty())
+    {
+        int cx = s.top().first;
+        int cy = s.top().second;
+        s.pop();
+
+        for (int i = 0; i < 4; i++)
         {
-            ++length;
-            weight += truck_weights[idx];
-            q.push({ time, truck_weights[idx] });
-            ++idx;
-        }
+            int nx = cx + dx[i];
+            int ny = cy + dy[i];
 
-        if (idx >= truck_weights.size() && q.empty()) return time;
+            if (nx >= 0 && ny >= 0 && nx < board.size() && ny < board[0].size())
+            {
+                if (board[nx][ny] != 'D')
+                {
+                    s.push({ nx, ny });
+                }
+                else
+                {
+                    if (isVisited[cx][cy]) continue;
+                    isVisited[cx][cy] = true;
+                    visitedCnt[cx][cy] = ++cnt;
+                    if (board[nx][ny] == 'G')
+                        return visitedCnt[nx][ny];
+                }
+            }
+        }
     }
 
     return -1;
+}
+
+int solution(vector<string> board)
+{
+    return bfs(board);
+}
+
+int main()
+{
+    solution({ "...D..R", ".D.G...", "....D.D", "D....D.", "..D...." });
 }
