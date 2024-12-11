@@ -2230,71 +2230,71 @@
 // ¸®ÄÚÃÂ ·Îº¿
 // https://school.programmers.co.kr/learn/courses/30/lessons/169199
 
-#include <string>
-#include <vector>
-#include <iostream>
-#include <stack>
-
-using namespace std;
-
-int dx[4] = { 1, 0, -1, 0 };
-int dy[4] = { 0, 1, 0, -1 };
-
-int bfs(const vector<string>& board)
-{
-    stack<pair<int, int>> s;
-    for (int i = 0; i < board.size(); i++)
-    {
-        auto j = board[i].find('R');
-        if (string::npos != j)
-        {
-            s.push({ i, j });
-        }
-    }
-
-    vector<vector<int>> visitedCnt(board.size(), vector<int>(board[0].size(), 0));
-    vector<vector<bool>> isVisited(board.size(), vector<bool>(board[0].size(), false));
-    isVisited[s.top().first][s.top().second] = true;
-
-    int cnt = 0;
-    while (!s.empty())
-    {
-        int cx = s.top().first;
-        int cy = s.top().second;
-        s.pop();
-
-        for (int i = 0; i < 4; i++)
-        {
-            int nx = cx + dx[i];
-            int ny = cy + dy[i];
-
-            if (nx >= 0 && ny >= 0 && nx < board.size() && ny < board[0].size())
-            {
-                if (board[nx][ny] != 'D')
-                {
-                    s.push({ nx, ny });
-                }
-                else
-                {
-                    if (isVisited[cx][cy]) continue;
-                    isVisited[cx][cy] = true;
-                    visitedCnt[cx][cy] = ++cnt;
-                    if (board[nx][ny] == 'G')
-                        return visitedCnt[nx][ny];
-                }
-            }
-        }
-    }
-
-    return -1;
-}
-
-int solution(vector<string> board)
-{
-    return bfs(board);
-}
-
-int main()
-{
-    solution({ "...D..R", ".D.G...", "....D.D", "D....D.", "..D...." });
-}
+//#include <string>
+//#include <vector>
+//#include <iostream>
+//#include <stack>
+//
+//using namespace std;
+//
+//int dx[4] = { 1, 0, -1, 0 };
+//int dy[4] = { 0, 1, 0, -1 };
+//
+//int bfs(const vector<string>& board)
+//{
+//    stack<pair<int, int>> s;
+//    for (int i = 0; i < board.size(); i++)
+//    {
+//        auto j = board[i].find('R');
+//        if (string::npos != j)
+//        {
+//            s.push({ i, j });
+//        }
+//    }
+//
+//    vector<vector<int>> visitedCnt(board.size(), vector<int>(board[0].size(), 0));
+//    vector<vector<bool>> isVisited(board.size(), vector<bool>(board[0].size(), false));
+//    isVisited[s.top().first][s.top().second] = true;
+//
+//    int cnt = 0;
+//    while (!s.empty())
+//    {
+//        int cx = s.top().first;
+//        int cy = s.top().second;
+//        s.pop();
+//
+//        for (int i = 0; i < 4; i++)
+//        {
+//            int nx = cx + dx[i];
+//            int ny = cy + dy[i];
+//
+//            if (nx >= 0 && ny >= 0 && nx < board.size() && ny < board[0].size())
+//            {
+//                if (board[nx][ny] != 'D')
+//                {
+//                    s.push({ nx, ny });
+//                }
+//                else
+//                {
+//                    if (isVisited[cx][cy]) continue;
+//                    isVisited[cx][cy] = true;
+//                    visitedCnt[cx][cy] = ++cnt;
+//                    if (board[nx][ny] == 'G')
+//                        return visitedCnt[nx][ny];
+//                }
+//            }
+//        }
+//    }
+//
+//    return -1;
+//}
+//
+//int solution(vector<string> board)
+//{
+//    return bfs(board);
+//}
+//
+//int main()
+//{
+//    solution({ "...D..R", ".D.G...", "....D.D", "D....D.", "..D...." });
+//}

@@ -106,3 +106,66 @@
 //{
 //    solution(6, 6, { {2, 2, 5, 4} });
 //}
+
+// [카카오 인턴] 경주로 건설
+// https://school.programmers.co.kr/learn/courses/30/lessons/67259
+
+#include <string>
+#include <vector>
+#include <queue>
+#include <limits.h>
+#include <iostream>
+
+using namespace std;
+
+int dx[4] = { 0, 1, -1, 0 };
+int dy[4] = { 1, 0, 0, -1 };
+
+struct Node
+{
+    int x, y, direction, cost;
+};
+
+int solution(vector<vector<int>> board) 
+{
+    vector<vector<vector<int>>> cost(board.size(), vector<vector<int>>(board.size(), vector<int>(4, INT_MAX)));
+    queue<Node> q;
+    q.push({ 0, 0, -1, 0 });
+
+    for (int i = 0; i < 4; i++)
+    {
+        cost[0][0][i] = 0;
+    }
+
+    while (!q.empty())
+    {
+        Node curNode = q.front();
+        q.pop();
+
+        for (int i = 0; i < 4; i++)
+        {
+            int nx = curNode.x + dx[i];
+            int ny = curNode.y + dy[i];
+            int newCost = curNode.cost;
+
+            if (nx < 0 || ny < 0 || nx >= board.size() || ny >= board.size() || board[nx][ny] == 1) continue;
+
+            if (curNode.direction == -1 || curNode.direction == i) newCost += 100;
+            else newCost += 600;
+
+            if (newCost < cost[nx][ny][i])
+            {
+                cost[nx][ny][i] = newCost;
+                q.push({ nx, ny, i, newCost });
+            }
+        }
+    }
+
+    int answer = INT_MAX;
+    for (int i = 0; i < 4; i++)
+    {
+        answer = min(answer, cost[board.size() - 1][board.size() - 1][i]);
+    }
+
+    return answer;
+}
