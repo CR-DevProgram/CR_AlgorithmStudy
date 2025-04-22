@@ -296,49 +296,93 @@ using namespace std;
 // 주어진 경사로 크기에 높이가 1차이 나는 곳만 경사로 배치 가능
 // 경사로 크기보다 작은 곳에 놓을 수 없음
 // 이동 가능한 경로수 확인
-int n, l, ret, hor[101][101], ver[101][101];
+//int n, l, ret, hor[101][101], ver[101][101];
+//
+//void go(int a[101][101])
+//{
+//    for (int i = 0; i < n; ++i) 
+//    {
+//        int cnt = 1;
+//        int j = 0;
+//        for (; j < n - 1; ++j) 
+//        {
+//            // 같은 층수
+//            if (a[i][j] == a[i][j + 1]) ++cnt;
+//            // 오르막길 초기화(칸수 하나 차이, l인 경사로 크기보다 크거나 같아야 가능)
+//            else if (a[i][j] + 1 == a[i][j + 1] && l <= cnt) cnt = 1;
+//            // 내리막길 초기화(칸수 하나 차이, 음수가 아닌 양수여야 가능), 음수로 만들어서 시작
+//            else if (a[i][j] - 1 == a[i][j + 1] && 0 <= cnt) cnt = -l + 1;
+//            else break;
+//        }
+//
+//        // 마지막 지점 최종 확인 & 경로수 증가
+//        if (n - 1 == j && 0 <= cnt) ++ret;
+//    }
+//}
 
-void go(int a[101][101])
+// 6_가르침
+// https://www.acmicpc.net/problem/1062
+// K: 글자 개수(최대 50), N: 남극에 존재하는 단어(0 <= N <= 26)
+// 'anta-'로 시작, '-tica'로 끝
+// 가장 많이 배울 수 있는 문자 개수를 구할 것
+// 모든 경우의 수(2^26) 완전 탐색 알고리즘 => 조합
+int K, N;
+int Words[50];
+
+int Count(int KnowWords)
 {
-    for (int i = 0; i < n; ++i) 
-    {
-        int cnt = 1;
-        int j = 0;
-        for (; j < n - 1; ++j) 
-        {
-            // 같은 층수
-            if (a[i][j] == a[i][j + 1]) ++cnt;
-            // 오르막길 초기화(칸수 하나 차이, l인 경사로 크기보다 크거나 같아야 가능)
-            else if (a[i][j] + 1 == a[i][j + 1] && l <= cnt) cnt = 1;
-            // 내리막길 초기화(칸수 하나 차이, 음수가 아닌 양수여야 가능), 음수로 만들어서 시작
-            else if (a[i][j] - 1 == a[i][j + 1] && 0 <= cnt) cnt = -l + 1;
-            else break;
-        }
+    int Cnt = 0;
 
-        // 마지막 지점 최종 확인 & 경로수 증가
-        if (n - 1 == j && 0 <= cnt) ++ret;
+    for (int Word : Words) 
+    {
+        // 배운 단어를 기반으로 '&' 연산자를 한 것이 Word이면 읽을 수 있는 단어이므로 Cnt 증가
+        if (Word && Word == (Word & KnowWords)) ++Cnt;
     }
+
+    return Cnt;
+}
+
+// Idx: 알파벳
+// K: 배울 수 있는 문자 수
+// KnowWords: 배운 단어
+int WordProcess(int Idx, int K, int KnowWords)
+{
+    // 음수
+    if (0 > K) return 0;
+
+    // 모든 문자를 탐색
+    if (26 == Idx) return Count(KnowWords);
+
+    // 문자를 배운 것으로 처리
+    int Result = WordProcess(Idx + 1, K - 1, KnowWords | (1 << Idx));
+
+    // 만약 a, n, t, i, c가 아닌 경우
+    if (Idx != 'a' - 'a' && Idx != 'n' - 'a' && Idx != 't' - 'a' && Idx != 'i' - 'a' && Idx != 'c' - 'a')
+    {
+        // 안 배우는 것으로 처리(a, n, t, i, c 외의 문자를 배우지 않은 것으로 처리하기 위함 => 완탐하기 위해)
+        // Result로 가장 많이 읽을 수 있는 수를 반환하기 위한 것
+        Result = max(Result, WordProcess(Idx + 1, K, KnowWords));
+    }
+
+    return Result;
 }
 
 int main() 
 {
-    cin >> n >> l;
-    for (int i = 0; i < n; ++i) 
+    cin >> N >> K;
+    for (int i = 0; i < N; ++i)
     {
-        for (int j = 0; j < n; ++j) 
+        string Temp;
+        cin >> Temp;
+
+        for (char Ch : Temp)
         {
-            cin >> hor[i][j];
-            // 가로 세로 대칭 작업
-            ver[j][i] = hor[i][j];
+            // 단어별 알파벳을 숫자로 계산하여 관리(a: 1, b: 2, c: 4, d: 8, ...)
+            Words[i] |= (1 << (Ch - 'a'));
         }
     }
 
-    // 가로
-    go(hor);
-    // 세로
-    go(ver);
-
-    cout << ret;
+    cout << WordProcess(0, K, 0) << '\n';
 
     return 0;
 }
