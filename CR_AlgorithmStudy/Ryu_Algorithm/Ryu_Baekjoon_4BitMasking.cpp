@@ -319,6 +319,29 @@ using namespace std;
 //        if (n - 1 == j && 0 <= cnt) ++ret;
 //    }
 //}
+//
+//int main()
+//{
+//    cin >> n >> l;
+//    for (int i = 0; i < n; ++i)
+//    {
+//        for (int j = 0; j < n; ++j)
+//        {
+//            cin >> hor[i][j];
+//            // 가로 세로 대칭 작업
+//            ver[j][i] = hor[i][j];
+//        }
+//    }
+//
+//    // 가로
+//    go(hor);
+//    // 세로
+//    go(ver);
+//
+//    cout << ret;
+//
+//    return 0;
+//}
 
 // 6_가르침
 // https://www.acmicpc.net/problem/1062
@@ -326,63 +349,91 @@ using namespace std;
 // 'anta-'로 시작, '-tica'로 끝
 // 가장 많이 배울 수 있는 문자 개수를 구할 것
 // 모든 경우의 수(2^26) 완전 탐색 알고리즘 => 조합
-int K, N;
-int Words[50];
+//int K, N;
+//int Words[50];
+//
+//int Count(int KnowWords)
+//{
+//    int Cnt = 0;
+//
+//    for (int Word : Words) 
+//    {
+//        // 배운 단어를 기반으로 '&' 연산자를 한 것이 Word이면 읽을 수 있는 단어이므로 Cnt 증가
+//        if (Word && Word == (Word & KnowWords)) ++Cnt;
+//    }
+//
+//    return Cnt;
+//}
+//
+//// Idx: 알파벳
+//// K: 배울 수 있는 문자 수
+//// KnowWords: 배운 단어
+//int WordProcess(int Idx, int K, int KnowWords)
+//{
+//    // 음수
+//    if (0 > K) return 0;
+//
+//    // 모든 문자를 탐색
+//    if (26 == Idx) return Count(KnowWords);
+//
+//    // 문자를 배운 것으로 처리
+//    int Result = WordProcess(Idx + 1, K - 1, KnowWords | (1 << Idx));
+//
+//    // 만약 a, n, t, i, c가 아닌 경우
+//    if (Idx != 'a' - 'a' && Idx != 'n' - 'a' && Idx != 't' - 'a' && Idx != 'i' - 'a' && Idx != 'c' - 'a')
+//    {
+//        // 안 배우는 것으로 처리(a, n, t, i, c 외의 문자를 배우지 않은 것으로 처리하기 위함 => 완탐하기 위해)
+//        // Result로 가장 많이 읽을 수 있는 수를 반환하기 위한 것
+//        Result = max(Result, WordProcess(Idx + 1, K, KnowWords));
+//    }
+//
+//    return Result;
+//}
+//
+//int main()
+//{
+//    cin >> N >> K;
+//    for (int i = 0; i < N; ++i)
+//    {
+//        string Temp;
+//        cin >> Temp;
+//
+//        for (char Ch : Temp)
+//        {
+//            // 단어별 알파벳을 숫자로 계산하여 관리(a: 1, b: 2, c: 4, d: 8, ...)
+//            Words[i] |= (1 << (Ch - 'a'));
+//        }
+//    }
+//
+//    cout << WordProcess(0, K, 0) << '\n';
+//
+//    return 0;
+//}
 
-int Count(int KnowWords)
-{
-    int Cnt = 0;
-
-    for (int Word : Words) 
-    {
-        // 배운 단어를 기반으로 '&' 연산자를 한 것이 Word이면 읽을 수 있는 단어이므로 Cnt 증가
-        if (Word && Word == (Word & KnowWords)) ++Cnt;
-    }
-
-    return Cnt;
-}
-
-// Idx: 알파벳
-// K: 배울 수 있는 문자 수
-// KnowWords: 배운 단어
-int WordProcess(int Idx, int K, int KnowWords)
-{
-    // 음수
-    if (0 > K) return 0;
-
-    // 모든 문자를 탐색
-    if (26 == Idx) return Count(KnowWords);
-
-    // 문자를 배운 것으로 처리
-    int Result = WordProcess(Idx + 1, K - 1, KnowWords | (1 << Idx));
-
-    // 만약 a, n, t, i, c가 아닌 경우
-    if (Idx != 'a' - 'a' && Idx != 'n' - 'a' && Idx != 't' - 'a' && Idx != 'i' - 'a' && Idx != 'c' - 'a')
-    {
-        // 안 배우는 것으로 처리(a, n, t, i, c 외의 문자를 배우지 않은 것으로 처리하기 위함 => 완탐하기 위해)
-        // Result로 가장 많이 읽을 수 있는 수를 반환하기 위한 것
-        Result = max(Result, WordProcess(Idx + 1, K, KnowWords));
-    }
-
-    return Result;
-}
+// 7_막대기
+// https://www.acmicpc.net/problem/1094
+// 길이 64, 반으로 쪼개기 가능
+// X 길이의 막대기
+// * 가지고 있는 막대 중 가장 짧은 것을 절반
+// * 자른 막대의 절반 중 하나를 버리고 남아있는 막대의 길이 합이 X보다 크거나 같다면, 자른 막대의 절반 중 하나 버림
+// * 남아있는 모든 막대를 풀로 붙여서 X 생성
+// 64 -> 32 -> 16 -> 8 -> 4 -> 2 -> 1
+// _______ X의 2진수를 보면 합쳐야 되는 개수 파악 가능
+int X, Reslut = 1;
 
 int main() 
 {
-    cin >> N >> K;
-    for (int i = 0; i < N; ++i)
-    {
-        string Temp;
-        cin >> Temp;
+    cin >> X;
 
-        for (char Ch : Temp)
-        {
-            // 단어별 알파벳을 숫자로 계산하여 관리(a: 1, b: 2, c: 4, d: 8, ...)
-            Words[i] |= (1 << (Ch - 'a'));
-        }
+    while (1 != X)
+    {
+        // 2진수 & 연산이 1이 되면 증가
+        if(X & 1) ++Reslut;
+        // 절반 자르기
+        X /= 2;
     }
 
-    cout << WordProcess(0, K, 0) << '\n';
+    cout << Reslut << '\n';
 
     return 0;
 }
