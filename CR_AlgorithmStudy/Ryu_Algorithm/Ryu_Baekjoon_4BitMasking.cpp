@@ -540,55 +540,144 @@ using namespace std;
 // https://www.acmicpc.net/problem/11723
 // 공집합에 value를 추가
 // value번째에 1을 연산(비트마스킹)
-// value는 20이하
-int M, S, Value;
-string Command;
+//// value는 20이하
+//int M, S, Value;
+//string Command;
+//
+//int main()
+//{
+//	ios::sync_with_stdio(false);
+//	cin.tie(nullptr);
+//
+//	cin >> M;
+//
+//	for (int i = 0; i < M; ++i)
+//	{
+//		cin >> Command;
+//
+//		// add: Value 추가, Value가 있는 경우 무시
+//		if ('a' == Command[0] && 'd' == Command[1])
+//		{
+//			cin >> Value;
+//			S |= (1 << Value);
+//		}
+//		// all: {1, 2, ..., 20}으로 바꿈
+//		else if ('a' == Command[0] && 'l' == Command[1])
+//		{
+//			S = (1 << 21) - 1;
+//		}
+//		// remove: Value 제거, Value가 없는 경우 무시
+//		else if ('r' == Command[0])
+//		{
+//			cin >> Value;
+//			S &= ~(1 << Value);
+//		}
+//		// check: Value가 있으면 1, 없으면 0 출력
+//		else if ('c' == Command[0])
+//		{
+//			cin >> Value;
+//			cout << ((S & (1 << Value)) ? true : false) << '\n';
+//		}
+//		// toggle: Value가 있으면 Value 제거, 없으면 추가
+//		else if ('t' == Command[0])
+//		{
+//			cin >> Value;
+//			S ^= (1 << Value);
+//		}
+//		else
+//		{
+//			S = 0;
+//		}
+//	}
+//
+//	return 0;
+//}
+
+// 10_종이 조각
+// https://www.acmicpc.net/problem/14391
+// 행은 위에서 아래, 열을 좌에서 우
+// 종이를 적절히 잘라서 종이 조각의 최대 합 구하기
+// k로 자르는 위치를 파악하여 가로 세로 합
+// N: 세로 크기, M: 가로 크기(두 변수 모두 최대 4)
+// 0: 가로, 1: 세로 (N * M + M번째)
+int N, M, Result, Paper[4][4];
+string Nums;
 
 int main()
 {
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
+	cin >> N >> M;
 
-	cin >> M;
-
-	for (int i = 0; i < M; ++i)
+	// 종이 숫자 입력
+	for (int i = 0; i < N; ++i)
 	{
-		cin >> Command;
+		cin >> Nums;
 
-		// add: Value 추가, Value가 있는 경우 무시
-		if ('a' == Command[0] && 'd' == Command[1])
+		for (int j = 0; j < M; ++j)
 		{
-			cin >> Value;
-			S |= (1 << Value);
-		}
-		// all: {1, 2, ..., 20}으로 바꿈
-		else if ('a' == Command[0] && 'l' == Command[1])
-		{
-			S = (1 << 21) - 1;
-		}
-		// remove: Value 제거, Value가 없는 경우 무시
-		else if ('r' == Command[0])
-		{
-			cin >> Value;
-			S &= ~(1 << Value);
-		}
-		// check: Value가 있으면 1, 없으면 0 출력
-		else if ('c' == Command[0])
-		{
-			cin >> Value;
-			cout << ((S & (1 << Value)) ? true : false) << '\n';
-		}
-		// toggle: Value가 있으면 Value 제거, 없으면 추가
-		else if ('t' == Command[0])
-		{
-			cin >> Value;
-			S ^= (1 << Value);
-		}
-		else
-		{
-			S = 0;
+			Paper[i][j] = Nums[j] - '0';
 		}
 	}
+
+	// 0과 1을 구분(가로로 자를지 세로로 자를지 모든 가능한 자르기 경우의 수 확인)
+	for (int k = 0; k < (1 << (N * M)); ++k)
+	{
+		int Sum = 0;
+
+		// 0: 가로
+		for (int i = 0; i < N; ++i)
+		{
+			int Current = 0;
+
+			for (int j = 0; j < M; ++j)
+			{
+				int Temp = i * M + j;
+
+				// 0이라면 현재 수 확인 연결
+				if (0 == (k & (1 << Temp)))
+				{
+					Current = Current * 10 + Paper[i][j];
+				}
+				// 0이 아니라면 합산
+				else
+				{
+					Sum += Current;
+					Current = 0;
+				}
+			}
+		
+			Sum += Current;
+		}
+
+		// 1: 세로
+		for (int j = 0; j < M; ++j)
+		{
+			int Current = 0;
+
+			for (int i = 0; i < N; ++i)
+			{
+				int Temp = i * M + j;
+
+				// 0이 아닌(1-세로-) 수라면 현재 수 확인 연결
+				if (0 != (k & (1 << Temp)))
+				{
+					Current = Current * 10 + Paper[i][j];
+				}
+				// 0이라면 합산
+				else
+				{
+					Sum += Current;
+					Current = 0;
+				}
+			}
+
+			Sum += Current;
+		}
+
+		// 최대값 갱신
+		Result = max(Result, Sum);
+	}
+
+	cout << Result;
 
 	return 0;
 }
