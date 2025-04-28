@@ -444,94 +444,151 @@ using namespace std;
 // 벽 정보: 서 - 1, 북 - 2, 동 - 4, 남 - 8 => 남동북서 2진수 처리
 // 이동 배열의 방향 주의 할 것
 // Connected Component
-int dy[] = { 0, -1, 0, 1 };
-int dx[] = { -1, 0, 1, 0 };
-int N, M, Index, Largest, WallRmLargest, WallInfos[50][50], Visited[50][50], RoomSize[2500];
+//int dy[] = { 0, -1, 0, 1 };
+//int dx[] = { -1, 0, 1, 0 };
+//int N, M, Index, Largest, WallRmLargest, WallInfos[50][50], Visited[50][50], RoomSize[2500];
+//
+//int DFS(int Y, int X, int Cnt)
+//{
+//	if(0 != Visited[Y][X]) return 0;
+//
+//	Visited[Y][X] = Cnt;
+//
+//	int Result = 1;
+//
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		// 동서남북 벽이 없을 때 이동
+//		if (!(WallInfos[Y][X] & (1 << i)))
+//		{
+//			int ny = Y + dy[i];
+//			int nx = X + dx[i];
+//
+//			// 방 크기 합산
+//			Result += DFS(ny, nx, Cnt);
+//		}
+//	}
+//
+//	return Result;
+//}
+//
+//int main()
+//{
+//	cin >> N >> M;
+//
+//	// 벽 정보 등록
+//	for (int i = 0; i < M; ++i)
+//	{
+//		for (int j = 0; j < N; ++j)
+//		{
+//			cin >> WallInfos[i][j];
+//		}
+//	}
+//
+//	for (int i = 0; i < M; ++i)
+//	{
+//		for (int j = 0; j < N; ++j)
+//		{
+//			if (0 == Visited[i][j])
+//			{
+//				// 방 수 세기
+//				++Index;
+//				// 성 탐색, 방 Index의 공간 관리(0번 방 n Size, 1번 방 n Size, ...)
+//				RoomSize[Index] = DFS(i, j, Index);
+//				// 방 별 가장 넓은 곳 갱신
+//				Largest = max(Largest, RoomSize[Index]);
+//			}
+//		}
+//	}
+//
+//	// 벽 제거하여 가장 넓은 방 크기 구하기
+//	for (int i = 0; i < M; ++i)
+//	{
+//		for (int j = 0; j < N; ++j)
+//		{
+//			// 오버플로우 방지
+//			if (M > i + 1)
+//			{
+//				int Zone = Visited[i][j];
+//				int OtherZone = Visited[i + 1][j];
+//
+//				if (Zone != OtherZone)
+//				{
+//					WallRmLargest = max(WallRmLargest, RoomSize[Zone] + RoomSize[OtherZone]);
+//				}
+//			}
+//
+//			if (N > j + 1)
+//			{
+//				int Zone = Visited[i][j];
+//				int OtherZone = Visited[i][j + 1];
+//
+//				if (Zone != OtherZone)
+//				{
+//					WallRmLargest = max(WallRmLargest, RoomSize[Zone] + RoomSize[OtherZone]);
+//				}
+//			}
+//		}
+//	}
+//
+//	cout << Index << '\n' << Largest << '\n' << WallRmLargest;
+//
+//	return 0;
+//}
 
-int DFS(int Y, int X, int Cnt)
-{
-	if(0 != Visited[Y][X]) return 0;
-
-	Visited[Y][X] = Cnt;
-
-	int Result = 1;
-
-	for (int i = 0; i < 4; ++i)
-	{
-		// 동서남북 벽이 없을 때 이동
-		if (!(WallInfos[Y][X] & (1 << i)))
-		{
-			int ny = Y + dy[i];
-			int nx = X + dx[i];
-
-			// 방 크기 합산
-			Result += DFS(ny, nx, Cnt);
-		}
-	}
-
-	return Result;
-}
+// 9_집합
+// https://www.acmicpc.net/problem/11723
+// 공집합에 value를 추가
+// value번째에 1을 연산(비트마스킹)
+// value는 20이하
+int M, S, Value;
+string Command;
 
 int main()
 {
-	cin >> N >> M;
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-	// 벽 정보 등록
-	for (int i = 0; i < M; ++i)
-	{
-		for (int j = 0; j < N; ++j)
-		{
-			cin >> WallInfos[i][j];
-		}
-	}
+	cin >> M;
 
 	for (int i = 0; i < M; ++i)
 	{
-		for (int j = 0; j < N; ++j)
+		cin >> Command;
+
+		// add: Value 추가, Value가 있는 경우 무시
+		if ('a' == Command[0] && 'd' == Command[1])
 		{
-			if (0 == Visited[i][j])
-			{
-				// 방 수 세기
-				++Index;
-				// 성 탐색, 방 Index의 공간 관리(0번 방 n Size, 1번 방 n Size, ...)
-				RoomSize[Index] = DFS(i, j, Index);
-				// 방 별 가장 넓은 곳 갱신
-				Largest = max(Largest, RoomSize[Index]);
-			}
+			cin >> Value;
+			S |= (1 << Value);
+		}
+		// all: {1, 2, ..., 20}으로 바꿈
+		else if ('a' == Command[0] && 'l' == Command[1])
+		{
+			S = (1 << 21) - 1;
+		}
+		// remove: Value 제거, Value가 없는 경우 무시
+		else if ('r' == Command[0])
+		{
+			cin >> Value;
+			S &= ~(1 << Value);
+		}
+		// check: Value가 있으면 1, 없으면 0 출력
+		else if ('c' == Command[0])
+		{
+			cin >> Value;
+			cout << ((S & (1 << Value)) ? true : false) << '\n';
+		}
+		// toggle: Value가 있으면 Value 제거, 없으면 추가
+		else if ('t' == Command[0])
+		{
+			cin >> Value;
+			S ^= (1 << Value);
+		}
+		else
+		{
+			S = 0;
 		}
 	}
-
-	// 벽 제거하여 가장 넓은 방 크기 구하기
-	for (int i = 0; i < M; ++i)
-	{
-		for (int j = 0; j < N; ++j)
-		{
-			// 오버플로우 방지
-			if (M > i + 1)
-			{
-				int Zone = Visited[i][j];
-				int OtherZone = Visited[i + 1][j];
-
-				if (Zone != OtherZone)
-				{
-					WallRmLargest = max(WallRmLargest, RoomSize[Zone] + RoomSize[OtherZone]);
-				}
-			}
-
-			if (N > j + 1)
-			{
-				int Zone = Visited[i][j];
-				int OtherZone = Visited[i][j + 1];
-
-				if (Zone != OtherZone)
-				{
-					WallRmLargest = max(WallRmLargest, RoomSize[Zone] + RoomSize[OtherZone]);
-				}
-			}
-		}
-	}
-
-	cout << Index << '\n' << Largest << '\n' << WallRmLargest;
 
 	return 0;
 }
