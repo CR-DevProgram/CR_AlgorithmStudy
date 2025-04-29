@@ -600,84 +600,153 @@ using namespace std;
 // k로 자르는 위치를 파악하여 가로 세로 합
 // N: 세로 크기, M: 가로 크기(두 변수 모두 최대 4)
 // 0: 가로, 1: 세로 (N * M + M번째)
-int N, M, Result, Paper[4][4];
-string Nums;
+//int N, M, Result, Paper[4][4];
+//string Nums;
+//
+//int main()
+//{
+//	cin >> N >> M;
+//
+//	// 종이 숫자 입력
+//	for (int i = 0; i < N; ++i)
+//	{
+//		cin >> Nums;
+//
+//		for (int j = 0; j < M; ++j)
+//		{
+//			Paper[i][j] = Nums[j] - '0';
+//		}
+//	}
+//
+//	// 0과 1을 구분(가로로 자를지 세로로 자를지 모든 가능한 자르기 경우의 수 확인)
+//	for (int k = 0; k < (1 << (N * M)); ++k)
+//	{
+//		int Sum = 0;
+//
+//		// 0: 가로
+//		for (int i = 0; i < N; ++i)
+//		{
+//			int Current = 0;
+//
+//			for (int j = 0; j < M; ++j)
+//			{
+//				int Temp = i * M + j;
+//
+//				// 0이라면 현재 수 확인 연결
+//				if (0 == (k & (1 << Temp)))
+//				{
+//					Current = Current * 10 + Paper[i][j];
+//				}
+//				// 0이 아니라면 합산
+//				else
+//				{
+//					Sum += Current;
+//					Current = 0;
+//				}
+//			}
+//		
+//			Sum += Current;
+//		}
+//
+//		// 1: 세로
+//		for (int j = 0; j < M; ++j)
+//		{
+//			int Current = 0;
+//
+//			for (int i = 0; i < N; ++i)
+//			{
+//				int Temp = i * M + j;
+//
+//				// 0이 아닌(1-세로-) 수라면 현재 수 확인 연결
+//				if (0 != (k & (1 << Temp)))
+//				{
+//					Current = Current * 10 + Paper[i][j];
+//				}
+//				// 0이라면 합산
+//				else
+//				{
+//					Sum += Current;
+//					Current = 0;
+//				}
+//			}
+//
+//			Sum += Current;
+//		}
+//
+//		// 최대값 갱신
+//		Result = max(Result, Sum);
+//	}
+//
+//	cout << Result;
+//
+//	return 0;
+//}
+
+// 11_Tree
+// https://www.acmicpc.net/problem/13244
+// 노드들이 연결되어 있어 edge 따라 다른 노드로 이동 가능
+// 간선이 제거되면 연결되어 있지X 따라서 일부 노드에 접근 불가
+// A노드와 B노드 사이에 간선이 추가되면 사이클 생성, A노드에서 B노드로 가는 방법이 두 가지 이상인 경우 사이클 존재
+// 조건을 통해 그래프인지 트리인지 판별
+// DFS 한 번으로 연결된 모든 정점 탐색이 가능한가 == 트리
+// E = V - 1 == 트리
+// T: 그래프 개수 판별 수(최대 10), N: 노드 개수(1 <= N <= 1000), M: 간선 개수
+const int MaxNum = 1000;
+int T, N, M, A, B, Visited[MaxNum];
+vector<int> Adj[MaxNum];
+
+void DFS(int Here)
+{
+	Visited[Here] = 1;
+
+	for (int There : Adj[Here])
+	{
+		if (0 == Visited[There])
+		{
+			DFS(There);
+		}
+	}
+}
 
 int main()
 {
-	cin >> N >> M;
+	cin >> T;
 
-	// 종이 숫자 입력
-	for (int i = 0; i < N; ++i)
+	for (int k = 0; k < T; ++k)
 	{
-		cin >> Nums;
-
-		for (int j = 0; j < M; ++j)
+		// 초기화
+		for (int i = 0; i < MaxNum; ++i)
 		{
-			Paper[i][j] = Nums[j] - '0';
+			Adj[i].clear();
 		}
-	}
+		fill(Visited, Visited + MaxNum, 0);
 
-	// 0과 1을 구분(가로로 자를지 세로로 자를지 모든 가능한 자르기 경우의 수 확인)
-	for (int k = 0; k < (1 << (N * M)); ++k)
-	{
-		int Sum = 0;
+		int Count = 0;
 
-		// 0: 가로
-		for (int i = 0; i < N; ++i)
+		cin >> N >> M;
+
+		// 양방향 간선 만들기
+		for (int i = 0; i < M; ++i)
 		{
-			int Current = 0;
+			cin >> A >> B;
+			Adj[A].push_back(B);
+			Adj[B].push_back(A);
+		}
 
-			for (int j = 0; j < M; ++j)
+		// DFS를 한 번만 도는지 확인
+		for (int i = 1; i <= N; ++i)
+		{
+			if (0 == Visited[i])
 			{
-				int Temp = i * M + j;
-
-				// 0이라면 현재 수 확인 연결
-				if (0 == (k & (1 << Temp)))
-				{
-					Current = Current * 10 + Paper[i][j];
-				}
-				// 0이 아니라면 합산
-				else
-				{
-					Sum += Current;
-					Current = 0;
-				}
+				DFS(i);
+				// Count가 1이면 한 번만 돈 것
+				++Count;
 			}
-		
-			Sum += Current;
 		}
 
-		// 1: 세로
-		for (int j = 0; j < M; ++j)
-		{
-			int Current = 0;
-
-			for (int i = 0; i < N; ++i)
-			{
-				int Temp = i * M + j;
-
-				// 0이 아닌(1-세로-) 수라면 현재 수 확인 연결
-				if (0 != (k & (1 << Temp)))
-				{
-					Current = Current * 10 + Paper[i][j];
-				}
-				// 0이라면 합산
-				else
-				{
-					Sum += Current;
-					Current = 0;
-				}
-			}
-
-			Sum += Current;
-		}
-
-		// 최대값 갱신
-		Result = max(Result, Sum);
+		// 트리 조건을 확인하여 트리인지 그래프인지 판별
+		cout << ((N - 1 == M && 1 == Count) ? "tree" : "graph") << '\n';
 	}
-
-	cout << Result;
 
 	return 0;
 }
