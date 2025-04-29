@@ -691,61 +691,167 @@ using namespace std;
 // DFS 한 번으로 연결된 모든 정점 탐색이 가능한가 == 트리
 // E = V - 1 == 트리
 // T: 그래프 개수 판별 수(최대 10), N: 노드 개수(1 <= N <= 1000), M: 간선 개수
-const int MaxNum = 1000;
-int T, N, M, A, B, Visited[MaxNum];
-vector<int> Adj[MaxNum];
+//const int MaxNum = 1000;
+//int T, N, M, A, B, Visited[MaxNum];
+//vector<int> Adj[MaxNum];
+//
+//void DFS(int Here)
+//{
+//	Visited[Here] = 1;
+//
+//	for (int There : Adj[Here])
+//	{
+//		if (0 == Visited[There])
+//		{
+//			DFS(There);
+//		}
+//	}
+//}
+//
+//int main()
+//{
+//	cin >> T;
+//
+//	for (int k = 0; k < T; ++k)
+//	{
+//		// 초기화
+//		for (int i = 0; i < MaxNum; ++i)
+//		{
+//			Adj[i].clear();
+//		}
+//		fill(Visited, Visited + MaxNum, 0);
+//
+//		int Count = 0;
+//
+//		cin >> N >> M;
+//
+//		// 양방향 간선 만들기
+//		for (int i = 0; i < M; ++i)
+//		{
+//			cin >> A >> B;
+//			Adj[A].push_back(B);
+//			Adj[B].push_back(A);
+//		}
+//
+//		// DFS를 한 번만 도는지 확인
+//		for (int i = 1; i <= N; ++i)
+//		{
+//			if (0 == Visited[i])
+//			{
+//				DFS(i);
+//				// Count가 1이면 한 번만 돈 것
+//				++Count;
+//			}
+//		}
+//
+//		// 트리 조건을 확인하여 트리인지 그래프인지 판별
+//		cout << ((N - 1 == M && 1 == Count) ? "tree" : "graph") << '\n';
+//	}
+//
+//	return 0;
+//}
 
-void DFS(int Here)
-{
-	Visited[Here] = 1;
-
-	for (int There : Adj[Here])
-	{
-		if (0 == Visited[There])
-		{
-			DFS(There);
-		}
-	}
-}
+// 12_AC
+// https://www.acmicpc.net/problem/5430
+// R: 순서 뒤집기 함수, D: 첫번째 수 버리기 함수(배열이 비어있을 때 사용하면 에러 발생)
+// T: 테스트 케이스 수(최대 100), Strp: 수행할 함수(1 <= p길이 <= 100000), N: 배열에 들어있는 수의 개수(0 <= N <= 100000)
+int T, N, X;
+string Strp, Str;
 
 int main()
 {
 	cin >> T;
 
-	for (int k = 0; k < T; ++k)
+	for (int i = 0; i < T; ++i)
 	{
-		// 초기화
-		for (int i = 0; i < MaxNum; ++i)
+		deque<int> Deq;
+		X = 0;
+
+		cin >> Strp >> N >> Str;
+		
+		// 배열 만들기
+		for (char Ch : Str)
 		{
-			Adj[i].clear();
-		}
-		fill(Visited, Visited + MaxNum, 0);
-
-		int Count = 0;
-
-		cin >> N >> M;
-
-		// 양방향 간선 만들기
-		for (int i = 0; i < M; ++i)
-		{
-			cin >> A >> B;
-			Adj[A].push_back(B);
-			Adj[B].push_back(A);
-		}
-
-		// DFS를 한 번만 도는지 확인
-		for (int i = 1; i <= N; ++i)
-		{
-			if (0 == Visited[i])
+			if('[' == Ch || ']' == Ch) continue;
+			
+			// 숫자 생성
+			if ('0' <= Ch && '9' >= Ch)
 			{
-				DFS(i);
-				// Count가 1이면 한 번만 돈 것
-				++Count;
+				X = X * 10 + (Ch - '0');
+			}
+			else
+			{
+				if (0 < X)
+				{
+					Deq.push_back(X);
+				}
+
+				X = 0;
 			}
 		}
 
-		// 트리 조건을 확인하여 트리인지 그래프인지 판별
-		cout << ((N - 1 == M && 1 == Count) ? "tree" : "graph") << '\n';
+		if (0 < X)
+		{
+			Deq.push_back(X);
+		}
+
+		// Flag 활용
+		bool Err = false, Rev = false;
+
+		for (char Ch : Strp)
+		{
+			if ('R' == Ch)
+			{
+				Rev = !Rev;
+			}
+			else
+			{
+				// 배열이 비어 있을 때 D를 할 경우 Error
+				if (true == Deq.empty())
+				{
+					Err = true;
+					break;
+				}
+
+				// 뒤집어져있다면 뒷 부분 제거
+				if (true == Rev)
+				{
+					Deq.pop_back();
+				}
+				// 뒤집어진게 아니라면 원래대로 앞 부분 제거
+				else
+				{
+					Deq.pop_front();
+				}
+			}
+		}
+
+		if (true == Err)
+		{
+			cout << "error" << '\n';
+		}
+		else
+		{
+			cout << "[";
+
+			// 최종적으로 R라면 뒤집기
+			if (true == Rev)
+			{
+				reverse(Deq.begin(), Deq.end());
+			}
+
+			// 배열 출력
+			for (int i = 0; i < Deq.size(); ++i)
+			{
+				 cout << Deq[i];
+
+				 if (Deq.size() - 1 > i)
+				 {
+					 cout << ",";
+				 }
+			}
+			cout << "]\n";
+		}
 	}
 
 	return 0;
