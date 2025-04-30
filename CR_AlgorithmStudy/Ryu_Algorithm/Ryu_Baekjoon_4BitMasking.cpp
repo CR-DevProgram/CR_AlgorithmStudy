@@ -861,34 +861,74 @@ using namespace std;
 // https://www.acmicpc.net/problem/14405
 // "pi" "ka" "chu"
 // S: 발음문자열(S길이 <= 5000)
-string S;
-bool Flag = false;
+//string S;
+//bool Flag = false;
+//
+//int main()
+//{
+//	ios_base::sync_with_stdio(false);
+//	cin.tie(NULL);
+//
+//	cin >> S;
+//
+//	for (int i = 0; i < S.size(); ++i)
+//	{
+//		if (S.size() - 1 > i && "pi" == S.substr(i, 2) || "ka" == S.substr(i, 2))
+//		{
+//			i += 1;
+//		}
+//		else if (S.size() - 2 > i  && "chu" == S.substr(i, 3))
+//		{
+//			i += 2;
+//		}
+//		else
+//		{
+//			Flag = true;
+//			break;
+//		}
+//	}
+//
+//	cout << (Flag ? "NO" : "YES");
+//
+//	return 0;
+//}
+
+// 14_큰 수 A+B (2)
+// https://www.acmicpc.net/problem/15353
+// 수가 크므로 int나 long long으로 안됨
+// string을 활용
+// 뒤에서부터 더한 뒤 반전(끝에서부터 더해서 올림을 하기 위한 것)
+// Sum은 합산을 통한 올림 수를 파악하고자 하는 것
+string A, B, Result;
+int Sum;
 
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
+	cin >> A >> B;
 
-	cin >> S;
-
-	for (int i = 0; i < S.size(); )
+	while (true != A.empty() || true != B.empty() || 0 != Sum)
 	{
-		if (S.size() - 1 > i && "pi" == S.substr(i, 2) || "ka" == S.substr(i, 2))
+		if (true != A.empty())
 		{
-			i += 1;
+			Sum += A.back() - '0';
+			A.pop_back();
 		}
-		else if (S.size() - 2 > i  && "chu" == S.substr(i, 3))
+
+		if (true != B.empty())
 		{
-			i += 2;
+			Sum += B.back() - '0';
+			B.pop_back();
 		}
-		else
-		{
-			Flag = true;
-			break;
-		}
+
+		// Sum % 10: 출력되어야 되는 합산의 수
+		Result += (Sum % 10) + '0';
+		// 자리 올림 수에 대한 Sum
+		Sum /= 10;
 	}
 
-	cout << (Flag ? "NO" : "YES");
+	reverse(Result.begin(), Result.end());
+
+	cout << Result;
 
 	return 0;
 }
