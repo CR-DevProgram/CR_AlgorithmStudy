@@ -755,104 +755,140 @@ using namespace std;
 // https://www.acmicpc.net/problem/5430
 // R: 순서 뒤집기 함수, D: 첫번째 수 버리기 함수(배열이 비어있을 때 사용하면 에러 발생)
 // T: 테스트 케이스 수(최대 100), Strp: 수행할 함수(1 <= p길이 <= 100000), N: 배열에 들어있는 수의 개수(0 <= N <= 100000)
-int T, N, X;
-string Strp, Str;
+//int T, N, X;
+//string Strp, Str;
+//
+//int main()
+//{
+//	cin >> T;
+//
+//	for (int i = 0; i < T; ++i)
+//	{
+//		deque<int> Deq;
+//		X = 0;
+//
+//		cin >> Strp >> N >> Str;
+//		
+//		// 배열 만들기
+//		for (char Ch : Str)
+//		{
+//			if('[' == Ch || ']' == Ch) continue;
+//			
+//			// 숫자 생성
+//			if ('0' <= Ch && '9' >= Ch)
+//			{
+//				X = X * 10 + (Ch - '0');
+//			}
+//			else
+//			{
+//				if (0 < X)
+//				{
+//					Deq.push_back(X);
+//				}
+//
+//				X = 0;
+//			}
+//		}
+//
+//		if (0 < X)
+//		{
+//			Deq.push_back(X);
+//		}
+//
+//		// Flag 활용
+//		bool Err = false, Rev = false;
+//
+//		for (char Ch : Strp)
+//		{
+//			if ('R' == Ch)
+//			{
+//				Rev = !Rev;
+//			}
+//			else
+//			{
+//				// 배열이 비어 있을 때 D를 할 경우 Error
+//				if (true == Deq.empty())
+//				{
+//					Err = true;
+//					break;
+//				}
+//
+//				// 뒤집어져있다면 뒷 부분 제거
+//				if (true == Rev)
+//				{
+//					Deq.pop_back();
+//				}
+//				// 뒤집어진게 아니라면 원래대로 앞 부분 제거
+//				else
+//				{
+//					Deq.pop_front();
+//				}
+//			}
+//		}
+//
+//		if (true == Err)
+//		{
+//			cout << "error" << '\n';
+//		}
+//		else
+//		{
+//			cout << "[";
+//
+//			// 최종적으로 R라면 뒤집기
+//			if (true == Rev)
+//			{
+//				reverse(Deq.begin(), Deq.end());
+//			}
+//
+//			// 배열 출력
+//			for (int i = 0; i < Deq.size(); ++i)
+//			{
+//				 cout << Deq[i];
+//
+//				 if (Deq.size() - 1 > i)
+//				 {
+//					 cout << ",";
+//				 }
+//			}
+//			cout << "]\n";
+//		}
+//	}
+//
+//	return 0;
+//}
+
+// 13_피카츄
+// https://www.acmicpc.net/problem/14405
+// "pi" "ka" "chu"
+// S: 발음문자열(S길이 <= 5000)
+string S;
+bool Flag = false;
 
 int main()
 {
-	cin >> T;
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
 
-	for (int i = 0; i < T; ++i)
+	cin >> S;
+
+	for (int i = 0; i < S.size(); )
 	{
-		deque<int> Deq;
-		X = 0;
-
-		cin >> Strp >> N >> Str;
-		
-		// 배열 만들기
-		for (char Ch : Str)
+		if (S.size() - 1 > i && "pi" == S.substr(i, 2) || "ka" == S.substr(i, 2))
 		{
-			if('[' == Ch || ']' == Ch) continue;
-			
-			// 숫자 생성
-			if ('0' <= Ch && '9' >= Ch)
-			{
-				X = X * 10 + (Ch - '0');
-			}
-			else
-			{
-				if (0 < X)
-				{
-					Deq.push_back(X);
-				}
-
-				X = 0;
-			}
+			i += 1;
 		}
-
-		if (0 < X)
+		else if (S.size() - 2 > i  && "chu" == S.substr(i, 3))
 		{
-			Deq.push_back(X);
-		}
-
-		// Flag 활용
-		bool Err = false, Rev = false;
-
-		for (char Ch : Strp)
-		{
-			if ('R' == Ch)
-			{
-				Rev = !Rev;
-			}
-			else
-			{
-				// 배열이 비어 있을 때 D를 할 경우 Error
-				if (true == Deq.empty())
-				{
-					Err = true;
-					break;
-				}
-
-				// 뒤집어져있다면 뒷 부분 제거
-				if (true == Rev)
-				{
-					Deq.pop_back();
-				}
-				// 뒤집어진게 아니라면 원래대로 앞 부분 제거
-				else
-				{
-					Deq.pop_front();
-				}
-			}
-		}
-
-		if (true == Err)
-		{
-			cout << "error" << '\n';
+			i += 2;
 		}
 		else
 		{
-			cout << "[";
-
-			// 최종적으로 R라면 뒤집기
-			if (true == Rev)
-			{
-				reverse(Deq.begin(), Deq.end());
-			}
-
-			// 배열 출력
-			for (int i = 0; i < Deq.size(); ++i)
-			{
-				 cout << Deq[i];
-
-				 if (Deq.size() - 1 > i)
-				 {
-					 cout << ",";
-				 }
-			}
-			cout << "]\n";
+			Flag = true;
+			break;
 		}
 	}
+
+	cout << (Flag ? "NO" : "YES");
 
 	return 0;
 }
