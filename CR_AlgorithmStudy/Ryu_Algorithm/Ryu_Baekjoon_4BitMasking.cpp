@@ -899,36 +899,78 @@ using namespace std;
 // string을 활용
 // 뒤에서부터 더한 뒤 반전(끝에서부터 더해서 올림을 하기 위한 것)
 // Sum은 합산을 통한 올림 수를 파악하고자 하는 것
-string A, B, Result;
-int Sum;
+//string A, B, Result;
+//int Sum;
+//
+//int main()
+//{
+//	cin >> A >> B;
+//
+//	while (true != A.empty() || true != B.empty() || 0 != Sum)
+//	{
+//		if (true != A.empty())
+//		{
+//			Sum += A.back() - '0';
+//			A.pop_back();
+//		}
+//
+//		if (true != B.empty())
+//		{
+//			Sum += B.back() - '0';
+//			B.pop_back();
+//		}
+//
+//		// Sum % 10: 출력되어야 되는 합산의 수
+//		Result += (Sum % 10) + '0';
+//		// 자리 올림 수에 대한 Sum
+//		Sum /= 10;
+//	}
+//
+//	reverse(Result.begin(), Result.end());
+//
+//	cout << Result;
+//
+//	return 0;
+//}
+
+// 15_현욱은 괄호왕이야!!
+// https://www.acmicpc.net/problem/15926
+// 올바른 괄호가 형성되어 있는 길이 확인
+// 괄호 문자열을 자르기 가능
+// 괄호문제는 스택!
+int N, MaxLength;
+string StrN;
+stack<int> StkN;
 
 int main()
 {
-	cin >> A >> B;
+	cin >> N >> StrN;
+	// 최종 길이 확인을 위한 -1 추가
+	StkN.push(-1);
 
-	while (true != A.empty() || true != B.empty() || 0 != Sum)
+	for (int i = 0; i < N; ++i)
 	{
-		if (true != A.empty())
+		if ('(' == StrN[i])
 		{
-			Sum += A.back() - '0';
-			A.pop_back();
-		}
-
-		if (true != B.empty())
+			StkN.push(i);
+		 }
+		else
 		{
-			Sum += B.back() - '0';
-			B.pop_back();
+			StkN.pop();
+			if(true == StkN.empty())
+			{
+				// 분기점 사용
+				StkN.push(i);
+				
+			}
+			else
+			{
+				MaxLength = max(MaxLength, i - StkN.top());
+			}
 		}
-
-		// Sum % 10: 출력되어야 되는 합산의 수
-		Result += (Sum % 10) + '0';
-		// 자리 올림 수에 대한 Sum
-		Sum /= 10;
 	}
 
-	reverse(Result.begin(), Result.end());
-
-	cout << Result;
+	cout << MaxLength;
 
 	return 0;
 }
