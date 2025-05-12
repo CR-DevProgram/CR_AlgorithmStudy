@@ -938,39 +938,93 @@ using namespace std;
 // 올바른 괄호가 형성되어 있는 길이 확인
 // 괄호 문자열을 자르기 가능
 // 괄호문제는 스택!
-int N, MaxLength;
-string StrN;
-stack<int> StkN;
+//int N, MaxLength;
+//string StrN;
+//stack<int> StkN;
+//
+//int main()
+//{
+//	cin >> N >> StrN;
+//	// 최종 길이 확인을 위한 -1 추가
+//	StkN.push(-1);
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		if ('(' == StrN[i])
+//		{
+//			StkN.push(i);
+//		 }
+//		else
+//		{
+//			StkN.pop();
+//			if(true == StkN.empty())
+//			{
+//				// 분기점 사용
+//				StkN.push(i);
+//				
+//			}
+//			else
+//			{
+//				MaxLength = max(MaxLength, i - StkN.top());
+//			}
+//		}
+//	}
+//
+//	cout << MaxLength;
+//
+//	return 0;
+//}
+
+// 16_오아시스 재결합
+// https://www.acmicpc.net/problem/3015
+// 쌍의 수(짝짓기) 출력: stack 문제
+// 큰 값 있을 때 비교해서 작으면 pop
+// 같은 경우 등차수열: (n(n + 1)) / 2
+// 500000 x 500000: long long 사용 이유
+long long N, Height, Result;
+stack<pair<long long, long long>> Stk;
 
 int main()
 {
-	cin >> N >> StrN;
-	// 최종 길이 확인을 위한 -1 추가
-	StkN.push(-1);
+	cin >> N;
 
-	for (int i = 0; i < N; ++i)
+	for (int i = 0; i < N; ++i) 
 	{
-		if ('(' == StrN[i])
+		cin >> Height;
+
+		// 같은 값의 수 파악 변수
+		int Count = 1;
+
+		// 현재 키보다 작거나 같은 키의 사람들을 모두 pop
+		while (true != Stk.empty() && Stk.top().first <= Height)
 		{
-			StkN.push(i);
-		 }
-		else
-		{
-			StkN.pop();
-			if(true == StkN.empty())
+			// top의 사람과 현재 사람과 볼 수 있으므로 추가
+			Result += Stk.top().second;
+
+			// 같은 경우 누적
+			if (Height == Stk.top().first)
 			{
-				// 분기점 사용
-				StkN.push(i);
-				
+				Count = Stk.top().second + 1;
 			}
-			else
+			else 
 			{
-				MaxLength = max(MaxLength, i - StkN.top());
+				Count = 1;
 			}
+
+			// 이미 인사한 사람 제거
+			Stk.pop();
 		}
+
+		// 스택에 아직 사람이 있다면 바로 앞 사람 보기 가능
+		if (true != Stk.empty())
+		{
+			++Result;
+		}
+
+		Stk.push({ Height, Count });
 	}
 
-	cout << MaxLength;
+	cout << Result;
 
 	return 0;
 }
