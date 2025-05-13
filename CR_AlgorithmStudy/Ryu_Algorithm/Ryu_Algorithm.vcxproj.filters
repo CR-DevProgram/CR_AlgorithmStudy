@@ -33,5 +33,8 @@
     <ClCompile Include="Ryu_Baekjoon_4BitMasking.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Ryu_Baekjoon_5GreedyLineSweepingTwoPointer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

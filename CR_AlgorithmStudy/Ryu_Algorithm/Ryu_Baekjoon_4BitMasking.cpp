@@ -981,50 +981,50 @@ using namespace std;
 // 큰 값 있을 때 비교해서 작으면 pop
 // 같은 경우 등차수열: (n(n + 1)) / 2
 // 500000 x 500000: long long 사용 이유
-long long N, Height, Result;
-stack<pair<long long, long long>> Stk;
-
-int main()
-{
-	cin >> N;
-
-	for (int i = 0; i < N; ++i) 
-	{
-		cin >> Height;
-
-		// 같은 값의 수 파악 변수
-		int Count = 1;
-
-		// 현재 키보다 작거나 같은 키의 사람들을 모두 pop
-		while (true != Stk.empty() && Stk.top().first <= Height)
-		{
-			// top의 사람과 현재 사람과 볼 수 있으므로 추가
-			Result += Stk.top().second;
-
-			// 같은 경우 누적
-			if (Height == Stk.top().first)
-			{
-				Count = Stk.top().second + 1;
-			}
-			else 
-			{
-				Count = 1;
-			}
-
-			// 이미 인사한 사람 제거
-			Stk.pop();
-		}
-
-		// 스택에 아직 사람이 있다면 바로 앞 사람 보기 가능
-		if (true != Stk.empty())
-		{
-			++Result;
-		}
-
-		Stk.push({ Height, Count });
-	}
-
-	cout << Result;
-
-	return 0;
-}
+//long long N, Height, Result;
+//stack<pair<long long, long long>> Stk;
+//
+//int main()
+//{
+//	cin >> N;
+//
+//	for (int i = 0; i < N; ++i) 
+//	{
+//		cin >> Height;
+//
+//		// 같은 값의 수 파악 변수
+//		int Count = 1;
+//
+//		// 현재 키보다 작거나 같은 키의 사람들을 모두 pop
+//		while (true != Stk.empty() && Stk.top().first <= Height)
+//		{
+//			// top의 사람과 현재 사람과 볼 수 있으므로 추가
+//			Result += Stk.top().second;
+//
+//			// 같은 경우 누적
+//			if (Height == Stk.top().first)
+//			{
+//				Count = Stk.top().second + 1;
+//			}
+//			else 
+//			{
+//				Count = 1;
+//			}
+//
+//			// 이미 인사한 사람 제거
+//			Stk.pop();
+//		}
+//
+//		// 스택에 아직 사람이 있다면 바로 앞 사람 보기 가능
+//		if (true != Stk.empty())
+//		{
+//			++Result;
+//		}
+//
+//		Stk.push({ Height, Count });
+//	}
+//
+//	cout << Result;
+//
+//	return 0;
+//}
