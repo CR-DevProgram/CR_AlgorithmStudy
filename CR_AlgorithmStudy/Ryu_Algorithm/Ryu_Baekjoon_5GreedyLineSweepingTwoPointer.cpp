@@ -49,6 +49,7 @@ using namespace std;
 // 2_문자열 폭발
 // https://www.acmicpc.net/problem/9935
 string Str, BoomStr, S, CompStr;
+stack<char> Stk;
 
 //int main()
 //{
@@ -73,25 +74,78 @@ string Str, BoomStr, S, CompStr;
 //	return 0;
 //}
 
+//int main()
+//{
+//	cin >> Str >> BoomStr;
+//
+//	for (char Ch : Str)
+//	{
+//		S += Ch;
+//		if (S.size() >= BoomStr.size() && S.substr(S.size() - BoomStr.size(), BoomStr.size()) == BoomStr)
+//		{
+//			S.erase(S.end() - BoomStr.size(), S.end());
+//		}
+//	}
+//
+//	if (true == S.empty())
+//	{
+//		cout << "FRULA";
+//	}
+//	else
+//	{
+//		cout << S;
+//	}
+//
+//	return 0;
+//}
+
+// 폭발 혹은 짝짓기 문제면 stack일 확률이 높음
 int main()
 {
 	cin >> Str >> BoomStr;
 
 	for (char Ch : Str)
 	{
-		S += Ch;
-		if (S.size() >= BoomStr.size() && S.substr(S.size() - BoomStr.size(), BoomStr.size()) == BoomStr)
+		Stk.push(Ch);
+
+		// 스택의 상단과 폭발 문자열의 끝 부분이 같은지 확인
+		if (Stk.size() >= BoomStr.size() && Stk.top() == BoomStr[BoomStr.size() - 1])
 		{
-			S.erase(S.end() - BoomStr.size(), S.end());
+			string Ss = "";
+
+			for (char C : BoomStr)
+			{
+				Ss += Stk.top();
+				Stk.pop();
+			}
+
+			reverse(Ss.begin(), Ss.end());
+
+			// 폭발 문자열과 다르다면 다시 넣어주는 작업
+			if (BoomStr != Ss)
+			{
+				for (int i : Ss)
+				{
+					Stk.push(i);
+				}
+			}
 		}
 	}
 
-	if (true == S.empty())
+	if (0 == Stk.size())
 	{
 		cout << "FRULA";
 	}
 	else
 	{
+		while (true != Stk.empty())
+		{
+			S += Stk.top();
+			Stk.pop();
+		}
+
+		reverse(S.begin(), S.end());
+
 		cout << S;
 	}
 
