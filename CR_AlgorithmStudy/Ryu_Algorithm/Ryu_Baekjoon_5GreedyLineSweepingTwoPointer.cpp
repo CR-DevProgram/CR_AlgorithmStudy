@@ -48,8 +48,8 @@ using namespace std;
 
 // 2_문자열 폭발
 // https://www.acmicpc.net/problem/9935
-string Str, BoomStr, S, CompStr;
-stack<char> Stk;
+//string Str, BoomStr, S, CompStr;
+//stack<char> Stk;
 
 //int main()
 //{
@@ -100,54 +100,96 @@ stack<char> Stk;
 //}
 
 // 폭발 혹은 짝짓기 문제면 stack일 확률이 높음
+//int main()
+//{
+//	cin >> Str >> BoomStr;
+//
+//	for (char Ch : Str)
+//	{
+//		Stk.push(Ch);
+//
+//		// 스택의 상단과 폭발 문자열의 끝 부분이 같은지 확인
+//		if (Stk.size() >= BoomStr.size() && Stk.top() == BoomStr[BoomStr.size() - 1])
+//		{
+//			string Ss = "";
+//
+//			for (char C : BoomStr)
+//			{
+//				Ss += Stk.top();
+//				Stk.pop();
+//			}
+//
+//			reverse(Ss.begin(), Ss.end());
+//
+//			// 폭발 문자열과 다르다면 다시 넣어주는 작업
+//			if (BoomStr != Ss)
+//			{
+//				for (int i : Ss)
+//				{
+//					Stk.push(i);
+//				}
+//			}
+//		}
+//	}
+//
+//	if (0 == Stk.size())
+//	{
+//		cout << "FRULA";
+//	}
+//	else
+//	{
+//		while (true != Stk.empty())
+//		{
+//			S += Stk.top();
+//			Stk.pop();
+//		}
+//
+//		reverse(S.begin(), S.end());
+//
+//		cout << S;
+//	}
+//
+//	return 0;
+//}
+
+// 3_컵라면
+// https://www.acmicpc.net/problem/1781
+// 데드라인에 컵라면 수량을 우선으로 따지는 우선순위 큐를 사용
+int N, Total;
+pair<int, int> Pii;
+vector<pair<int, int>> Vec;
+priority_queue<int, vector<int>, greater<int>> PQ;
+
 int main()
 {
-	cin >> Str >> BoomStr;
+	cin >> N;
 
-	for (char Ch : Str)
+	for (int i = 0; i < N; ++i)
 	{
-		Stk.push(Ch);
+		cin >> Pii.first >> Pii.second;
 
-		// 스택의 상단과 폭발 문자열의 끝 부분이 같은지 확인
-		if (Stk.size() >= BoomStr.size() && Stk.top() == BoomStr[BoomStr.size() - 1])
+		Vec.push_back(Pii);
+	}
+
+	sort(Vec.begin(), Vec.end());
+
+	for (int i = 0; i < N; ++i)
+	{
+		PQ.push(Vec[i].second);
+
+		if (PQ.size() > Vec[i].first)
 		{
-			string Ss = "";
-
-			for (char C : BoomStr)
-			{
-				Ss += Stk.top();
-				Stk.pop();
-			}
-
-			reverse(Ss.begin(), Ss.end());
-
-			// 폭발 문자열과 다르다면 다시 넣어주는 작업
-			if (BoomStr != Ss)
-			{
-				for (int i : Ss)
-				{
-					Stk.push(i);
-				}
-			}
+			PQ.pop();
 		}
 	}
 
-	if (0 == Stk.size())
+	while (true != PQ.empty())
 	{
-		cout << "FRULA";
+		Total += PQ.top();
+		PQ.pop();
 	}
-	else
-	{
-		while (true != Stk.empty())
-		{
-			S += Stk.top();
-			Stk.pop();
-		}
 
-		reverse(S.begin(), S.end());
-
-		cout << S;
-	}
+	cout << Total;
 
 	return 0;
 }
