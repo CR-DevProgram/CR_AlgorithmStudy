@@ -50,25 +50,50 @@ using namespace std;
 // https://www.acmicpc.net/problem/9935
 string Str, BoomStr, S, CompStr;
 
+//int main()
+//{
+//	cin >> Str >> BoomStr;
+//
+//	for (int i = 0; i < Str.length(); ++i)
+//	{
+//		S += Str[i];
+//
+//		if (S.size() >= BoomStr.size())
+//		{
+//			CompStr = S.substr((S.size() - BoomStr.size()));
+//			if (0 == CompStr.compare(BoomStr))
+//			{
+//				S.erase(S.size() - BoomStr.size());
+//			}
+//		}
+//	}
+//
+//	cout << (true == S.empty() ? "FRULA" : S);
+//
+//	return 0;
+//}
+
 int main()
 {
 	cin >> Str >> BoomStr;
 
-	for (int i = 0; i < Str.length(); ++i)
+	for (char Ch : Str)
 	{
-		S += Str[i];
-
-		if (S.size() >= BoomStr.size())
+		S += Ch;
+		if (S.size() >= BoomStr.size() && S.substr(S.size() - BoomStr.size(), BoomStr.size()) == BoomStr)
 		{
-			CompStr = S.substr((S.size() - BoomStr.size()));
-			if (0 == CompStr.compare(BoomStr))
-			{
-				S.erase(S.size() - BoomStr.size());
-			}
+			S.erase(S.end() - BoomStr.size(), S.end());
 		}
 	}
 
-	cout << (true == S.empty() ? "FRULA" : S);
+	if (true == S.empty())
+	{
+		cout << "FRULA";
+	}
+	else
+	{
+		cout << S;
+	}
 
 	return 0;
 }
