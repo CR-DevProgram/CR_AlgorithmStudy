@@ -277,36 +277,96 @@ using namespace std;
 // 라인 스위핑
 // 구간 관련된 문제인 경우 정렬을 생각하며 라인 스위핑을 떠올리면 됨
 // 구간이면 정렬한다!
-int From, To, I, Index, Count = 1;
+//int From, To, I, Index, Count = 1;
+//
+//int main()
+//{
+//	cin >> I;
+//
+//	vector<pair<int, int>> Vec;
+//
+//	for (int i = 0; i < I; ++i)
+//	{
+//		cin >> From >> To;
+//
+//		Vec.push_back({To, From});
+//	}
+//
+//	sort(Vec.begin(), Vec.end());
+//
+//	From = Vec[0].second;
+//	To = Vec[0].first;
+//
+//	for (int i = 1; i < I; ++i)
+//	{
+//		if(To > Vec[i].second) continue;
+//
+//		From = Vec[i].second;
+//		To = Vec[i].first;
+//		++Count;
+//	}
+//
+//	cout << Count;
+//
+//	return 0;
+//}
+
+// 6_보석 도둑
+// https://www.acmicpc.net/problem/1202
+// 가방에는 최대 한 개의 보석만 넣을 수 있음
+// N: 보석 개수, K: 가방 개수, M: 보석 무게, V: 보석 가격, C: 가방에 담을 수 있는 최대 무게
+int N, M, V, K, C;
+long long Sum;					// 보석 가치에 대한 수치 범위가 크기 때문에 모두 합산한다 했을 시 int로 할 경우 오버플로우로 인해 엉뚱한 값이 나옴
+vector<int> BVec;
+vector<pair<int, int>> JVec;
+priority_queue<int> PQ;
 
 int main()
 {
-	cin >> I;
+	cin >> N >> K;
 
-	vector<pair<int, int>> Vec;
-
-	for (int i = 0; i < I; ++i)
+	for (int i = 0; i < N; ++i)
 	{
-		cin >> From >> To;
+		cin >> M >> V;
 
-		Vec.push_back({To, From});
+		JVec.push_back({M, V});
 	}
 
-	sort(Vec.begin(), Vec.end());
-
-	From = Vec[0].second;
-	To = Vec[0].first;
-
-	for (int i = 1; i < I; ++i)
+	for (int i = 0; i < K; ++i)
 	{
-		if(To > Vec[i].second) continue;
+		cin >> C;
 
-		From = Vec[i].second;
-		To = Vec[i].first;
-		++Count;
+		BVec.push_back(C);
 	}
 
-	cout << Count;
+	// 가방 및 보석 무게 오름차순 정렬
+	sort(JVec.begin(), JVec.end());
+	sort(BVec.begin(), BVec.end());
+
+	// 보석 전체 탐색을 위한 인덱스 변수
+	int JewelIndex = 0;
+	// 가방에 담을 수 있는 보석 확인
+	for (int i = 0; i < K; ++i)
+	{
+		// 현재 가방의 최대 무게
+		int BagMax = BVec[i];
+		
+		// 현재 가방무게보다 적거나 같은 보석을 PQ에 담기
+		// 가방의 작은 무게부터 비교하므로 보석 또한 오름차순으로 정렬되어 있기 때문에 빠짐없이 탐색 가능
+		while (JewelIndex < N && JVec[JewelIndex].first <= BagMax)
+		{
+			PQ.push(JVec[JewelIndex].second);
+			++JewelIndex;
+		}
+
+		if(true != PQ.empty())
+		{
+			Sum += PQ.top();
+			PQ.pop();
+		}
+	}
+
+	cout << Sum;
 
 	return 0;
 }
