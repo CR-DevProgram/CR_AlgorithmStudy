@@ -197,35 +197,77 @@ using namespace std;
 // 4_소가 길을 건너간 이유 3
 // https://www.acmicpc.net/problem/14469
 // 라인 스위핑 문제
-int N, Time, Wait, Sum;
-vector<pair<int, int>> Cows;
+//int N, Time, Wait, Sum;
+//vector<pair<int, int>> Cows;
+//
+//int main()
+//{
+//	cin >> N;
+//	
+//	for (int i = 0; i < N; ++i)
+//	{
+//		cin >> Time >> Wait;
+//
+//		Cows.push_back({Time, Wait});
+//	}
+//
+//	sort(Cows.begin(), Cows.end());
+//
+//	for(int i = 0; i < N; ++i)
+//	{
+//		if (Sum < Cows[i].first)
+//		{
+//			Sum = Cows[i].first + Cows[i].second;
+//		}
+//		else
+//		{
+//			Sum += Cows[i].second;
+//		}
+//	}
+//
+//	cout << Sum;
+//
+//	return 0;
+//}
+
+// 5_회의실 배정
+// https://www.acmicpc.net/problem/1931
+int I, LastTime, Count = 1;
+pair<int, int> Pii;
+vector<pair<int, int>> Vec;
+
+bool Compare(const pair<int, int>& Left, const pair<int, int>& Right)
+{
+	if(Left.second == Right.second) return Left.first < Right.first;
+
+	return Left.second < Right.second;
+}
 
 int main()
 {
-	cin >> N;
+	cin >> I;
+
+	for (int i = 0; i < I; ++i)
+	{
+		cin >> Pii.first >> Pii.second;
+
+		Vec.push_back(Pii);
+	}
 	
-	for (int i = 0; i < N; ++i)
+	sort(Vec.begin(), Vec.end(), Compare);
+
+	LastTime = Vec[0].second;
+
+	for (int i = 1; i < I; ++i)
 	{
-		cin >> Time >> Wait;
-
-		Cows.push_back({Time, Wait});
-	}
-
-	sort(Cows.begin(), Cows.end());
-
-	for(int i = 0; i < N; ++i)
-	{
-		if (Sum < Cows[i].first)
+		if (Vec[i].first >= LastTime)
 		{
-			Sum = Cows[i].first + Cows[i].second;
-		}
-		else
-		{
-			Sum += Cows[i].second;
+			LastTime = Vec[i].second;
+			++Count;
 		}
 	}
 
-	cout << Sum;
+	cout << Count;
 
 	return 0;
 }
