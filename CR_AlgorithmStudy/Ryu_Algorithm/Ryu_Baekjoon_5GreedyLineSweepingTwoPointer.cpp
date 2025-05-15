@@ -155,41 +155,77 @@ using namespace std;
 // 3_컵라면
 // https://www.acmicpc.net/problem/1781
 // 데드라인에 컵라면 수량을 우선으로 따지는 우선순위 큐를 사용
-int N, Total;
-pair<int, int> Pii;
-vector<pair<int, int>> Vec;
-priority_queue<int, vector<int>, greater<int>> PQ;
+//int N, Total;
+//pair<int, int> Pii;
+//vector<pair<int, int>> Vec;
+//priority_queue<int, vector<int>, greater<int>> PQ;
+//
+//int main()
+//{
+//	cin >> N;
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		cin >> Pii.first >> Pii.second;
+//
+//		Vec.push_back(Pii);
+//	}
+//
+//	sort(Vec.begin(), Vec.end());
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		PQ.push(Vec[i].second);
+//
+//		if (PQ.size() > Vec[i].first)
+//		{
+//			PQ.pop();
+//		}
+//	}
+//
+//	while (true != PQ.empty())
+//	{
+//		Total += PQ.top();
+//		PQ.pop();
+//	}
+//
+//	cout << Total;
+//
+//	return 0;
+//}
+
+// 4_소가 길을 건너간 이유 3
+// https://www.acmicpc.net/problem/14469
+// 라인 스위핑 문제
+int N, Time, Wait, Sum;
+vector<pair<int, int>> Cows;
 
 int main()
 {
 	cin >> N;
-
+	
 	for (int i = 0; i < N; ++i)
 	{
-		cin >> Pii.first >> Pii.second;
+		cin >> Time >> Wait;
 
-		Vec.push_back(Pii);
+		Cows.push_back({Time, Wait});
 	}
 
-	sort(Vec.begin(), Vec.end());
+	sort(Cows.begin(), Cows.end());
 
-	for (int i = 0; i < N; ++i)
+	for(int i = 0; i < N; ++i)
 	{
-		PQ.push(Vec[i].second);
-
-		if (PQ.size() > Vec[i].first)
+		if (Sum < Cows[i].first)
 		{
-			PQ.pop();
+			Sum = Cows[i].first + Cows[i].second;
+		}
+		else
+		{
+			Sum += Cows[i].second;
 		}
 	}
 
-	while (true != PQ.empty())
-	{
-		Total += PQ.top();
-		PQ.pop();
-	}
-
-	cout << Total;
+	cout << Sum;
 
 	return 0;
 }
