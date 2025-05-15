@@ -232,39 +232,78 @@ using namespace std;
 
 // 5_회의실 배정
 // https://www.acmicpc.net/problem/1931
-int I, LastTime, Count = 1;
-pair<int, int> Pii;
-vector<pair<int, int>> Vec;
+//int I, LastTime, Count = 1;
+//pair<int, int> Pii;
+//vector<pair<int, int>> Vec;
+//
+//bool Compare(const pair<int, int>& Left, const pair<int, int>& Right)
+//{
+//	if(Left.second == Right.second) return Left.first < Right.first;
+//
+//	return Left.second < Right.second;
+//}
+//
+//int main()
+//{
+//	cin >> I;
+//
+//	for (int i = 0; i < I; ++i)
+//	{
+//		cin >> Pii.first >> Pii.second;
+//
+//		Vec.push_back(Pii);
+//	}
+//	
+//	sort(Vec.begin(), Vec.end(), Compare);
+//
+//	LastTime = Vec[0].second;
+//
+//	for (int i = 1; i < I; ++i)
+//	{
+//		if (Vec[i].first >= LastTime)
+//		{
+//			LastTime = Vec[i].second;
+//			++Count;
+//		}
+//	}
+//
+//	cout << Count;
+//
+//	return 0;
+//}
 
-bool Compare(const pair<int, int>& Left, const pair<int, int>& Right)
-{
-	if(Left.second == Right.second) return Left.first < Right.first;
-
-	return Left.second < Right.second;
-}
+// 정렬의 기준 변경
+// 회의가 겹치지 않게 최대 회의 갯수
+// 라인 스위핑
+// 구간 관련된 문제인 경우 정렬을 생각하며 라인 스위핑을 떠올리면 됨
+// 구간이면 정렬한다!
+int From, To, I, Index, Count = 1;
 
 int main()
 {
 	cin >> I;
 
+	vector<pair<int, int>> Vec;
+
 	for (int i = 0; i < I; ++i)
 	{
-		cin >> Pii.first >> Pii.second;
+		cin >> From >> To;
 
-		Vec.push_back(Pii);
+		Vec.push_back({To, From});
 	}
-	
-	sort(Vec.begin(), Vec.end(), Compare);
 
-	LastTime = Vec[0].second;
+	sort(Vec.begin(), Vec.end());
+
+	From = Vec[0].second;
+	To = Vec[0].first;
 
 	for (int i = 1; i < I; ++i)
 	{
-		if (Vec[i].first >= LastTime)
-		{
-			LastTime = Vec[i].second;
-			++Count;
-		}
+		if(To > Vec[i].second) continue;
+
+		From = Vec[i].second;
+		To = Vec[i].first;
+		++Count;
 	}
 
 	cout << Count;
