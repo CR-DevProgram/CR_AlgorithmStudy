@@ -315,58 +315,121 @@ using namespace std;
 // https://www.acmicpc.net/problem/1202
 // 가방에는 최대 한 개의 보석만 넣을 수 있음
 // N: 보석 개수, K: 가방 개수, M: 보석 무게, V: 보석 가격, C: 가방에 담을 수 있는 최대 무게
-int N, M, V, K, C;
-long long Sum;					// 보석 가치에 대한 수치 범위가 크기 때문에 모두 합산한다 했을 시 int로 할 경우 오버플로우로 인해 엉뚱한 값이 나옴
-vector<int> BVec;
-vector<pair<int, int>> JVec;
-priority_queue<int> PQ;
+//int N, M, V, K, C;
+//long long Sum;					// 보석 가치에 대한 수치 범위가 크기 때문에 모두 합산한다 했을 시 int로 할 경우 오버플로우로 인해 엉뚱한 값이 나옴
+//vector<int> BVec;
+//vector<pair<int, int>> JVec;
+//priority_queue<int> PQ;
+//
+//int main()
+//{
+//	cin >> N >> K;
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		cin >> M >> V;
+//
+//		JVec.push_back({M, V});
+//	}
+//
+//	for (int i = 0; i < K; ++i)
+//	{
+//		cin >> C;
+//
+//		BVec.push_back(C);
+//	}
+//
+//	// 가방 및 보석 무게 오름차순 정렬
+//	sort(JVec.begin(), JVec.end());
+//	sort(BVec.begin(), BVec.end());
+//
+//	// 보석 전체 탐색을 위한 인덱스 변수
+//	int JewelIndex = 0;
+//	// 가방에 담을 수 있는 보석 확인
+//	for (int i = 0; i < K; ++i)
+//	{
+//		// 현재 가방의 최대 무게
+//		int BagMax = BVec[i];
+//		
+//		// 현재 가방무게보다 적거나 같은 보석을 PQ에 담기
+//		// 가방의 작은 무게부터 비교하므로 보석 또한 오름차순으로 정렬되어 있기 때문에 빠짐없이 탐색 가능
+//		while (JewelIndex < N && JVec[JewelIndex].first <= BagMax)
+//		{
+//			PQ.push(JVec[JewelIndex].second);
+//			++JewelIndex;
+//		}
+//
+//		if(true != PQ.empty())
+//		{
+//			Sum += PQ.top();
+//			PQ.pop();
+//		}
+//	}
+//
+//	cout << Sum;
+//
+//	return 0;
+//}
+
+// 7_소수의 연속합
+// https://www.acmicpc.net/problem/1644
+// 소수 = 에라토스테네스 체
+// 구간의 시작과 끝을 두어 투 포인터를 사용해 푸는 방식
+// 구간이 N보다 작을 경우 끝을 오른쪽 이동
+// 구간이 N보다 클 경우 시작을 왼쪽 이동
+bool Erab[4000001];
+int N, Erai[4000001], Pos, Sum, Count;
 
 int main()
 {
-	cin >> N >> K;
+	cin >> N;
 
-	for (int i = 0; i < N; ++i)
+	// ===에라토스테네스의 체===
+	for (int i = 2; i <= N; ++i)
 	{
-		cin >> M >> V;
+		if (true == Erab[i]) continue;
 
-		JVec.push_back({M, V});
-	}
-
-	for (int i = 0; i < K; ++i)
-	{
-		cin >> C;
-
-		BVec.push_back(C);
-	}
-
-	// 가방 및 보석 무게 오름차순 정렬
-	sort(JVec.begin(), JVec.end());
-	sort(BVec.begin(), BVec.end());
-
-	// 보석 전체 탐색을 위한 인덱스 변수
-	int JewelIndex = 0;
-	// 가방에 담을 수 있는 보석 확인
-	for (int i = 0; i < K; ++i)
-	{
-		// 현재 가방의 최대 무게
-		int BagMax = BVec[i];
-		
-		// 현재 가방무게보다 적거나 같은 보석을 PQ에 담기
-		// 가방의 작은 무게부터 비교하므로 보석 또한 오름차순으로 정렬되어 있기 때문에 빠짐없이 탐색 가능
-		while (JewelIndex < N && JVec[JewelIndex].first <= BagMax)
+		// 소수가 아닌 것에 true
+		for (int j = 2 * i; j <= N; j += i)
 		{
-			PQ.push(JVec[JewelIndex].second);
-			++JewelIndex;
-		}
-
-		if(true != PQ.empty())
-		{
-			Sum += PQ.top();
-			PQ.pop();
+			Erab[j] = true;
 		}
 	}
 
-	cout << Sum;
+	for (int i = 2; i <= N; ++i)
+	{
+		// 소수인 경우 int 타입 배열에 담기
+		if (true != Erab[i])
+		{
+			Erai[Pos++] = i;
+		}
+	}
+	// =========================
+
+	int Begin = 0, End = 0;
+
+	while (true)
+	{
+		// 합이 N보다 크면 시작점을 이동시키고 합계에서 시작의 값을 뺌
+		if (Sum >= N)
+		{
+			Sum -= Erai[Begin++];
+		}
+		// 합이 N보다 작으면 끝점을 이동시키고 합계에서 끝 값을 더함
+		else
+		{
+			if (End == Pos) break;
+			Sum += Erai[End++];
+		}
+
+		// 투 포인터 이동 연산 후 최종 합산과 N을 비교하여 같은 경우 카운트 증가
+		if (Sum == N)
+		{
+			++Count;
+		}
+	}
+
+	cout << Count;
 
 	return 0;
 }
