@@ -438,34 +438,79 @@ using namespace std;
 // https://www.acmicpc.net/problem/13144
 // 등차수열의 합 = (n * (n + 1)) / 2
 // 경우의 수를 구하라고 할 경우 int 말고 long long으로 시작하는 것을 권장
-long long N, Count, Start, End, Arr[100004], Cnt[100004];
+//long long N, Count, Start, End, Arr[100004], Cnt[100004];
+//
+//int main()
+//{
+//	cin >> N;
+//	
+//	for (int i = 0; i < N; ++i)
+//	{
+//		cin >> Arr[i];
+//	}
+//
+//	while (End < N)
+//	{
+//		// 중복되는 것이 없는 경우
+//		if (0 == Cnt[Arr[End]])
+//		{
+//			++Cnt[Arr[End++]];
+//		}
+//		// 중복되는 것을 만났을 때
+//		else
+//		{
+//			Count += (End - Start);
+//			--Cnt[Arr[Start++]];
+//		}
+//	}
+//
+//	Count += (End - Start) * (End - Start + 1) / 2;
+//	
+//	cout << Count;
+//
+//	return 0;
+//}
+
+// 9_두 수의 합
+// https://www.acmicpc.net/problem/3273
+// 정렬하여 양 끝에 각 시작과 끝 지점을 이용한 투 포인터 사용
+int N, X, Temp, Count;
+vector<int> Vec;
 
 int main()
 {
 	cin >> N;
-	
+
 	for (int i = 0; i < N; ++i)
 	{
-		cin >> Arr[i];
+		cin >> Temp;
+		Vec.push_back(Temp);
 	}
 
-	while (End < N)
+	sort(Vec.begin(), Vec.end());
+
+	cin >> X;
+
+	int Value = 0, Left = 0, Right = N - 1;
+	while (Left < Right)
 	{
-		// 중복되는 것이 없는 경우
-		if (0 == Cnt[Arr[End]])
+		Value = Vec[Left] + Vec[Right];
+		if (X < Value)
 		{
-			++Cnt[Arr[End++]];
+			--Right;
 		}
-		// 중복되는 것을 만났을 때
+		else if (X > Value)
+		{
+			++Left;
+		}
 		else
 		{
-			Count += (End - Start);
-			--Cnt[Arr[Start++]];
+			++Count;
+			++Left;
+			--Right;
 		}
 	}
 
-	Count += (End - Start) * (End - Start + 1) / 2;
-	
 	cout << Count;
 
 	return 0;
