@@ -377,58 +377,95 @@ using namespace std;
 // 구간의 시작과 끝을 두어 투 포인터를 사용해 푸는 방식
 // 구간이 N보다 작을 경우 끝을 오른쪽 이동
 // 구간이 N보다 클 경우 시작을 왼쪽 이동
-bool Erab[4000001];
-int N, Erai[4000001], Pos, Sum, Count;
+//bool Erab[4000001];
+//int N, Erai[4000001], Pos, Sum, Count;
+//
+//int main()
+//{
+//	cin >> N;
+//
+//	// ===에라토스테네스의 체===
+//	for (int i = 2; i <= N; ++i)
+//	{
+//		if (true == Erab[i]) continue;
+//
+//		// 소수가 아닌 것에 true
+//		for (int j = 2 * i; j <= N; j += i)
+//		{
+//			Erab[j] = true;
+//		}
+//	}
+//
+//	for (int i = 2; i <= N; ++i)
+//	{
+//		// 소수인 경우 int 타입 배열에 담기
+//		if (true != Erab[i])
+//		{
+//			Erai[Pos++] = i;
+//		}
+//	}
+//	// =========================
+//
+//	int Begin = 0, End = 0;
+//
+//	while (true)
+//	{
+//		// 합이 N보다 크면 시작점을 이동시키고 합계에서 시작의 값을 뺌
+//		if (Sum >= N)
+//		{
+//			Sum -= Erai[Begin++];
+//		}
+//		// 합이 N보다 작으면 끝점을 이동시키고 합계에서 끝 값을 더함
+//		else
+//		{
+//			if (End == Pos) break;
+//			Sum += Erai[End++];
+//		}
+//
+//		// 투 포인터 이동 연산 후 최종 합산과 N을 비교하여 같은 경우 카운트 증가
+//		if (Sum == N)
+//		{
+//			++Count;
+//		}
+//	}
+//
+//	cout << Count;
+//
+//	return 0;
+//}
+
+// 8_List of Unique Numbers
+// https://www.acmicpc.net/problem/13144
+// 등차수열의 합 = (n * (n + 1)) / 2
+// 경우의 수를 구하라고 할 경우 int 말고 long long으로 시작하는 것을 권장
+long long N, Count, Start, End, Arr[100004], Cnt[100004];
 
 int main()
 {
 	cin >> N;
-
-	// ===에라토스테네스의 체===
-	for (int i = 2; i <= N; ++i)
+	
+	for (int i = 0; i < N; ++i)
 	{
-		if (true == Erab[i]) continue;
-
-		// 소수가 아닌 것에 true
-		for (int j = 2 * i; j <= N; j += i)
-		{
-			Erab[j] = true;
-		}
+		cin >> Arr[i];
 	}
 
-	for (int i = 2; i <= N; ++i)
+	while (End < N)
 	{
-		// 소수인 경우 int 타입 배열에 담기
-		if (true != Erab[i])
+		// 중복되는 것이 없는 경우
+		if (0 == Cnt[Arr[End]])
 		{
-			Erai[Pos++] = i;
+			++Cnt[Arr[End++]];
 		}
-	}
-	// =========================
-
-	int Begin = 0, End = 0;
-
-	while (true)
-	{
-		// 합이 N보다 크면 시작점을 이동시키고 합계에서 시작의 값을 뺌
-		if (Sum >= N)
-		{
-			Sum -= Erai[Begin++];
-		}
-		// 합이 N보다 작으면 끝점을 이동시키고 합계에서 끝 값을 더함
+		// 중복되는 것을 만났을 때
 		else
 		{
-			if (End == Pos) break;
-			Sum += Erai[End++];
-		}
-
-		// 투 포인터 이동 연산 후 최종 합산과 N을 비교하여 같은 경우 카운트 증가
-		if (Sum == N)
-		{
-			++Count;
+			Count += (End - Start);
+			--Cnt[Arr[Start++]];
 		}
 	}
 
+	Count += (End - Start) * (End - Start + 1) / 2;
+	
 	cout << Count;
 
 	return 0;
