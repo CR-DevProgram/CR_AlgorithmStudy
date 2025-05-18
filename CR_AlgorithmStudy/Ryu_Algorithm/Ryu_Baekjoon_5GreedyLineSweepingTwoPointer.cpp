@@ -474,40 +474,110 @@ using namespace std;
 // 9_두 수의 합
 // https://www.acmicpc.net/problem/3273
 // 정렬하여 양 끝에 각 시작과 끝 지점을 이용한 투 포인터 사용
-int N, X, Temp, Count;
+//int N, X, Temp, Count;
+//vector<int> Vec;
+//
+//int main()
+//{
+//	cin >> N;
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		cin >> Temp;
+//		Vec.push_back(Temp);
+//	}
+//
+//	sort(Vec.begin(), Vec.end());
+//
+//	cin >> X;
+//
+//	int Value = 0, Left = 0, Right = N - 1;
+//	while (Left < Right)
+//	{
+//		Value = Vec[Left] + Vec[Right];
+//		if (X < Value)
+//		{
+//			--Right;
+//		}
+//		else if (X > Value)
+//		{
+//			++Left;
+//		}
+//		else
+//		{
+//			++Count;
+//			++Left;
+//			--Right;
+//		}
+//	}
+//
+//	cout << Count;
+//
+//	return 0;
+//}
+
+// 10_멀티탭 스케줄링
+// https://www.acmicpc.net/problem/1700
+// Memory Paging Optimal(Optimal Page Replacement Algorithm)
+// 가장 미래에 참조되는 페이지를 쫓아내는 방법(Page Swap)
+int N, K, Count, Info[104], Reuse[104];
 vector<int> Vec;
 
 int main()
 {
-	cin >> N;
+	cin >> N >> K;
 
-	for (int i = 0; i < N; ++i)
+	for (int i = 0; i < K; ++i)
 	{
-		cin >> Temp;
-		Vec.push_back(Temp);
+		cin >> Info[i];
 	}
 
-	sort(Vec.begin(), Vec.end());
-
-	cin >> X;
-
-	int Value = 0, Left = 0, Right = N - 1;
-	while (Left < Right)
+	for (int i = 0; i < K; ++i)
 	{
-		Value = Vec[Left] + Vec[Right];
-		if (X < Value)
+		// i번째 사용 기기가 꽂혀있지 않을 때
+		if (0 == Reuse[Info[i]])
 		{
-			--Right;
-		}
-		else if (X > Value)
-		{
-			++Left;
-		}
-		else
-		{
-			++Count;
-			++Left;
-			--Right;
+			// N만큼 꽂을 수 있으므로 꽂혀있는 Vec의 크기 확인
+			// 즉, 멀티탭이 가득 찬 경우
+			if (Vec.size() == N)
+			{
+				int Top = 0, Pos = 0;
+
+				for (int Idx : Vec)
+				{
+					int Current = 987654321;
+
+					// 가장 먼 미래에 참조되는 것을 확인
+					for (int j = i + 1; j < K; ++j)
+					{
+						if (Idx == Info[j])
+						{
+							Current = j;
+							break;
+						}
+					}
+
+					// 가장 먼 미래에 참조되는 것이 현재보다 작은 경우
+					// 즉, 가장 나중에 쓰이거나 아예 안 쓰이는 기기 찾아 뽑는 로직
+					if (Top < Current)
+					{
+						// 가장 먼 미래에 참조되는 것dl 현재로 갱신
+						Top = Current;
+						// Pos는 전기용품을 나타냄
+						Pos = Idx;
+					}
+				}
+
+				// 가장 먼 미래에 참조 되는 것을 찾아 바꿔주는 것, 이 때 지워주고 카운트 증가
+				// 즉, 뽑고 새로 기기 꽂는 로직
+				Reuse[Pos] = 0;
+				++Count;
+				Vec.erase(find(Vec.begin(), Vec.end(), Pos));
+			}
+
+			// N개만큼 채워지기 전까지 push_back, 사용 여부 설정
+			Vec.push_back(Info[i]);
+			Reuse[Info[i]] = 1;
 		}
 	}
 
