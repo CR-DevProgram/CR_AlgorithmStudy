@@ -520,68 +520,227 @@ using namespace std;
 // https://www.acmicpc.net/problem/1700
 // Memory Paging Optimal(Optimal Page Replacement Algorithm)
 // 가장 미래에 참조되는 페이지를 쫓아내는 방법(Page Swap)
-int N, K, Count, Info[104], Reuse[104];
-vector<int> Vec;
+//int N, K, Count, Info[104], Reuse[104];
+//vector<int> Vec;
+//
+//int main()
+//{
+//	cin >> N >> K;
+//
+//	for (int i = 0; i < K; ++i)
+//	{
+//		cin >> Info[i];
+//	}
+//
+//	for (int i = 0; i < K; ++i)
+//	{
+//		// i번째 사용 기기가 꽂혀있지 않을 때
+//		if (0 == Reuse[Info[i]])
+//		{
+//			// N만큼 꽂을 수 있으므로 꽂혀있는 Vec의 크기 확인
+//			// 즉, 멀티탭이 가득 찬 경우
+//			if (Vec.size() == N)
+//			{
+//				int Top = 0, Pos = 0;
+//
+//				for (int Idx : Vec)
+//				{
+//					int Current = 987654321;
+//
+//					// 가장 먼 미래에 참조되는 것을 확인
+//					for (int j = i + 1; j < K; ++j)
+//					{
+//						if (Idx == Info[j])
+//						{
+//							Current = j;
+//							break;
+//						}
+//					}
+//
+//					// 가장 먼 미래에 참조되는 것이 현재보다 작은 경우
+//					// 즉, 가장 나중에 쓰이거나 아예 안 쓰이는 기기 찾아 뽑는 로직
+//					if (Top < Current)
+//					{
+//						// 가장 먼 미래에 참조되는 것dl 현재로 갱신
+//						Top = Current;
+//						// Pos는 전기용품을 나타냄
+//						Pos = Idx;
+//					}
+//				}
+//
+//				// 가장 먼 미래에 참조 되는 것을 찾아 바꿔주는 것, 이 때 지워주고 카운트 증가
+//				// 즉, 뽑고 새로 기기 꽂는 로직
+//				Reuse[Pos] = 0;
+//				++Count;
+//				Vec.erase(find(Vec.begin(), Vec.end(), Pos));
+//			}
+//
+//			// N개만큼 채워지기 전까지 push_back, 사용 여부 설정
+//			Vec.push_back(Info[i]);
+//			Reuse[Info[i]] = 1;
+//		}
+//	}
+//
+//	cout << Count;
+//
+//	return 0;
+//}
 
-int main()
+// 11_미세먼지 안녕!
+// https://www.acmicpc.net/problem/17144
+// 확산: Amount - Amount / 5
+// 동시 확산
+// 공기청정기 위쪽 방향(반시계)
+const int dyup[] = { 0, -1, 0, 1 };
+const int dxup[] = { 1, 0, -1, 0 };
+// 공기청정기 아래쪽 방향(시계)
+const int dydw[] = { 0, 1, 0, -1 };
+const int dxdw[] = { 1, 0, -1, 0 };
+
+int R, C, T, Amount, Arr[54][54], Temp[54][54];
+vector<pair<int, int>> VecUp, VecDown;
+
+void SpreadDust(const int dy[], const int dx[])
 {
-	cin >> N >> K;
+	fill(&Temp[0][0], &Temp[0][0] + 54 * 54, 0);
 
-	for (int i = 0; i < K; ++i)
-	{
-		cin >> Info[i];
-	}
+	queue<pair<int, int>> Q;
 
-	for (int i = 0; i < K; ++i)
+	// 확산시킬 미세먼지들 확인
+	for (int i = 0; i < R; ++i)
 	{
-		// i번째 사용 기기가 꽂혀있지 않을 때
-		if (0 == Reuse[Info[i]])
+		for (int j = 0; j < C; ++j)
 		{
-			// N만큼 꽂을 수 있으므로 꽂혀있는 Vec의 크기 확인
-			// 즉, 멀티탭이 가득 찬 경우
-			if (Vec.size() == N)
+			if (-1 != Arr[i][j] && 0 != Arr[i][j])
 			{
-				int Top = 0, Pos = 0;
-
-				for (int Idx : Vec)
-				{
-					int Current = 987654321;
-
-					// 가장 먼 미래에 참조되는 것을 확인
-					for (int j = i + 1; j < K; ++j)
-					{
-						if (Idx == Info[j])
-						{
-							Current = j;
-							break;
-						}
-					}
-
-					// 가장 먼 미래에 참조되는 것이 현재보다 작은 경우
-					// 즉, 가장 나중에 쓰이거나 아예 안 쓰이는 기기 찾아 뽑는 로직
-					if (Top < Current)
-					{
-						// 가장 먼 미래에 참조되는 것dl 현재로 갱신
-						Top = Current;
-						// Pos는 전기용품을 나타냄
-						Pos = Idx;
-					}
-				}
-
-				// 가장 먼 미래에 참조 되는 것을 찾아 바꿔주는 것, 이 때 지워주고 카운트 증가
-				// 즉, 뽑고 새로 기기 꽂는 로직
-				Reuse[Pos] = 0;
-				++Count;
-				Vec.erase(find(Vec.begin(), Vec.end(), Pos));
+				Q.push({i, j});
 			}
-
-			// N개만큼 채워지기 전까지 push_back, 사용 여부 설정
-			Vec.push_back(Info[i]);
-			Reuse[Info[i]] = 1;
 		}
 	}
 
-	cout << Count;
+	// 확산 실행
+	while (true != Q.empty())
+	{
+		int X, Y;
+		tie(Y, X) = Q.front();
+		Q.pop();
+
+		// 확산될 양
+		int Spread = Arr[Y][X] / 5;
+
+		for (int i = 0; i < 4; ++i)
+		{
+			int ny = Y + dy[i];
+			int nx = X + dx[i];
+
+			if (0 > ny || 0 > nx || R <= ny || C <= nx || -1 == Arr[ny][nx]) continue;
+
+			Temp[ny][nx] += Spread;			// 확산용 처리
+			Arr[Y][X] -= Spread;			// 원본용 처리
+		}
+	}
+
+	// 확산용 결과를 원본에 반영
+	for (int i = 0; i < R; ++i)
+	{
+		for (int j = 0; j < C; ++j)
+		{
+			Arr[i][j] += Temp[i][j];
+		}
+	}
+}
+
+void SpreadPurifier(vector<pair<int, int>>& V)
+{
+	// 공기청정기 경로를 역으로 따라가 먼지 밀어내기
+	for (int i = V.size() - 1; i > 0; --i)
+	{
+		Arr[V[i].first][V[i].second] = Arr[V[i - 1].first][V[i - 1].second];
+	}
+
+	// 공기청정기 다음 칸은 항상 0
+	Arr[V[0].first][V[0].second] = 0;
+}
+
+vector<pair<int, int>> AirClear(int sy, int sx, const int dy[], const int dx[])
+{
+	vector<pair<int, int>> V;
+	int Count = 0, Y = sy, X = sx;
+
+	while (true)
+	{
+		// 다음 위치 이동
+		int ny = Y + dy[Count];
+		int nx = X + dx[Count];
+
+		// 처음 위치로 왔을 경우 탈출
+		if (ny == sy && nx == sx) break;
+
+		// 끝 지점시 방향 전환
+		if (0 > ny || 0 > nx || R <= ny || C <= nx)
+		{
+			++Count;
+			ny = Y + dy[Count];
+			nx = X + dx[Count];
+		}
+
+		if (ny == sy && nx == sx) break;
+
+		Y = ny; 
+		X = nx;
+		V.push_back({ ny, nx });
+	}
+
+	return V;
+}
+
+int main()
+{
+	cin >> R >> C >>  T;
+	bool Flag = true;				// 미세먼지 방향
+
+	for (int i = 0; i < R; ++i)
+	{
+		for (int j = 0; j < C; ++j)
+		{
+			cin >> Arr[i][j];
+
+			if (-1 == Arr[i][j])
+			{
+				if (true == Flag)
+				{
+					VecUp = AirClear(i, j, dyup, dxup);
+					Flag = false;
+				}
+				else
+				{
+					VecDown = AirClear(i, j, dydw, dxdw);
+				}
+			}
+		}
+	}
+
+	// T초 동안 확산
+	while (T--)
+	{
+		SpreadDust(dydw, dxdw);
+		SpreadPurifier(VecUp);
+		SpreadPurifier(VecDown);
+	}
+
+	// 남은 미세먼지 양
+	for (int i = 0; i < R; ++i)
+	{
+		for (int j = 0; j < C; ++j)
+		{
+			if (-1 != Arr[i][j])
+			{
+				Amount += Arr[i][j];
+			}
+		}
+	}
+
+	cout << Amount;
 
 	return 0;
 }
