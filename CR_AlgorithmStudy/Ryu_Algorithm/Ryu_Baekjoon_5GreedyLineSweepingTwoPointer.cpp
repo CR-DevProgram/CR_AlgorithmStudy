@@ -750,48 +750,88 @@ using namespace std;
 int N, Diff = 987654321, S[24][24];
 bool TeamSelect[24];
 
-void DivideTeam(int Index, int Count)
+//void DivideTeam(int Index, int Count)
+//{
+//	// 팀원 모집 완료시
+//	if (N / 2 == Count)
+//	{
+//		int T1 = 0, T2 = 0;
+//
+//		for (int i = 0; i < N; ++i)
+//		{
+//			for (int j = i + 1; j < N; ++j)
+//			{
+//				// T1에 속한 경우 합산
+//				if(TeamSelect[i] && TeamSelect[j])
+//				{
+//					T1 += (S[i][j] + S[j][i]);
+//				}
+//				// T2에 속한 경우 합산
+//				else if (!TeamSelect[i] && !TeamSelect[j])
+//				{
+//					T2 += (S[i][j] + S[j][i]);
+//				}
+//			}
+//		}
+//
+//		// 두팀 능력차 최소값 갱신
+//		Diff = min(Diff, abs(T1 - T2));
+//		return;
+//	}
+//
+//	// 팀 조합
+//	for (int i = Index; i < N; ++i)
+//	{
+//		// 아직 선택되지 않았다면
+//		if (false == TeamSelect[i])
+//		{
+//			// T1 포함
+//			TeamSelect[i] = true;
+//			DivideTeam(i + 1, Count + 1);
+//			// 원복
+//			TeamSelect[i] = false;
+//		}
+//	}
+//}
+//
+//int main()
+//{
+//	cin >> N;
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		for (int j = 0; j < N; ++j)
+//		{
+//			cin >> S[i][j];
+//		}
+//	}
+//
+//	DivideTeam(0, 0);
+//
+//	cout << Diff;
+//
+//	return 0;
+//}
+
+// 비트마스킹을 통해 팀원 선별
+int Go(vector<int>& TeamA, vector<int>& TeamB)
 {
-	// 팀원 모집 완료시
-	if (N / 2 == Count)
+	// first: TeamA 능력치, second: TeamB 능력치
+	pair<int, int> Result;
+
+	for (int i = 0; i < N / 2; ++i)
 	{
-		int T1 = 0, T2 = 0;
-
-		for (int i = 0; i < N; ++i)
+		for (int j = 0; j < N / 2; ++j)
 		{
-			for (int j = i + 1; j < N; ++j)
-			{
-				// T1에 속한 경우 합산
-				if(TeamSelect[i] && TeamSelect[j])
-				{
-					T1 += (S[i][j] + S[j][i]);
-				}
-				// T2에 속한 경우 합산
-				else if (!TeamSelect[i] && !TeamSelect[j])
-				{
-					T2 += (S[i][j] + S[j][i]);
-				}
-			}
-		}
+			if (i == j) continue;
 
-		// 두팀 능력차 최소값 갱신
-		Diff = min(Diff, abs(T1 - T2));
-		return;
-	}
-
-	// 팀 조합
-	for (int i = Index; i < N; ++i)
-	{
-		// 아직 선택되지 않았다면
-		if (false == TeamSelect[i])
-		{
-			// T1 포함
-			TeamSelect[i] = true;
-			DivideTeam(i + 1, Count + 1);
-			// 원복
-			TeamSelect[i] = false;
+			Result.first += S[TeamA[i]][TeamA[j]];
+			Result.second += S[TeamB[i]][TeamB[j]];
 		}
 	}
+	
+	// 두 팀 간의 능력차
+	return abs(Result.first - Result.second);
 }
 
 int main()
@@ -806,7 +846,31 @@ int main()
 		}
 	}
 
-	DivideTeam(0, 0);
+	for (int i = 0; i < (1 << N); ++i)
+	{
+		// __builtin_popcount(int) => 켜져 있는 비트가 몇 개인지
+		// 선택된 비트의 수가 정확히 N / 2일 때만 유효한 팀 구성
+		if (N / 2 != __builtin_popcount(i)) continue;
+
+		vector<int> Start, Link;
+
+		for (int j = 0; j < N; ++j)
+		{
+			// 1
+			if(i & (1 << j))
+			{
+				Start.push_back(j);
+			}
+			// 0
+			else
+			{
+				Link.push_back(j);
+			}
+		}
+		
+		// 두 팀 능력차 최소값 갱신
+		Diff = min(Diff, Go(Start, Link));
+	}
 
 	cout << Diff;
 
