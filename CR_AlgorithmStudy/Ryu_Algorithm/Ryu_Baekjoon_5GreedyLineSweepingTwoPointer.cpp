@@ -747,9 +747,9 @@ using namespace std;
 
 // 12_스타트와 링크
 // https://www.acmicpc.net/problem/14889
-int N, Diff = 987654321, S[24][24];
-bool TeamSelect[24];
-
+//int N, Diff = 987654321, S[24][24];
+//bool TeamSelect[24];
+//
 //void DivideTeam(int Index, int Count)
 //{
 //	// 팀원 모집 완료시
@@ -814,65 +814,197 @@ bool TeamSelect[24];
 //}
 
 // 비트마스킹을 통해 팀원 선별
-int Go(vector<int>& TeamA, vector<int>& TeamB)
+//int Go(vector<int>& TeamA, vector<int>& TeamB)
+//{
+//	// first: TeamA 능력치, second: TeamB 능력치
+//	pair<int, int> Result;
+//
+//	for (int i = 0; i < N / 2; ++i)
+//	{
+//		for (int j = 0; j < N / 2; ++j)
+//		{
+//			if (i == j) continue;
+//
+//			Result.first += S[TeamA[i]][TeamA[j]];
+//			Result.second += S[TeamB[i]][TeamB[j]];
+//		}
+//	}
+//	
+//	// 두 팀 간의 능력차
+//	return abs(Result.first - Result.second);
+//}
+//
+//int main()
+//{
+//	cin >> N;
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		for (int j = 0; j < N; ++j)
+//		{
+//			cin >> S[i][j];
+//		}
+//	}
+//
+//	for (int i = 0; i < (1 << N); ++i)
+//	{
+//		// __builtin_popcount(int) => 켜져 있는 비트가 몇 개인지
+//		// 선택된 비트의 수가 정확히 N / 2일 때만 유효한 팀 구성
+//		if (N / 2 != __builtin_popcount(i)) continue;
+//
+//		vector<int> Start, Link;
+//
+//		for (int j = 0; j < N; ++j)
+//		{
+//			// 1
+//			if(i & (1 << j))
+//			{
+//				Start.push_back(j);
+//			}
+//			// 0
+//			else
+//			{
+//				Link.push_back(j);
+//			}
+//		}
+//		
+//		// 두 팀 능력차 최소값 갱신
+//		Diff = min(Diff, Go(Start, Link));
+//	}
+//
+//	cout << Diff;
+//
+//	return 0;
+//}
+
+// 13_2048(Easy)
+// https://www.acmicpc.net/problem/12100
+int N, Result;
+
+// Dir: 0_상, 1_하, 2_좌, 3_우
+void Move(vector<vector<int>>& CurBorad, int Dir)
 {
-	// first: TeamA 능력치, second: TeamB 능력치
-	pair<int, int> Result;
-
-	for (int i = 0; i < N / 2; ++i)
+	for (int i = 0; i < i < N; ++i)
 	{
-		for (int j = 0; j < N / 2; ++j)
-		{
-			if (i == j) continue;
+		vector<int> Line;
 
-			Result.first += S[TeamA[i]][TeamA[j]];
-			Result.second += S[TeamB[i]][TeamB[j]];
+		for (int j = 0; j < N; ++j)
+		{
+			int Value;
+
+			switch (Dir)
+			{
+			case 0:	// 상 -> 하
+				Value = CurBorad[j][i];
+				break;
+			case 1:	// 하 -> 상
+				Value = CurBorad[N - j - 1][i];
+				break;
+			case 2:	// 좌 -> 우
+				Value = CurBorad[i][j];
+				break;
+			case 3:	// 우 -> 좌
+				Value = CurBorad[i][N - j - 1];
+				break;
+			}
+
+			// 0이 아닌 블록만 추출
+			if (0 != Value)
+			{
+				Line.push_back(Value);
+			}
+		}
+
+		vector<int> Merge;
+
+		// 병합 로직
+		for (int j = 0; j < Line.size(); ++j)
+		{
+			// 인접한 두 블록이 같을 경우 병합
+			if (j + 1 < Line.size() && Line[j] == Line[j + 1])
+			{
+				Merge.push_back(Line[j] * 2);
+				// 블록을 합쳤기 때문에 다음 건너 뛰기
+				++j;
+			}
+			// 병합이 안 됐을 때
+			else
+			{
+				Merge.push_back(Line[j]);
+			}
+		}
+
+		// 병합 후 빈 곳 0
+		while (Merge.size() < N)
+		{
+			Merge.push_back(0);
+		}
+
+		// 병합 결과 보드에 적용
+		for (int j = 0; j < N; ++j)
+		{
+			switch (Dir)
+			{
+			case 0:	// 상
+				CurBorad[j][i] = Merge[j];
+				break;
+			case 1:	// 하
+				CurBorad[N - j - 1][i] = Merge[j];
+				break;
+			case 2:	// 좌
+				CurBorad[i][j] = Merge[j];
+				break;
+			case 3:	// 우
+				CurBorad[i][N - j - 1] = Merge[j];
+				break;
+			}
 		}
 	}
-	
-	// 두 팀 간의 능력차
-	return abs(Result.first - Result.second);
+}
+
+void FiveCountMove(vector<vector<int>> CurBoard, int Depth)
+{
+	if (5 == Depth)
+	{
+		for (int i = 0; i < N; ++i)
+		{
+			for (int j = 0; j < N; ++j)
+			{
+				// 블록 최대값 갱신
+				Result = max(Result, CurBoard[i][j]);
+			}
+		}
+
+		return;
+	}
+
+	// 네 방향으로 이동 탐색
+	for (int i = 0; i < 4; ++i)
+	{
+		vector<vector<int>> NewBoard = CurBoard;
+		Move(NewBoard, i);
+		FiveCountMove(NewBoard, Depth + 1);
+	}
 }
 
 int main()
 {
 	cin >> N;
+	
+	// N * N 행렬 보드
+	vector<vector<int>> Board(N, vector<int>(N));
 
 	for (int i = 0; i < N; ++i)
 	{
 		for (int j = 0; j < N; ++j)
 		{
-			cin >> S[i][j];
+			cin >> Board[i][j];
 		}
 	}
 
-	for (int i = 0; i < (1 << N); ++i)
-	{
-		// __builtin_popcount(int) => 켜져 있는 비트가 몇 개인지
-		// 선택된 비트의 수가 정확히 N / 2일 때만 유효한 팀 구성
-		if (N / 2 != __builtin_popcount(i)) continue;
+	FiveCountMove(Board, 0);
 
-		vector<int> Start, Link;
-
-		for (int j = 0; j < N; ++j)
-		{
-			// 1
-			if(i & (1 << j))
-			{
-				Start.push_back(j);
-			}
-			// 0
-			else
-			{
-				Link.push_back(j);
-			}
-		}
-		
-		// 두 팀 능력차 최소값 갱신
-		Diff = min(Diff, Go(Start, Link));
-	}
-
-	cout << Diff;
+	cout << Result;
 
 	return 0;
 }
