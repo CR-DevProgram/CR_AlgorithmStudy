@@ -880,129 +880,250 @@ using namespace std;
 // 13_2048(Easy)
 // https://www.acmicpc.net/problem/12100
 int N, Result;
+//
+//// Dir: 0_상, 1_하, 2_좌, 3_우
+//void Move(vector<vector<int>>& CurBorad, int Dir)
+//{
+//	for (int i = 0; i < i < N; ++i)
+//	{
+//		vector<int> Line;
+//
+//		for (int j = 0; j < N; ++j)
+//		{
+//			int Value;
+//
+//			switch (Dir)
+//			{
+//			case 0:	// 상 -> 하
+//				Value = CurBorad[j][i];
+//				break;
+//			case 1:	// 하 -> 상
+//				Value = CurBorad[N - j - 1][i];
+//				break;
+//			case 2:	// 좌 -> 우
+//				Value = CurBorad[i][j];
+//				break;
+//			case 3:	// 우 -> 좌
+//				Value = CurBorad[i][N - j - 1];
+//				break;
+//			}
+//
+//			// 0이 아닌 블록만 추출
+//			if (0 != Value)
+//			{
+//				Line.push_back(Value);
+//			}
+//		}
+//
+//		vector<int> Merge;
+//
+//		// 병합 로직
+//		for (int j = 0; j < Line.size(); ++j)
+//		{
+//			// 인접한 두 블록이 같을 경우 병합
+//			if (j + 1 < Line.size() && Line[j] == Line[j + 1])
+//			{
+//				Merge.push_back(Line[j] * 2);
+//				// 블록을 합쳤기 때문에 다음 건너 뛰기
+//				++j;
+//			}
+//			// 병합이 안 됐을 때
+//			else
+//			{
+//				Merge.push_back(Line[j]);
+//			}
+//		}
+//
+//		// 병합 후 빈 곳 0
+//		while (Merge.size() < N)
+//		{
+//			Merge.push_back(0);
+//		}
+//
+//		// 병합 결과 보드에 적용
+//		for (int j = 0; j < N; ++j)
+//		{
+//			switch (Dir)
+//			{
+//			case 0:	// 상
+//				CurBorad[j][i] = Merge[j];
+//				break;
+//			case 1:	// 하
+//				CurBorad[N - j - 1][i] = Merge[j];
+//				break;
+//			case 2:	// 좌
+//				CurBorad[i][j] = Merge[j];
+//				break;
+//			case 3:	// 우
+//				CurBorad[i][N - j - 1] = Merge[j];
+//				break;
+//			}
+//		}
+//	}
+//}
+//
+//void FiveCountMove(vector<vector<int>> CurBoard, int Depth)
+//{
+//	if (5 == Depth)
+//	{
+//		for (int i = 0; i < N; ++i)
+//		{
+//			for (int j = 0; j < N; ++j)
+//			{
+//				// 블록 최대값 갱신
+//				Result = max(Result, CurBoard[i][j]);
+//			}
+//		}
+//
+//		return;
+//	}
+//
+//	// 네 방향으로 이동 탐색
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		vector<vector<int>> NewBoard = CurBoard;
+//		Move(NewBoard, i);
+//		FiveCountMove(NewBoard, Depth + 1);
+//	}
+//}
+//
+//int main()
+//{
+//	cin >> N;
+//	
+//	// N * N 행렬 보드
+//	vector<vector<int>> Board(N, vector<int>(N));
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		for (int j = 0; j < N; ++j)
+//		{
+//			cin >> Board[i][j];
+//		}
+//	}
+//
+//	FiveCountMove(Board, 0);
+//
+//	cout << Result;
+//
+//	return 0;
+//}
 
-// Dir: 0_상, 1_하, 2_좌, 3_우
-void Move(vector<vector<int>>& CurBorad, int Dir)
+// 1) 90도 회전
+// 정사각형 배열(직사각형은 교안 참고)
+// i, j = n - j - 1, i
+// a[i][j] = a[n - j - 1][i]
+// 2) Temp 활용
+// 2020일 때 0은 제외하고 숫자가 같을 때 곱하기 2
+struct Board
 {
-	for (int i = 0; i < i < N; ++i)
+	int m_B[24][24];
+
+	// 90 회전(1) 내용)
+	void Rotate90() 
 	{
-		vector<int> Line;
+		int Temp[24][24];
 
-		for (int j = 0; j < N; ++j)
+		for (int i = 0; i < N; ++i) 
 		{
-			int Value;
-
-			switch (Dir)
+			for (int j = 0; j < N; ++j) 
 			{
-			case 0:	// 상 -> 하
-				Value = CurBorad[j][i];
-				break;
-			case 1:	// 하 -> 상
-				Value = CurBorad[N - j - 1][i];
-				break;
-			case 2:	// 좌 -> 우
-				Value = CurBorad[i][j];
-				break;
-			case 3:	// 우 -> 좌
-				Value = CurBorad[i][N - j - 1];
-				break;
-			}
-
-			// 0이 아닌 블록만 추출
-			if (0 != Value)
-			{
-				Line.push_back(Value);
+				Temp[i][j] = m_B[N - j - 1][i];
 			}
 		}
 
-		vector<int> Merge;
+		memcpy(m_B, Temp, sizeof(m_B));
+	}
 
-		// 병합 로직
-		for (int j = 0; j < Line.size(); ++j)
+	// 이동하여 합산이 될 경우 합산(2) 내용)
+	void Move() 
+	{
+		int Temp[24][24];
+
+		for (int i = 0; i < N; ++i) 
 		{
-			// 인접한 두 블록이 같을 경우 병합
-			if (j + 1 < Line.size() && Line[j] == Line[j + 1])
+			// ValueCheck: 값이 들어와 있는지 확인
+			int CurIndex = -1, ValueCheck = 0;
+			
+			for (int j = 0; j < N; ++j) 
 			{
-				Merge.push_back(Line[j] * 2);
-				// 블록을 합쳤기 때문에 다음 건너 뛰기
-				++j;
+				// 0은 무시
+				if (0 == m_B[i][j]) continue;
+
+				// 값이 들어와 있고 들어와 있는 값(Temp)와 보드 블록(m_B)의 값이 같은 경우
+				if (0 != ValueCheck && m_B[i][j] == Temp[i][CurIndex])
+				{
+					// 이전 값과 합치기
+					Temp[i][CurIndex] *= 2;
+					// 합쳤기 때문에 다음 건 합치지 못 하기 때문에 불가한 상태로 변경
+					ValueCheck = 0;
+				}
+				else 
+				{
+					// 새로 삽입
+					Temp[i][++CurIndex] = m_B[i][j];
+					// 다음 것과 합치기 가능한 상태로 변경
+					ValueCheck = 1;
+				}
 			}
-			// 병합이 안 됐을 때
-			else
+
+			for (CurIndex++; CurIndex < N; ++CurIndex)
 			{
-				Merge.push_back(Line[j]);
+				Temp[i][CurIndex] = 0;
 			}
 		}
+		
+		// m_B를 Temp로!
+		memcpy(m_B, Temp, sizeof(m_B));
+	}
 
-		// 병합 후 빈 곳 0
-		while (Merge.size() < N)
+	// 최대 값 추출
+	void GetMax() 
+	{
+		for (int i = 0;i < N; i++) 
 		{
-			Merge.push_back(0);
-		}
-
-		// 병합 결과 보드에 적용
-		for (int j = 0; j < N; ++j)
-		{
-			switch (Dir)
+			for (int j = 0; j < N; j++) 
 			{
-			case 0:	// 상
-				CurBorad[j][i] = Merge[j];
-				break;
-			case 1:	// 하
-				CurBorad[N - j - 1][i] = Merge[j];
-				break;
-			case 2:	// 좌
-				CurBorad[i][j] = Merge[j];
-				break;
-			case 3:	// 우
-				CurBorad[i][N - j - 1] = Merge[j];
-				break;
+				Result = max(Result, m_B[i][j]);
 			}
 		}
 	}
-}
+};
 
-void FiveCountMove(vector<vector<int>> CurBoard, int Depth)
+void Go(Board B, int here)
 {
-	if (5 == Depth)
+	if (5 == here)
 	{
-		for (int i = 0; i < N; ++i)
-		{
-			for (int j = 0; j < N; ++j)
-			{
-				// 블록 최대값 갱신
-				Result = max(Result, CurBoard[i][j]);
-			}
-		}
-
+		B.GetMax();
+		
 		return;
 	}
 
-	// 네 방향으로 이동 탐색
 	for (int i = 0; i < 4; ++i)
 	{
-		vector<vector<int>> NewBoard = CurBoard;
-		Move(NewBoard, i);
-		FiveCountMove(NewBoard, Depth + 1);
+		Board m_B = B;
+
+		m_B.Move();
+		Go(m_B, here + 1);
+		B.Rotate90();
 	}
 }
 
 int main()
 {
 	cin >> N;
-	
-	// N * N 행렬 보드
-	vector<vector<int>> Board(N, vector<int>(N));
 
-	for (int i = 0; i < N; ++i)
+	Board B;
+
+	for (int i = 0; i < N; ++i) 
 	{
 		for (int j = 0; j < N; ++j)
 		{
-			cin >> Board[i][j];
+			cin >> B.m_B[i][j];
 		}
 	}
 
-	FiveCountMove(Board, 0);
+	Go(B, 0);
 
 	cout << Result;
 
