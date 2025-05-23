@@ -1132,65 +1132,133 @@ using namespace std;
 
 // 14_뱀
 // https://www.acmicpc.net/problem/3190
-const int Max_n = 100;
-int N, K, L;
-int dy[] = { 1, 0, -1, 0 }; // 오른쪽, 아래, 왼쪽, 위쪽
-int dx[] = { 0, 1, 0, -1 };
-int a[Max_n][Max_n];
+//const int Max_n = 100;
+//int N, K, L;
+//int dy[] = { 1, 0, -1, 0 }; // 오른쪽, 아래, 왼쪽, 위쪽
+//int dx[] = { 0, 1, 0, -1 };
+//int a[Max_n][Max_n];
+//
+//pair<int, char> Dir;
+//queue<pair<int, char>> Qdir;
+//
+//int main()
+//{
+//	cin >> N >> K;
+//
+//	for (int i = 0; i < K; ++i)
+//	{
+//		int row, col;
+//		cin >> row >> col;
+//		a[row][col] = 1;						// 사과 위치
+//	}
+//
+//	cin >> L;
+//
+//	for (int i = 0; i < L; ++i)
+//	{
+//		cin >> Dir.first >> Dir.second;
+//		Qdir.push(Dir);
+//	}
+//
+//	int Time = 0;
+//	int Direction = 0;							// 초기 방향은 오른쪽
+//	deque<pair<int, int>> Snake;
+//	Snake.push_back({ 1, 1 });					// 뱀의 시작 위치
+//
+//	while (true) 
+//	{
+//		++Time;
+//		int ny = Snake.front().second + dy[Direction];
+//		int nx = Snake.front().first + dx[Direction];
+//
+//		// 벽에 부딪히거나 몸에 부딪히면 게임 종료
+//		if (1 > ny || 1 > nx || N < ny || N < nx || find(Snake.begin(), Snake.end(), make_pair(nx, ny)) != Snake.end())
+//		{
+//			cout << Time << endl;
+//			break;
+//		}
+//
+//		Snake.push_front({ nx, ny });			// 새로운 머리 위치
+//
+//		if (a[nx][ny] == 1) a[nx][ny] = 0;		// 사과가 있으면 사과 제거
+//		else Snake.pop_back();					// 사과가 없으면 꼬리를 제거
+//
+//		// 방향 전환이 필요한 경우
+//		if (true != Qdir.empty() && Time == Qdir.front().first)
+//		{
+//			//                                          왼쪽 회전               오른쪽 회전
+//			Direction = 'L' == Qdir.front().second ? (Direction + 3) % 4 : (Direction + 1) % 4;
+//			Qdir.pop();
+//		}
+//	}
+//
+//	return 0;
+//}
 
-pair<int, char> Dir;
-queue<pair<int, char>> Qdir;
+const int dy[] = { -1, 0, 1, 0 };
+const int dx[] = { 0, 1, 0, -1 };
+int N, K, L, Y, X, T, Result, Index, Time, Dir = 1;
+int a[104][104], Visited[104][104];
+char Ch;
+deque<pair<int, int>> DQ;
+vector<pair<int, int>> TransInfo;
 
-int main()
+int main() 
 {
 	cin >> N >> K;
 
 	for (int i = 0; i < K; ++i)
 	{
-		int row, col;
-		cin >> row >> col;
-		a[row][col] = 1;						// 사과 위치
+		cin >> Y >> X;
+		a[--Y][--X] = 1;								// 사과 위치
 	}
 
 	cin >> L;
 
 	for (int i = 0; i < L; ++i)
 	{
-		cin >> Dir.first >> Dir.second;
-		Qdir.push(Dir);
+		cin >> T >> Ch;
+
+		// 시간에 따른 방향 전환
+		if ('D' == Ch) TransInfo.push_back({ T, 1 });
+		else TransInfo.push_back({ T, 3 });
 	}
 
-	int Time = 0;
-	int Direction = 0;							// 초기 방향은 오른쪽
-	deque<pair<int, int>> Snake;
-	Snake.push_back({ 1, 1 });					// 뱀의 시작 위치
+	DQ.push_back({ 0, 0 });
 
-	while (true) 
+	while (true != DQ.empty())
 	{
 		++Time;
-		int ny = Snake.front().second + dy[Direction];
-		int nx = Snake.front().first + dx[Direction];
+		tie(Y, X) = DQ.front();
+		int ny = Y + dy[Dir];
+		int nx = X + dx[Dir];
 
 		// 벽에 부딪히거나 몸에 부딪히면 게임 종료
-		if (1 > ny || 1 > nx || N < ny || N < nx || find(Snake.begin(), Snake.end(), make_pair(nx, ny)) != Snake.end())
+		if (0 > ny || 0 > nx || N <= ny || N <= nx || Visited[ny][nx]) break;
+
+		// 사과가 없을 때
+		if (0 == a[ny][nx])
 		{
-			cout << Time << endl;
-			break;
+			// 꼬리 방문 기록 삭제
+			Visited[DQ.back().first][DQ.back().second] = 0;
+			// 꼬리 정보 제거
+			DQ.pop_back();
 		}
+		// 사과를 먹은 것으로 처리
+		else a[ny][nx] = 0;
 
-		Snake.push_front({ nx, ny });			// 새로운 머리 위치
-
-		if (a[nx][ny] == 1) a[nx][ny] = 0;		// 사과가 있으면 사과 제거
-		else Snake.pop_back();					// 사과가 없으면 꼬리를 제거
-
-		// 방향 전환이 필요한 경우
-		if (true != Qdir.empty() && Time == Qdir.front().first)
+		// 머리 처리
+		Visited[ny][nx] = 1;
+		DQ.push_front({ ny, nx });
+		
+		if (Time == TransInfo[Index].first)
 		{
-			//                                          왼쪽 회전               오른쪽 회전
-			Direction = 'L' == Qdir.front().second ? (Direction + 3) % 4 : (Direction + 1) % 4;
-			Qdir.pop();
+			Dir = (Dir + TransInfo[Index].second) % 4;
+			++Index;
 		}
 	}
 
+	cout << Time;
+	
 	return 0;
 }
