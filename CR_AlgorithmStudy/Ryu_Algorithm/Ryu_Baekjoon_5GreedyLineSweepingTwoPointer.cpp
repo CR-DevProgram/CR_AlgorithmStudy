@@ -879,7 +879,7 @@ using namespace std;
 
 // 13_2048(Easy)
 // https://www.acmicpc.net/problem/12100
-int N, Result;
+//int N, Result;
 //
 //// Dir: 0_상, 1_하, 2_좌, 3_우
 //void Move(vector<vector<int>>& CurBorad, int Dir)
@@ -1015,117 +1015,182 @@ int N, Result;
 // a[i][j] = a[n - j - 1][i]
 // 2) Temp 활용
 // 2020일 때 0은 제외하고 숫자가 같을 때 곱하기 2
-struct Board
-{
-	int m_B[24][24];
+//struct Board
+//{
+//	int m_B[24][24];
+//
+//	// 90 회전(1) 내용)
+//	void Rotate90() 
+//	{
+//		int Temp[24][24];
+//
+//		for (int i = 0; i < N; ++i) 
+//		{
+//			for (int j = 0; j < N; ++j) 
+//			{
+//				Temp[i][j] = m_B[N - j - 1][i];
+//			}
+//		}
+//
+//		memcpy(m_B, Temp, sizeof(m_B));
+//	}
+//
+//	// 이동하여 합산이 될 경우 합산(2) 내용)
+//	void Move() 
+//	{
+//		int Temp[24][24];
+//
+//		for (int i = 0; i < N; ++i) 
+//		{
+//			// ValueCheck: 값이 들어와 있는지 확인
+//			int CurIndex = -1, ValueCheck = 0;
+//			
+//			for (int j = 0; j < N; ++j) 
+//			{
+//				// 0은 무시
+//				if (0 == m_B[i][j]) continue;
+//
+//				// 값이 들어와 있고 들어와 있는 값(Temp)와 보드 블록(m_B)의 값이 같은 경우
+//				if (0 != ValueCheck && m_B[i][j] == Temp[i][CurIndex])
+//				{
+//					// 이전 값과 합치기
+//					Temp[i][CurIndex] *= 2;
+//					// 합쳤기 때문에 다음 건 합치지 못 하기 때문에 불가한 상태로 변경
+//					ValueCheck = 0;
+//				}
+//				else 
+//				{
+//					// 새로 삽입
+//					Temp[i][++CurIndex] = m_B[i][j];
+//					// 다음 것과 합치기 가능한 상태로 변경
+//					ValueCheck = 1;
+//				}
+//			}
+//
+//			for (CurIndex++; CurIndex < N; ++CurIndex)
+//			{
+//				Temp[i][CurIndex] = 0;
+//			}
+//		}
+//		
+//		// m_B를 Temp로!
+//		memcpy(m_B, Temp, sizeof(m_B));
+//	}
+//
+//	// 최대 값 추출
+//	void GetMax() 
+//	{
+//		for (int i = 0;i < N; i++) 
+//		{
+//			for (int j = 0; j < N; j++) 
+//			{
+//				Result = max(Result, m_B[i][j]);
+//			}
+//		}
+//	}
+//};
+//
+//void Go(Board B, int here)
+//{
+//	if (5 == here)
+//	{
+//		B.GetMax();
+//		
+//		return;
+//	}
+//
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		Board m_B = B;
+//
+//		m_B.Move();
+//		Go(m_B, here + 1);
+//		B.Rotate90();
+//	}
+//}
+//
+//int main()
+//{
+//	cin >> N;
+//
+//	Board B;
+//
+//	for (int i = 0; i < N; ++i) 
+//	{
+//		for (int j = 0; j < N; ++j)
+//		{
+//			cin >> B.m_B[i][j];
+//		}
+//	}
+//
+//	Go(B, 0);
+//
+//	cout << Result;
+//
+//	return 0;
+//}
 
-	// 90 회전(1) 내용)
-	void Rotate90() 
-	{
-		int Temp[24][24];
+// 14_뱀
+// https://www.acmicpc.net/problem/3190
+const int Max_n = 100;
+int N, K, L;
+int dy[] = { 1, 0, -1, 0 }; // 오른쪽, 아래, 왼쪽, 위쪽
+int dx[] = { 0, 1, 0, -1 };
+int a[Max_n][Max_n];
 
-		for (int i = 0; i < N; ++i) 
-		{
-			for (int j = 0; j < N; ++j) 
-			{
-				Temp[i][j] = m_B[N - j - 1][i];
-			}
-		}
-
-		memcpy(m_B, Temp, sizeof(m_B));
-	}
-
-	// 이동하여 합산이 될 경우 합산(2) 내용)
-	void Move() 
-	{
-		int Temp[24][24];
-
-		for (int i = 0; i < N; ++i) 
-		{
-			// ValueCheck: 값이 들어와 있는지 확인
-			int CurIndex = -1, ValueCheck = 0;
-			
-			for (int j = 0; j < N; ++j) 
-			{
-				// 0은 무시
-				if (0 == m_B[i][j]) continue;
-
-				// 값이 들어와 있고 들어와 있는 값(Temp)와 보드 블록(m_B)의 값이 같은 경우
-				if (0 != ValueCheck && m_B[i][j] == Temp[i][CurIndex])
-				{
-					// 이전 값과 합치기
-					Temp[i][CurIndex] *= 2;
-					// 합쳤기 때문에 다음 건 합치지 못 하기 때문에 불가한 상태로 변경
-					ValueCheck = 0;
-				}
-				else 
-				{
-					// 새로 삽입
-					Temp[i][++CurIndex] = m_B[i][j];
-					// 다음 것과 합치기 가능한 상태로 변경
-					ValueCheck = 1;
-				}
-			}
-
-			for (CurIndex++; CurIndex < N; ++CurIndex)
-			{
-				Temp[i][CurIndex] = 0;
-			}
-		}
-		
-		// m_B를 Temp로!
-		memcpy(m_B, Temp, sizeof(m_B));
-	}
-
-	// 최대 값 추출
-	void GetMax() 
-	{
-		for (int i = 0;i < N; i++) 
-		{
-			for (int j = 0; j < N; j++) 
-			{
-				Result = max(Result, m_B[i][j]);
-			}
-		}
-	}
-};
-
-void Go(Board B, int here)
-{
-	if (5 == here)
-	{
-		B.GetMax();
-		
-		return;
-	}
-
-	for (int i = 0; i < 4; ++i)
-	{
-		Board m_B = B;
-
-		m_B.Move();
-		Go(m_B, here + 1);
-		B.Rotate90();
-	}
-}
+pair<int, char> Dir;
+queue<pair<int, char>> Qdir;
 
 int main()
 {
-	cin >> N;
+	cin >> N >> K;
 
-	Board B;
-
-	for (int i = 0; i < N; ++i) 
+	for (int i = 0; i < K; ++i)
 	{
-		for (int j = 0; j < N; ++j)
-		{
-			cin >> B.m_B[i][j];
-		}
+		int row, col;
+		cin >> row >> col;
+		a[row][col] = 1;						// 사과 위치
 	}
 
-	Go(B, 0);
+	cin >> L;
 
-	cout << Result;
+	for (int i = 0; i < L; ++i)
+	{
+		cin >> Dir.first >> Dir.second;
+		Qdir.push(Dir);
+	}
+
+	int Time = 0;
+	int Direction = 0;							// 초기 방향은 오른쪽
+	deque<pair<int, int>> Snake;
+	Snake.push_back({ 1, 1 });					// 뱀의 시작 위치
+
+	while (true) 
+	{
+		++Time;
+		int ny = Snake.front().second + dy[Direction];
+		int nx = Snake.front().first + dx[Direction];
+
+		// 벽에 부딪히거나 몸에 부딪히면 게임 종료
+		if (1 > ny || 1 > nx || N < ny || N < nx || find(Snake.begin(), Snake.end(), make_pair(nx, ny)) != Snake.end())
+		{
+			cout << Time << endl;
+			break;
+		}
+
+		Snake.push_front({ nx, ny });			// 새로운 머리 위치
+
+		if (a[nx][ny] == 1) a[nx][ny] = 0;		// 사과가 있으면 사과 제거
+		else Snake.pop_back();					// 사과가 없으면 꼬리를 제거
+
+		// 방향 전환이 필요한 경우
+		if (true != Qdir.empty() && Time == Qdir.front().first)
+		{
+			//                                          왼쪽 회전               오른쪽 회전
+			Direction = 'L' == Qdir.front().second ? (Direction + 3) % 4 : (Direction + 1) % 4;
+			Qdir.pop();
+		}
+	}
 
 	return 0;
 }
