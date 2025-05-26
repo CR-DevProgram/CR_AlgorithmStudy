@@ -1194,71 +1194,205 @@ using namespace std;
 //
 //	return 0;
 //}
+//
+//const int dy[] = { -1, 0, 1, 0 };
+//const int dx[] = { 0, 1, 0, -1 };
+//int N, K, L, Y, X, T, Result, Index, Time, Dir = 1;
+//int a[104][104], Visited[104][104];
+//char Ch;
+//deque<pair<int, int>> DQ;
+//vector<pair<int, int>> TransInfo;
+//
+//int main() 
+//{
+//	cin >> N >> K;
+//
+//	for (int i = 0; i < K; ++i)
+//	{
+//		cin >> Y >> X;
+//		a[--Y][--X] = 1;								// 사과 위치
+//	}
+//
+//	cin >> L;
+//
+//	for (int i = 0; i < L; ++i)
+//	{
+//		cin >> T >> Ch;
+//
+//		// 시간에 따른 방향 전환
+//		if ('D' == Ch) TransInfo.push_back({ T, 1 });
+//		else TransInfo.push_back({ T, 3 });
+//	}
+//
+//	DQ.push_back({ 0, 0 });
+//
+//	while (true != DQ.empty())
+//	{
+//		++Time;
+//		tie(Y, X) = DQ.front();
+//		int ny = Y + dy[Dir];
+//		int nx = X + dx[Dir];
+//
+//		// 벽에 부딪히거나 몸에 부딪히면 게임 종료
+//		if (0 > ny || 0 > nx || N <= ny || N <= nx || Visited[ny][nx]) break;
+//
+//		// 사과가 없을 때
+//		if (0 == a[ny][nx])
+//		{
+//			// 꼬리 방문 기록 삭제
+//			Visited[DQ.back().first][DQ.back().second] = 0;
+//			// 꼬리 정보 제거
+//			DQ.pop_back();
+//		}
+//		// 사과를 먹은 것으로 처리
+//		else a[ny][nx] = 0;
+//
+//		// 머리 처리
+//		Visited[ny][nx] = 1;
+//		DQ.push_front({ ny, nx });
+//		
+//		if (Time == TransInfo[Index].first)
+//		{
+//			Dir = (Dir + TransInfo[Index].second) % 4;
+//			++Index;
+//		}
+//	}
+//
+//	cout << Time;
+//	
+//	return 0;
+//}
 
-const int dy[] = { -1, 0, 1, 0 };
-const int dx[] = { 0, 1, 0, -1 };
-int N, K, L, Y, X, T, Result, Index, Time, Dir = 1;
-int a[104][104], Visited[104][104];
-char Ch;
-deque<pair<int, int>> DQ;
-vector<pair<int, int>> TransInfo;
+// 15_배열 돌리기 4
+// https://www.acmicpc.net/problem/17406
+// 순서 상관O => 순열
+// 돌려야 하는 영역 구분
+// rbegin
+const int INF = 987654321;
+const int dy[] = { 0, 1, 0, -1 };
+const int dx[] = { 1, 0, -1, 0 };
+int N, M, K, R, C, S, Dir, sy, sx, ey, ex, Result = INF, Arr[104][104], Arrcpy[104][104], Visited[104][104];
+vector<pair<int, int>> Vvec;
+vector<int> VecIndex;
 
-int main() 
+struct A 
 {
-	cin >> N >> K;
+	int y, x, cnt;
+};
+
+vector<A> v;
+
+void Go(int y, int x, int first) 
+{
+	// 꼭짓점을 만나면 방향 전환
+	if (!first && y == sy && x == sx) ++Dir;
+	if (!first && y == sy && x == ex) ++Dir;
+	if (!first && y == ey && x == ex) ++Dir;
+	if (!first && y == ey && x == sx) ++Dir;
+
+	int ny = y + dy[Dir];
+	int nx = x + dx[Dir];
+
+	if (0 != Visited[ny][nx]) return;
+
+	Visited[ny][nx] = 1;
+	Vvec.push_back({ ny, nx });
+	Go(ny, nx, 0);
+}
+
+void RotateAll(int y, int x, int cnt)
+{
+	for (int i = 1; i <= cnt; ++i)
+	{
+		// 꼭짓점
+		sy = y - 1 * i;
+		sx = x - 1 * i;
+		ey = y + 1 * i;
+		ex = x + 1 * i;
+
+		// 초기화
+		Vvec.clear();
+		Dir = 0;
+		memset(Visited, 0, sizeof(Visited));
+
+		Visited[sy][sx] = 1;
+		Vvec.push_back({ sy, sx });
+		Go(sy, sx, 1);
+
+		vector<int> V;
+
+		// 현재 테두리값 저장
+		for (pair<int, int> c : Vvec)
+		{
+			V.push_back(Arrcpy[c.first][c.second]);
+		}
+
+		// 회전
+		rotate(V.rbegin(), V.rbegin() + 1, V.rend());
+		
+		// 회전된 값 배열 위치 지정
+		for (int i = 0; i < Vvec.size(); ++i)
+		{
+			Arrcpy[Vvec[i].first][Vvec[i].second] = V[i];
+		}
+	}
+}
+
+int Func()
+{
+	// 회전
+	for (int i : VecIndex)
+	{
+		RotateAll(v[i].y, v[i].x, v[i].cnt);
+	}
+
+	int MinValue = INF;
+
+	// 최소값 뽑기
+	for (int i = 0; i < N; ++i)
+	{
+		int cnt = 0;
+
+		for (int j = 0; j < M; ++j)
+		{
+			cnt += Arrcpy[i][j];
+		}
+
+		MinValue = min(MinValue, cnt);
+	}
+
+	return MinValue;
+}
+
+int main()
+{
+	cin >> N >> M >> K;
+
+	for (int i = 0; i < N; ++i)
+	{
+		for (int j = 0; j < M; ++j)
+		{
+			cin >> Arr[i][j];
+		}
+	}
 
 	for (int i = 0; i < K; ++i)
 	{
-		cin >> Y >> X;
-		a[--Y][--X] = 1;								// 사과 위치
+		cin >> R >> C >> S;
+		// 0부터 시작하는 것을 표현하기 위함
+		v.push_back({ --R, --C, S });
+		VecIndex.push_back(i);
 	}
 
-	cin >> L;
-
-	for (int i = 0; i < L; ++i)
+	do
 	{
-		cin >> T >> Ch;
+		memcpy(Arrcpy, Arr, sizeof(Arrcpy));
 
-		// 시간에 따른 방향 전환
-		if ('D' == Ch) TransInfo.push_back({ T, 1 });
-		else TransInfo.push_back({ T, 3 });
-	}
+		// 최소값 갱신
+		Result = min(Result, Func());
+	} while (next_permutation(VecIndex.begin(), VecIndex.end()));
 
-	DQ.push_back({ 0, 0 });
+	cout << Result;
 
-	while (true != DQ.empty())
-	{
-		++Time;
-		tie(Y, X) = DQ.front();
-		int ny = Y + dy[Dir];
-		int nx = X + dx[Dir];
-
-		// 벽에 부딪히거나 몸에 부딪히면 게임 종료
-		if (0 > ny || 0 > nx || N <= ny || N <= nx || Visited[ny][nx]) break;
-
-		// 사과가 없을 때
-		if (0 == a[ny][nx])
-		{
-			// 꼬리 방문 기록 삭제
-			Visited[DQ.back().first][DQ.back().second] = 0;
-			// 꼬리 정보 제거
-			DQ.pop_back();
-		}
-		// 사과를 먹은 것으로 처리
-		else a[ny][nx] = 0;
-
-		// 머리 처리
-		Visited[ny][nx] = 1;
-		DQ.push_front({ ny, nx });
-		
-		if (Time == TransInfo[Index].first)
-		{
-			Dir = (Dir + TransInfo[Index].second) % 4;
-			++Index;
-		}
-	}
-
-	cout << Time;
-	
 	return 0;
 }
