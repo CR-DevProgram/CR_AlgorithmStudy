@@ -1399,33 +1399,145 @@ using namespace std;
 
 // 16_톱니바퀴 (2)
 // https://www.acmicpc.net/problem/15662
-int T, K, Count, Arr[1004][1004];
-pair<int, int> IdxDir;
+//int T, K, Count, Arr[1004][1004];
+//pair<int, int> IdxDir;
+//
+//void Rotate(int Index, int Dir)
+//{
+//	// 시계 방향
+//	if (1 == Dir)
+//	{
+//		int Last = Arr[Index][7];
+//
+//		for (int i = 7; i > 0; --i)
+//		{
+//			Arr[Index][i] = Arr[Index][i - 1];
+//		}
+//		Arr[Index][0] = Last;
+//	}
+//	// 반시계 방향
+//	else if(-1 == Dir)
+//	{
+//		int First = Arr[Index][0];
+//
+//		for (int i = 0; i < 7; ++i)
+//		{
+//			Arr[Index][i] = Arr[Index][i + 1];
+//		}
+//		Arr[Index][7] = First;
+//	}
+//}
+//
+//int main()
+//{
+//	cin >> T;
+//
+//	for (int i = 0; i < T; ++i)
+//	{
+//		string Str;
+//		cin >> Str;
+//		for (int j = 0; j < 8; ++j)
+//		{
+//			Arr[i][j] = Str[j] - '0';
+//		}
+//	}
+//
+//	cin >> K;
+//
+//	for (int i = 0; i < K; ++i)
+//	{
+//		cin >> IdxDir.first >> IdxDir.second;
+//		--IdxDir.first;
+//
+//		vector<int> RotateDir(T, 0);
+//		RotateDir[IdxDir.first] = IdxDir.second;
+//
+//		// 왼쪽
+//		for (int i = IdxDir.first - 1; i >= 0; --i)
+//		{
+//			// 반대로 회전
+//			if (Arr[i][2] != Arr[i + 1][6])
+//			{
+//				RotateDir[i] = -RotateDir[i + 1];
+//			}
+//			else break;
+//		}
+//
+//		// 오른쪽
+//		for (int i = IdxDir.first + 1; i < T; ++i)
+//		{
+//			// 반대로 회전
+//			if (Arr[i - 1][2] != Arr[i][6])
+//			{
+//				RotateDir[i] = -RotateDir[i - 1];
+//			}
+//			else break;
+//		}
+//
+//		for (int i = 0; i < T; ++i)
+//		{
+//			// 회전이 필요한 것만 회전
+//			if (0 != RotateDir[i])
+//			{
+//				Rotate(i, RotateDir[i]);
+//			}
+//		}
+//	}
+//
+//	for (int i = 0; i < T; ++i)
+//	{
+//		if(1 == Arr[i][0]) ++Count;
+//	}
+//
+//	cout << Count;
+//
+//	return 0;
+//}
 
-void Rotate(int Index, int Dir)
+// 1)어디서부터 어디까지 회전할 것인지 정할 것
+// 다르면 같을 때까지 회전
+// 2)Rotate => 교안
+int T, K, Idx, Dir, Result;
+string Str[1004];
+
+void Rot(int Pos, int Dir)
 {
-	// 시계 방향
-	if (1 == Dir)
-	{
-		int Last = Arr[Index][7];
-
-		for (int i = 7; i > 0; --i)
-		{
-			Arr[Index][i] = Arr[Index][i - 1];
-		}
-		Arr[Index][0] = Last;
-	}
 	// 반시계 방향
-	else if(-1 == Dir)
+	if (0 == Dir)
 	{
-		int First = Arr[Index][0];
-
-		for (int i = 0; i < 7; ++i)
-		{
-			Arr[Index][i] = Arr[Index][i + 1];
-		}
-		Arr[Index][7] = First;
+		rotate(Str[Pos].begin(), Str[Pos].begin() + 1, Str[Pos].end());
 	}
+	// 시계 방향
+	else
+	{
+		rotate(Str[Pos].begin(), Str[Pos].begin() + Str[Pos].size() - 1, Str[Pos].end());
+	}
+}
+
+// 현재 톱니바퀴에서 왼쪽으로 영향을 주는 범위 탐색 함수
+int FindL(int Pos)
+{
+	for (int i = Pos; i >= 1; --i)
+	{
+		// 극이 같으면 회전 불가
+		if (Str[i][6] == Str[i - 1][2]) return i;
+	}
+
+	// 0까지 도달 가능
+	return 0;
+}
+
+// 현재 톱니바퀴에서 오른쪽으로 영향을 주는 범위 탐색 함수
+int FindR(int Pos)
+{
+	for (int i = Pos; i <= T - 2; ++i)
+	{
+		// 극이 같으면 회전 불가
+		if (Str[i][2] == Str[i + 1][6]) return i;
+	}
+
+	// 마지막까지 도달 가능
+	return T - 1;
 }
 
 int main()
@@ -1434,62 +1546,48 @@ int main()
 
 	for (int i = 0; i < T; ++i)
 	{
-		string Str;
-		cin >> Str;
-		for (int j = 0; j < 8; ++j)
-		{
-			Arr[i][j] = Str[j] - '0';
-		}
+		cin >> Str[i];
 	}
 
 	cin >> K;
 
 	for (int i = 0; i < K; ++i)
 	{
-		cin >> IdxDir.first >> IdxDir.second;
-		--IdxDir.first;
+		cin >> Idx >> Dir;
+		--Idx;
+		Dir = (-1 == Dir ? 0 : 1);
 
-		vector<int> RotateDir(T, 0);
-		RotateDir[IdxDir.first] = IdxDir.second;
+		// 회전 가능한 경계 탐색
+		int L = FindL(Idx);
+		int R = FindR(Idx);
 
+		int Count = 0;
 		// 왼쪽
-		for (int i = IdxDir.first - 1; i >= 0; --i)
+		for (int pos = Idx; pos >= L; pos--)
 		{
-			// 반대로 회전
-			if (Arr[i][2] != Arr[i + 1][6])
-			{
-				RotateDir[i] = -RotateDir[i + 1];
-			}
-			else break;
+			// Count 짝수: 원래 방향, 홀수: 반대 방향
+			Rot(pos, 0 == (Count % 2) ? Dir : !Dir);
+			++Count;
 		}
 
+		// 오른쪽은 Index + 1부터 시작하므로 Count는 1
+		Count = 1;
 		// 오른쪽
-		for (int i = IdxDir.first + 1; i < T; ++i)
+		for (int pos = Idx + 1; pos <= R; ++pos)
 		{
-			// 반대로 회전
-			if (Arr[i - 1][2] != Arr[i][6])
-			{
-				RotateDir[i] = -RotateDir[i - 1];
-			}
-			else break;
-		}
-
-		for (int i = 0; i < T; ++i)
-		{
-			// 회전이 필요한 것만 회전
-			if (0 != RotateDir[i])
-			{
-				Rotate(i, RotateDir[i]);
-			}
+			// Count 짝수: 원래 방향, 홀수: 반대 방향
+			Rot(pos, 0 == (Count % 2) ? Dir : !Dir);
+			++Count;
 		}
 	}
 
 	for (int i = 0; i < T; ++i)
 	{
-		if(1 == Arr[i][0]) ++Count;
+		// 12시 방향이 '1'인 톱니의 개수
+		if ('1' == Str[i][0]) ++Result;
 	}
 
-	cout << Count;
+	cout << Result;
 
 	return 0;
 }
