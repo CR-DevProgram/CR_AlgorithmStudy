@@ -1497,94 +1497,140 @@ using namespace std;
 // 1)어디서부터 어디까지 회전할 것인지 정할 것
 // 다르면 같을 때까지 회전
 // 2)Rotate => 교안
-int T, K, Idx, Dir, Result;
-string Str[1004];
+//int T, K, Idx, Dir, Result;
+//string Str[1004];
+//
+//void Rot(int Pos, int Dir)
+//{
+//	// 반시계 방향
+//	if (0 == Dir)
+//	{
+//		rotate(Str[Pos].begin(), Str[Pos].begin() + 1, Str[Pos].end());
+//	}
+//	// 시계 방향
+//	else
+//	{
+//		rotate(Str[Pos].begin(), Str[Pos].begin() + Str[Pos].size() - 1, Str[Pos].end());
+//	}
+//}
+//
+//// 현재 톱니바퀴에서 왼쪽으로 영향을 주는 범위 탐색 함수
+//int FindL(int Pos)
+//{
+//	for (int i = Pos; i >= 1; --i)
+//	{
+//		// 극이 같으면 회전 불가
+//		if (Str[i][6] == Str[i - 1][2]) return i;
+//	}
+//
+//	// 0까지 도달 가능
+//	return 0;
+//}
+//
+//// 현재 톱니바퀴에서 오른쪽으로 영향을 주는 범위 탐색 함수
+//int FindR(int Pos)
+//{
+//	for (int i = Pos; i <= T - 2; ++i)
+//	{
+//		// 극이 같으면 회전 불가
+//		if (Str[i][2] == Str[i + 1][6]) return i;
+//	}
+//
+//	// 마지막까지 도달 가능
+//	return T - 1;
+//}
+//
+//int main()
+//{
+//	cin >> T;
+//
+//	for (int i = 0; i < T; ++i)
+//	{
+//		cin >> Str[i];
+//	}
+//
+//	cin >> K;
+//
+//	for (int i = 0; i < K; ++i)
+//	{
+//		cin >> Idx >> Dir;
+//		--Idx;
+//		Dir = (-1 == Dir ? 0 : 1);
+//
+//		// 회전 가능한 경계 탐색
+//		int L = FindL(Idx);
+//		int R = FindR(Idx);
+//
+//		int Count = 0;
+//		// 왼쪽
+//		for (int pos = Idx; pos >= L; pos--)
+//		{
+//			// Count 짝수: 원래 방향, 홀수: 반대 방향
+//			Rot(pos, 0 == (Count % 2) ? Dir : !Dir);
+//			++Count;
+//		}
+//
+//		// 오른쪽은 Index + 1부터 시작하므로 Count는 1
+//		Count = 1;
+//		// 오른쪽
+//		for (int pos = Idx + 1; pos <= R; ++pos)
+//		{
+//			// Count 짝수: 원래 방향, 홀수: 반대 방향
+//			Rot(pos, 0 == (Count % 2) ? Dir : !Dir);
+//			++Count;
+//		}
+//	}
+//
+//	for (int i = 0; i < T; ++i)
+//	{
+//		// 12시 방향이 '1'인 톱니의 개수
+//		if ('1' == Str[i][0]) ++Result;
+//	}
+//
+//	cout << Result;
+//
+//	return 0;
+//}
 
-void Rot(int Pos, int Dir)
-{
-	// 반시계 방향
-	if (0 == Dir)
-	{
-		rotate(Str[Pos].begin(), Str[Pos].begin() + 1, Str[Pos].end());
-	}
-	// 시계 방향
-	else
-	{
-		rotate(Str[Pos].begin(), Str[Pos].begin() + Str[Pos].size() - 1, Str[Pos].end());
-	}
-}
-
-// 현재 톱니바퀴에서 왼쪽으로 영향을 주는 범위 탐색 함수
-int FindL(int Pos)
-{
-	for (int i = Pos; i >= 1; --i)
-	{
-		// 극이 같으면 회전 불가
-		if (Str[i][6] == Str[i - 1][2]) return i;
-	}
-
-	// 0까지 도달 가능
-	return 0;
-}
-
-// 현재 톱니바퀴에서 오른쪽으로 영향을 주는 범위 탐색 함수
-int FindR(int Pos)
-{
-	for (int i = Pos; i <= T - 2; ++i)
-	{
-		// 극이 같으면 회전 불가
-		if (Str[i][2] == Str[i + 1][6]) return i;
-	}
-
-	// 마지막까지 도달 가능
-	return T - 1;
-}
+// 17_흙길 보수하기
+// https://www.acmicpc.net/problem/1911
+int N, L, Last, Count, Result;
 
 int main()
 {
-	cin >> T;
+	cin >> N >> L;
+	vector<pair<int, int>> Vec(N);
 
-	for (int i = 0; i < T; ++i)
+	for (int i = 0; i < N; ++i)
 	{
-		cin >> Str[i];
+		cin >> Vec[i].first >> Vec[i].second;
 	}
 
-	cin >> K;
+	sort(Vec.begin(), Vec.end());
 
-	for (int i = 0; i < K; ++i)
+	for (int i = 0; i < N; ++i)
 	{
-		cin >> Idx >> Dir;
-		--Idx;
-		Dir = (-1 == Dir ? 0 : 1);
+		// 이미 덮여있다면 Continue
+		if(Last >= Vec[i].second) continue;
 
-		// 회전 가능한 경계 탐색
-		int L = FindL(Idx);
-		int R = FindR(Idx);
-
-		int Count = 0;
-		// 왼쪽
-		for (int pos = Idx; pos >= L; pos--)
+		// 널판지 새로 놓기
+		if (Last < Vec[i].first)
 		{
-			// Count 짝수: 원래 방향, 홀수: 반대 방향
-			Rot(pos, 0 == (Count % 2) ? Dir : !Dir);
-			++Count;
+			// 널판지 필요 개수
+			Count = (Vec[i].second - Vec[i].first) / L + ((Vec[i].second - Vec[i].first) % L ? 1 : 0);
+			// 널판지 마지막 위치 갱신
+			Last = Vec[i].first + Count * L;
+		}
+		// 널판지를 덧붙여야 되는 경우
+		else
+		{
+			// 덮여있지 않은 구간의 널판지 필요 개수
+			Count = (Vec[i].second - Last) / L + ((Vec[i].second - Last) % L ? 1 : 0);
+			// 널판지 마지막 위치 갱신
+			Last = Last + Count * L;
 		}
 
-		// 오른쪽은 Index + 1부터 시작하므로 Count는 1
-		Count = 1;
-		// 오른쪽
-		for (int pos = Idx + 1; pos <= R; ++pos)
-		{
-			// Count 짝수: 원래 방향, 홀수: 반대 방향
-			Rot(pos, 0 == (Count % 2) ? Dir : !Dir);
-			++Count;
-		}
-	}
-
-	for (int i = 0; i < T; ++i)
-	{
-		// 12시 방향이 '1'인 톱니의 개수
-		if ('1' == Str[i][0]) ++Result;
+		Result += Count;
 	}
 
 	cout << Result;
