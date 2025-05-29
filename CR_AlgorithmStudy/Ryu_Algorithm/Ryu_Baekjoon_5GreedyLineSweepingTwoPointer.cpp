@@ -1268,131 +1268,228 @@ using namespace std;
 // 순서 상관O => 순열
 // 돌려야 하는 영역 구분
 // rbegin
-const int INF = 987654321;
-const int dy[] = { 0, 1, 0, -1 };
-const int dx[] = { 1, 0, -1, 0 };
-int N, M, K, R, C, S, Dir, sy, sx, ey, ex, Result = INF, Arr[104][104], Arrcpy[104][104], Visited[104][104];
-vector<pair<int, int>> Vvec;
-vector<int> VecIndex;
+//const int INF = 987654321;
+//const int dy[] = { 0, 1, 0, -1 };
+//const int dx[] = { 1, 0, -1, 0 };
+//int N, M, K, R, C, S, Dir, sy, sx, ey, ex, Result = INF, Arr[104][104], Arrcpy[104][104], Visited[104][104];
+//vector<pair<int, int>> Vvec;
+//vector<int> VecIndex;
+//
+//struct A 
+//{
+//	int y, x, cnt;
+//};
+//
+//vector<A> v;
+//
+//void Go(int y, int x, int first) 
+//{
+//	// 꼭짓점을 만나면 방향 전환
+//	if (!first && y == sy && x == sx) ++Dir;
+//	if (!first && y == sy && x == ex) ++Dir;
+//	if (!first && y == ey && x == ex) ++Dir;
+//	if (!first && y == ey && x == sx) ++Dir;
+//
+//	int ny = y + dy[Dir];
+//	int nx = x + dx[Dir];
+//
+//	if (0 != Visited[ny][nx]) return;
+//
+//	Visited[ny][nx] = 1;
+//	Vvec.push_back({ ny, nx });
+//	Go(ny, nx, 0);
+//}
+//
+//void RotateAll(int y, int x, int cnt)
+//{
+//	for (int i = 1; i <= cnt; ++i)
+//	{
+//		// 꼭짓점
+//		sy = y - 1 * i;
+//		sx = x - 1 * i;
+//		ey = y + 1 * i;
+//		ex = x + 1 * i;
+//
+//		// 초기화
+//		Vvec.clear();
+//		Dir = 0;
+//		memset(Visited, 0, sizeof(Visited));
+//
+//		Visited[sy][sx] = 1;
+//		Vvec.push_back({ sy, sx });
+//		Go(sy, sx, 1);
+//
+//		vector<int> V;
+//
+//		// 현재 테두리값 저장
+//		for (pair<int, int> c : Vvec)
+//		{
+//			V.push_back(Arrcpy[c.first][c.second]);
+//		}
+//
+//		// 회전
+//		rotate(V.rbegin(), V.rbegin() + 1, V.rend());
+//		
+//		// 회전된 값 배열 위치 지정
+//		for (int i = 0; i < Vvec.size(); ++i)
+//		{
+//			Arrcpy[Vvec[i].first][Vvec[i].second] = V[i];
+//		}
+//	}
+//}
+//
+//int Func()
+//{
+//	// 회전
+//	for (int i : VecIndex)
+//	{
+//		RotateAll(v[i].y, v[i].x, v[i].cnt);
+//	}
+//
+//	int MinValue = INF;
+//
+//	// 최소값 뽑기
+//	for (int i = 0; i < N; ++i)
+//	{
+//		int cnt = 0;
+//
+//		for (int j = 0; j < M; ++j)
+//		{
+//			cnt += Arrcpy[i][j];
+//		}
+//
+//		MinValue = min(MinValue, cnt);
+//	}
+//
+//	return MinValue;
+//}
+//
+//int main()
+//{
+//	cin >> N >> M >> K;
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		for (int j = 0; j < M; ++j)
+//		{
+//			cin >> Arr[i][j];
+//		}
+//	}
+//
+//	for (int i = 0; i < K; ++i)
+//	{
+//		cin >> R >> C >> S;
+//		// 0부터 시작하는 것을 표현하기 위함
+//		v.push_back({ --R, --C, S });
+//		VecIndex.push_back(i);
+//	}
+//
+//	do
+//	{
+//		memcpy(Arrcpy, Arr, sizeof(Arrcpy));
+//
+//		// 최소값 갱신
+//		Result = min(Result, Func());
+//	} while (next_permutation(VecIndex.begin(), VecIndex.end()));
+//
+//	cout << Result;
+//
+//	return 0;
+//}
 
-struct A 
+// 16_톱니바퀴 (2)
+// https://www.acmicpc.net/problem/15662
+int T, K, Count, Arr[1004][1004];
+pair<int, int> IdxDir;
+
+void Rotate(int Index, int Dir)
 {
-	int y, x, cnt;
-};
-
-vector<A> v;
-
-void Go(int y, int x, int first) 
-{
-	// 꼭짓점을 만나면 방향 전환
-	if (!first && y == sy && x == sx) ++Dir;
-	if (!first && y == sy && x == ex) ++Dir;
-	if (!first && y == ey && x == ex) ++Dir;
-	if (!first && y == ey && x == sx) ++Dir;
-
-	int ny = y + dy[Dir];
-	int nx = x + dx[Dir];
-
-	if (0 != Visited[ny][nx]) return;
-
-	Visited[ny][nx] = 1;
-	Vvec.push_back({ ny, nx });
-	Go(ny, nx, 0);
-}
-
-void RotateAll(int y, int x, int cnt)
-{
-	for (int i = 1; i <= cnt; ++i)
+	// 시계 방향
+	if (1 == Dir)
 	{
-		// 꼭짓점
-		sy = y - 1 * i;
-		sx = x - 1 * i;
-		ey = y + 1 * i;
-		ex = x + 1 * i;
+		int Last = Arr[Index][7];
 
-		// 초기화
-		Vvec.clear();
-		Dir = 0;
-		memset(Visited, 0, sizeof(Visited));
-
-		Visited[sy][sx] = 1;
-		Vvec.push_back({ sy, sx });
-		Go(sy, sx, 1);
-
-		vector<int> V;
-
-		// 현재 테두리값 저장
-		for (pair<int, int> c : Vvec)
+		for (int i = 7; i > 0; --i)
 		{
-			V.push_back(Arrcpy[c.first][c.second]);
+			Arr[Index][i] = Arr[Index][i - 1];
 		}
-
-		// 회전
-		rotate(V.rbegin(), V.rbegin() + 1, V.rend());
-		
-		// 회전된 값 배열 위치 지정
-		for (int i = 0; i < Vvec.size(); ++i)
-		{
-			Arrcpy[Vvec[i].first][Vvec[i].second] = V[i];
-		}
+		Arr[Index][0] = Last;
 	}
-}
-
-int Func()
-{
-	// 회전
-	for (int i : VecIndex)
+	// 반시계 방향
+	else if(-1 == Dir)
 	{
-		RotateAll(v[i].y, v[i].x, v[i].cnt);
-	}
+		int First = Arr[Index][0];
 
-	int MinValue = INF;
-
-	// 최소값 뽑기
-	for (int i = 0; i < N; ++i)
-	{
-		int cnt = 0;
-
-		for (int j = 0; j < M; ++j)
+		for (int i = 0; i < 7; ++i)
 		{
-			cnt += Arrcpy[i][j];
+			Arr[Index][i] = Arr[Index][i + 1];
 		}
-
-		MinValue = min(MinValue, cnt);
+		Arr[Index][7] = First;
 	}
-
-	return MinValue;
 }
 
 int main()
 {
-	cin >> N >> M >> K;
+	cin >> T;
 
-	for (int i = 0; i < N; ++i)
+	for (int i = 0; i < T; ++i)
 	{
-		for (int j = 0; j < M; ++j)
+		string Str;
+		cin >> Str;
+		for (int j = 0; j < 8; ++j)
 		{
-			cin >> Arr[i][j];
+			Arr[i][j] = Str[j] - '0';
 		}
 	}
 
+	cin >> K;
+
 	for (int i = 0; i < K; ++i)
 	{
-		cin >> R >> C >> S;
-		// 0부터 시작하는 것을 표현하기 위함
-		v.push_back({ --R, --C, S });
-		VecIndex.push_back(i);
+		cin >> IdxDir.first >> IdxDir.second;
+		--IdxDir.first;
+
+		vector<int> RotateDir(T, 0);
+		RotateDir[IdxDir.first] = IdxDir.second;
+
+		// 왼쪽
+		for (int i = IdxDir.first - 1; i >= 0; --i)
+		{
+			// 반대로 회전
+			if (Arr[i][2] != Arr[i + 1][6])
+			{
+				RotateDir[i] = -RotateDir[i + 1];
+			}
+			else break;
+		}
+
+		// 오른쪽
+		for (int i = IdxDir.first + 1; i < T; ++i)
+		{
+			// 반대로 회전
+			if (Arr[i - 1][2] != Arr[i][6])
+			{
+				RotateDir[i] = -RotateDir[i - 1];
+			}
+			else break;
+		}
+
+		for (int i = 0; i < T; ++i)
+		{
+			// 회전이 필요한 것만 회전
+			if (0 != RotateDir[i])
+			{
+				Rotate(i, RotateDir[i]);
+			}
+		}
 	}
 
-	do
+	for (int i = 0; i < T; ++i)
 	{
-		memcpy(Arrcpy, Arr, sizeof(Arrcpy));
+		if(1 == Arr[i][0]) ++Count;
+	}
 
-		// 최소값 갱신
-		Result = min(Result, Func());
-	} while (next_permutation(VecIndex.begin(), VecIndex.end()));
-
-	cout << Result;
+	cout << Count;
 
 	return 0;
 }
