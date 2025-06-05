@@ -1594,46 +1594,179 @@ using namespace std;
 
 // 17_흙길 보수하기
 // https://www.acmicpc.net/problem/1911
-int N, L, Last, Count, Result;
+//int N, L, Last, Count, Result;
+//
+//int main()
+//{
+//	cin >> N >> L;
+//	vector<pair<int, int>> Vec(N);
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		cin >> Vec[i].first >> Vec[i].second;
+//	}
+//
+//	sort(Vec.begin(), Vec.end());
+//
+//	for (int i = 0; i < N; ++i)
+//	{
+//		// 이미 덮여있다면 Continue
+//		if(Last >= Vec[i].second) continue;
+//
+//		// 널판지 새로 놓기
+//		if (Last < Vec[i].first)
+//		{
+//			// 널판지 필요 개수
+//			Count = (Vec[i].second - Vec[i].first) / L + ((Vec[i].second - Vec[i].first) % L ? 1 : 0);
+//			// 널판지 마지막 위치 갱신
+//			Last = Vec[i].first + Count * L;
+//		}
+//		// 널판지를 덧붙여야 되는 경우
+//		else
+//		{
+//			// 덮여있지 않은 구간의 널판지 필요 개수
+//			Count = (Vec[i].second - Last) / L + ((Vec[i].second - Last) % L ? 1 : 0);
+//			// 널판지 마지막 위치 갱신
+//			Last = Last + Count * L;
+//		}
+//
+//		Result += Count;
+//	}
+//
+//	cout << Result;
+//
+//	return 0;
+//}
+
+// 18_주사위 윷놀이
+// https://www.acmicpc.net/problem/17825
+// 말 4개, 10개 턴, 이동을 마치는 지점에 말이 있으면 안됨
+// 판을 기록해야 됨
+int Info[14], Piece[4], N = 10;
+int Score[104];
+vector<int> Adj[54];
+
+int Move(int Here, int Count)
+{
+	// 도착한 경우
+	if (100 == Here) return 100;
+
+	// 파랑 이동 가능 지점(분기점), 지름길 이동
+	if (2 <= Adj[Here].size())
+	{
+		Here = Adj[Here][1];
+		--Count;
+	}
+
+	// DFS
+	if (0 != Count)
+	{
+		queue<int> q;
+		q.push(Here);
+
+		int there = 0;
+		while (true != q.empty())
+		{
+			int x = q.front(); q.pop();
+			// 일반 경로 이동
+			there = Adj[x][0];
+			q.push(there);
+
+			// 도착 시
+			if (100 == there) break;
+
+			--Count;
+
+			if (0 == Count) break;
+		}
+
+		// 최종 도착 위치 반환
+		return there;
+	}
+	// 지름길 진입 후 움직일 필요 없는 경우
+	else return Here;
+}
+
+bool IsPiece(int PieceIndex, int Index)
+{
+	// 이미 도착한 말의 경우 무시
+	if (100 == PieceIndex) return false;
+
+	for (int i = 0; i < 4; ++i)
+	{
+		// 자기 자신 제외
+		if (i == Index) continue;
+		// 같은 위치에 다른 말이 있는 경우
+		if (Piece[i] == PieceIndex) return true;
+	}
+
+	return false;
+}
+
+void add(int Here, int There)
+{
+	Adj[Here].push_back(There);
+}
+
+void SetMap()
+{
+	// 빨간 지점 먼저 [here][0]
+	for (int i = 0; i <= 19; ++i) add(i, i + 1);
+
+	// 파란 지점[here][1]
+	add(5, 21); add(21, 22); add(22, 23); add(23, 24);
+	add(15, 29); add(29, 30); add(30, 31);add(31, 24);
+
+	add(10, 27); add(27, 28); add(28, 24); add(24, 25);
+	add(25, 26); add(26, 20); add(20, 100);
+
+	// 점수 지정
+	Score[1] = 2;	Score[2] = 4;	Score[3] = 6;	Score[4] = 8;	Score[5] = 10;
+	Score[6] = 12;	Score[7] = 14;	Score[8] = 16;	Score[9] = 18;	Score[10] = 20;
+	Score[11] = 22; Score[12] = 24; Score[13] = 26; Score[14] = 28; Score[15] = 30;
+	Score[16] = 32; Score[17] = 34; Score[18] = 36; Score[19] = 38; Score[20] = 40;
+
+	Score[21] = 13; Score[22] = 16; Score[23] = 19; Score[24] = 25;
+	Score[27] = 22; Score[28] = 24; Score[25] = 30; Score[26] = 35;
+	Score[29] = 28; Score[30] = 27; Score[31] = 26;
+}
+
+int Go(int Here)
+{
+	// 10개의 주사위를 모두 사용했다면 return 0;
+	if (Here == N) return 0;
+
+	int Result = 0;
+	
+	// 말 4개 중 하나
+	for (int i = 0; i < 4; ++i)
+	{
+		// 이동 한 것과 안 하는 것, 현 위치 및 새 위치
+		int TempIndex = Piece[i];
+		int PieceIndex = Move(TempIndex, Info[Here]);
+		
+		// 이동하려는 곳에 말이 있는지 확인
+		if (true == IsPiece(PieceIndex, i)) continue;
+
+		// 이동 파악하고 원복
+		Piece[i] = PieceIndex;
+		Result = max(Result, Go(Here + 1) + Score[PieceIndex]);
+		Piece[i] = TempIndex;
+	}
+	
+	return Result;
+}
 
 int main()
 {
-	cin >> N >> L;
-	vector<pair<int, int>> Vec(N);
+	SetMap();
 
 	for (int i = 0; i < N; ++i)
 	{
-		cin >> Vec[i].first >> Vec[i].second;
+		cin >> Info[i];
 	}
 
-	sort(Vec.begin(), Vec.end());
-
-	for (int i = 0; i < N; ++i)
-	{
-		// 이미 덮여있다면 Continue
-		if(Last >= Vec[i].second) continue;
-
-		// 널판지 새로 놓기
-		if (Last < Vec[i].first)
-		{
-			// 널판지 필요 개수
-			Count = (Vec[i].second - Vec[i].first) / L + ((Vec[i].second - Vec[i].first) % L ? 1 : 0);
-			// 널판지 마지막 위치 갱신
-			Last = Vec[i].first + Count * L;
-		}
-		// 널판지를 덧붙여야 되는 경우
-		else
-		{
-			// 덮여있지 않은 구간의 널판지 필요 개수
-			Count = (Vec[i].second - Last) / L + ((Vec[i].second - Last) % L ? 1 : 0);
-			// 널판지 마지막 위치 갱신
-			Last = Last + Count * L;
-		}
-
-		Result += Count;
-	}
-
-	cout << Result;
+	cout << Go(0);
 
 	return 0;
 }
